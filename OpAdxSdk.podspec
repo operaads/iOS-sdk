@@ -81,7 +81,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.source = { 
-      :git => "https://github.com/operaads/iOS-sdk.git", 
+      :git => "git@github.com:operaads/iOS-sdk.git", 
       :tag => "#{spec.version}" 
   }
 
