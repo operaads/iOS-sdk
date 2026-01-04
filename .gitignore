@@ -1,0 +1,21 @@
+.DS_Store
+build/
+DerivedData/
+xcuserdata/
+*.xcworkspace
+!Example/*.xcworkspace  # 可选：保留 Example 的 workspace
+Pods/
+Example/**/Pods/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.moved-aside
+Local\ Podspecs/
+Carthage/
+.swiftpm
+.build/
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+UserInterfaceState.xcuserstate
