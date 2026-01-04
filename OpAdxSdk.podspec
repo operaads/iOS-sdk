@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "OpAdxSdk"
-  spec.version      = "2.2.6"
+  spec.version      = "2.2.7"
   spec.summary      = "A high-performance mobile advertising SDK for iOS."  
 
   # This description is used to generate tags and improve search results.
@@ -81,7 +81,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.source = { 
-      :git => "git@github.com:operaads/iOS-sdk.git", 
+      :git => "https://github.com/operaads/iOS-sdk.git", 
       :tag => "#{spec.version}" 
   }
 

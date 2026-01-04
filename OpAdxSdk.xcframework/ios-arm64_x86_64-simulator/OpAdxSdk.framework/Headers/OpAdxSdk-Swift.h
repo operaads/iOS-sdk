@@ -938,6 +938,15 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 @end
 
 @interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
+/// Objective-C 兼容的方法，使用字符串参数
+/// \param positionStr 位置字符串
+///
+/// \param onPrivacyClick 点击回调
+///
+- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
+@end
+
+@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
 /// 将字符串转换为 AdChoicePosition
 /// \param positionStr 位置字符串
 ///
@@ -945,15 +954,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 /// returns:
 /// AdChoicePosition，默认为 topRight
 + (enum AdChoicePosition)stringToAdChoicePosition:(NSString * _Nonnull)positionStr SWIFT_WARN_UNUSED_RESULT;
-@end
-
-@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
-/// Objective-C 兼容的方法，使用字符串参数
-/// \param positionStr 位置字符串
-///
-/// \param onPrivacyClick 点击回调
-///
-- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
 @end
 
 SWIFT_PROTOCOL("_TtP8OpAdxSdk38OpAdxOnSdkInitCompleteListenerProtocol_")
@@ -2170,6 +2170,15 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 @end
 
 @interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
+/// Objective-C 兼容的方法，使用字符串参数
+/// \param positionStr 位置字符串
+///
+/// \param onPrivacyClick 点击回调
+///
+- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
+@end
+
+@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
 /// 将字符串转换为 AdChoicePosition
 /// \param positionStr 位置字符串
 ///
@@ -2177,15 +2186,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 /// returns:
 /// AdChoicePosition，默认为 topRight
 + (enum AdChoicePosition)stringToAdChoicePosition:(NSString * _Nonnull)positionStr SWIFT_WARN_UNUSED_RESULT;
-@end
-
-@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
-/// Objective-C 兼容的方法，使用字符串参数
-/// \param positionStr 位置字符串
-///
-/// \param onPrivacyClick 点击回调
-///
-- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
 @end
 
 SWIFT_PROTOCOL("_TtP8OpAdxSdk38OpAdxOnSdkInitCompleteListenerProtocol_")
