@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.2.9) - 适配Topon Adapter
+
 (2.2.6) - 迁移至https://github.com/operaads/iOS-sdk
 
 (2.2.5) - 由动态库转为静态库，只需要pod集成，不需要额外设置embed

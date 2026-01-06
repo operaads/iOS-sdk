@@ -857,6 +857,9 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly) CGSize adSize;
 /// 广告是否已失效
 @property (nonatomic, readonly) BOOL isAdInvalidated;
+@property (nonatomic, readonly, copy) NSURL * _Nullable iconUrl;
+@property (nonatomic, readonly, copy) NSURL * _Nullable imageUrl;
+@property (nonatomic, readonly, strong) OpAdxMediaView * _Nonnull mediaView;
 /// 初始化原生广告
 /// \param placementID 广告位ID
 ///
@@ -2108,6 +2111,9 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly) CGSize adSize;
 /// 广告是否已失效
 @property (nonatomic, readonly) BOOL isAdInvalidated;
+@property (nonatomic, readonly, copy) NSURL * _Nullable iconUrl;
+@property (nonatomic, readonly, copy) NSURL * _Nullable imageUrl;
+@property (nonatomic, readonly, strong) OpAdxMediaView * _Nonnull mediaView;
 /// 初始化原生广告
 /// \param placementID 广告位ID
 ///
