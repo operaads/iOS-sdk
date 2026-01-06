@@ -316,6 +316,19 @@ typedef SWIFT_ENUM(NSInteger, AdChoicePosition, open) {
 };
 
 @class NSString;
+SWIFT_CLASS("_TtC8OpAdxSdk19AdMediationProvider")
+@interface AdMediationProvider : NSObject
+/// The version of the mediation sdk, e.g. “24.6.0” for [AdMob SDK][AdMediation.ADMOB].
+@property (nonatomic, readonly, copy) NSString * _Nonnull mediationSdkVersion;
+/// The mediation adapter class, e.g. <code>com.opera.ads.admob.OperaMediationAdapter::class.java</code>
+@property (nonatomic, readonly) Class _Nullable mediationAdapterClass;
+/// The version of the mediation adapter sdk, e.g. “2.0.0.0” for adapter <code>com.opera:opera-ads-admob-adapter</code>
+@property (nonatomic, readonly, copy) NSString * _Nonnull mediationAdapterVersion;
+- (nonnull instancetype)initWithMediationStr:(NSString * _Nonnull)mediationStr mediationSdkVersion:(NSString * _Nonnull)mediationSdkVersion mediationAdapterClass:(Class _Nullable)mediationAdapterClass mediationAdapterVersion:(NSString * _Nonnull)mediationAdapterVersion OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 @class NSBundle;
 @class NSCoder;
 SWIFT_CLASS("_TtC8OpAdxSdk26BidRespDebugViewController")
@@ -526,6 +539,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxBannerAdBridge")
 @interface OpAdxBannerAdBridge : UIView
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxBannerAdDelegate> _Nullable delegate;
 /// 广告位ID
 @property (nonatomic, readonly, copy) NSString * _Nullable placementID;
@@ -713,6 +727,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxInterstitialAd")
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 @interface OpAdxInterstitialAdBridge : NSObject
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxInterstitialAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -773,6 +788,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk34OpAdxInterstitialAdLoadListenerImp")
 
 SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 @interface OpAdxMediaView : UIView
+@property (nonatomic, strong) UIImageView * _Nullable mainView;
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 - (void)didMoveToWindow;
@@ -799,7 +815,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (NSString * _Nullable)sponsor SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)iconUrl SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)imageUrl SWIFT_WARN_UNUSED_RESULT;
-- (OpAdxMediaView * _Nullable)mediaView SWIFT_WARN_UNUSED_RESULT;
+- (OpAdxMediaView * _Nonnull)mediaView SWIFT_WARN_UNUSED_RESULT;
 - (void)registerInteractionViewsWithContainer:(OpAdxNativeAdRootView * _Nonnull)container interactionViews:(OpAdxInteractionViews * _Nonnull)interactionViews adChoicePosition:(enum AdChoicePosition)adChoicePosition;
 - (void)setAdChoicePosition:(enum AdChoicePosition)position;
 - (void)unregister;
@@ -823,6 +839,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<NSStri
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @interface OpAdxNativeAdBridge : NSObject
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxNativeAdDelegate> _Nullable delegate;
 /// 广告位ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
@@ -938,15 +955,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 @end
 
 @interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
-/// Objective-C 兼容的方法，使用字符串参数
-/// \param positionStr 位置字符串
-///
-/// \param onPrivacyClick 点击回调
-///
-- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
-@end
-
-@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
 /// 将字符串转换为 AdChoicePosition
 /// \param positionStr 位置字符串
 ///
@@ -954,6 +962,15 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 /// returns:
 /// AdChoicePosition，默认为 topRight
 + (enum AdChoicePosition)stringToAdChoicePosition:(NSString * _Nonnull)positionStr SWIFT_WARN_UNUSED_RESULT;
+@end
+
+@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
+/// Objective-C 兼容的方法，使用字符串参数
+/// \param positionStr 位置字符串
+///
+/// \param onPrivacyClick 点击回调
+///
+- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
 @end
 
 SWIFT_PROTOCOL("_TtP8OpAdxSdk38OpAdxOnSdkInitCompleteListenerProtocol_")
@@ -1010,6 +1027,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardedAd")
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 @interface OpAdxRewardedAdBridge : NSObject
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxRewardedAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -1159,6 +1177,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk18OpAdxSdkInitConfig")
 @property (nonatomic, readonly, copy) NSString * _Nullable iOSAppId;
 /// The publisher name for reporting purposes
 @property (nonatomic, readonly, copy) NSString * _Nullable publisherName;
+@property (nonatomic, strong) AdMediationProvider * _Nullable mediationProvider;
 @property (nonatomic, readonly, copy) NSString * _Nullable usPrivacy;
 /// COPPA compliance setting
 @property (nonatomic, readonly, strong) NSNumber * _Nullable coppa;
@@ -1548,6 +1567,19 @@ typedef SWIFT_ENUM(NSInteger, AdChoicePosition, open) {
 };
 
 @class NSString;
+SWIFT_CLASS("_TtC8OpAdxSdk19AdMediationProvider")
+@interface AdMediationProvider : NSObject
+/// The version of the mediation sdk, e.g. “24.6.0” for [AdMob SDK][AdMediation.ADMOB].
+@property (nonatomic, readonly, copy) NSString * _Nonnull mediationSdkVersion;
+/// The mediation adapter class, e.g. <code>com.opera.ads.admob.OperaMediationAdapter::class.java</code>
+@property (nonatomic, readonly) Class _Nullable mediationAdapterClass;
+/// The version of the mediation adapter sdk, e.g. “2.0.0.0” for adapter <code>com.opera:opera-ads-admob-adapter</code>
+@property (nonatomic, readonly, copy) NSString * _Nonnull mediationAdapterVersion;
+- (nonnull instancetype)initWithMediationStr:(NSString * _Nonnull)mediationStr mediationSdkVersion:(NSString * _Nonnull)mediationSdkVersion mediationAdapterClass:(Class _Nullable)mediationAdapterClass mediationAdapterVersion:(NSString * _Nonnull)mediationAdapterVersion OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 @class NSBundle;
 @class NSCoder;
 SWIFT_CLASS("_TtC8OpAdxSdk26BidRespDebugViewController")
@@ -1758,6 +1790,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxBannerAdBridge")
 @interface OpAdxBannerAdBridge : UIView
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxBannerAdDelegate> _Nullable delegate;
 /// 广告位ID
 @property (nonatomic, readonly, copy) NSString * _Nullable placementID;
@@ -1945,6 +1978,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxInterstitialAd")
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 @interface OpAdxInterstitialAdBridge : NSObject
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxInterstitialAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -2005,6 +2039,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk34OpAdxInterstitialAdLoadListenerImp")
 
 SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 @interface OpAdxMediaView : UIView
+@property (nonatomic, strong) UIImageView * _Nullable mainView;
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 - (void)didMoveToWindow;
@@ -2031,7 +2066,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (NSString * _Nullable)sponsor SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)iconUrl SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)imageUrl SWIFT_WARN_UNUSED_RESULT;
-- (OpAdxMediaView * _Nullable)mediaView SWIFT_WARN_UNUSED_RESULT;
+- (OpAdxMediaView * _Nonnull)mediaView SWIFT_WARN_UNUSED_RESULT;
 - (void)registerInteractionViewsWithContainer:(OpAdxNativeAdRootView * _Nonnull)container interactionViews:(OpAdxInteractionViews * _Nonnull)interactionViews adChoicePosition:(enum AdChoicePosition)adChoicePosition;
 - (void)setAdChoicePosition:(enum AdChoicePosition)position;
 - (void)unregister;
@@ -2055,6 +2090,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<NSStri
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @interface OpAdxNativeAdBridge : NSObject
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxNativeAdDelegate> _Nullable delegate;
 /// 广告位ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
@@ -2170,15 +2206,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 @end
 
 @interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
-/// Objective-C 兼容的方法，使用字符串参数
-/// \param positionStr 位置字符串
-///
-/// \param onPrivacyClick 点击回调
-///
-- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
-@end
-
-@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
 /// 将字符串转换为 AdChoicePosition
 /// \param positionStr 位置字符串
 ///
@@ -2186,6 +2213,15 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxNativeAdRootView")
 /// returns:
 /// AdChoicePosition，默认为 topRight
 + (enum AdChoicePosition)stringToAdChoicePosition:(NSString * _Nonnull)positionStr SWIFT_WARN_UNUSED_RESULT;
+@end
+
+@interface OpAdxNativeAdRootView (SWIFT_EXTENSION(OpAdxSdk))
+/// Objective-C 兼容的方法，使用字符串参数
+/// \param positionStr 位置字符串
+///
+/// \param onPrivacyClick 点击回调
+///
+- (void)addAdChoiceViewAtStr:(NSString * _Nonnull)positionStr onPrivacyClick:(void (^ _Nonnull)(void))onPrivacyClick;
 @end
 
 SWIFT_PROTOCOL("_TtP8OpAdxSdk38OpAdxOnSdkInitCompleteListenerProtocol_")
@@ -2242,6 +2278,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardedAd")
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 @interface OpAdxRewardedAdBridge : NSObject
+@property (nonatomic, readonly) double getECPM;
 @property (nonatomic, weak) id <OpAdxRewardedAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -2391,6 +2428,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk18OpAdxSdkInitConfig")
 @property (nonatomic, readonly, copy) NSString * _Nullable iOSAppId;
 /// The publisher name for reporting purposes
 @property (nonatomic, readonly, copy) NSString * _Nullable publisherName;
+@property (nonatomic, strong) AdMediationProvider * _Nullable mediationProvider;
 @property (nonatomic, readonly, copy) NSString * _Nullable usPrivacy;
 /// COPPA compliance setting
 @property (nonatomic, readonly, strong) NSNumber * _Nullable coppa;
