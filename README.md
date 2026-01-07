@@ -1,10 +1,12 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
-(2.2.9) - 适配Topon Adapter
+(2.2.10) - 支持最低版本降至iOS13
 
-(2.2.6) - 迁移至https://github.com/operaads/iOS-sdk
+(2.2.9)  - 适配Topon Adapter
 
-(2.2.5) - 由动态库转为静态库，只需要pod集成，不需要额外设置embed
+(2.2.6)  - 迁移至https://github.com/operaads/iOS-sdk
+
+(2.2.5)  - 由动态库转为静态库，只需要pod集成，不需要额外设置embed
 
 # OpAdxSdk iOS Integration Guide (Object-C)
 
@@ -13,7 +15,7 @@ OpAdxSdk 是一个高性能的 iOS 移动广告 SDK，支持 Banner、插屏、�
 
 ## Requirements
 
-  * **iOS 15.6+** 
+  * **iOS 13+** 
   * **CocoaPods**
   * **Xcode 16.4+**
   * **Swift 5.0+** 
