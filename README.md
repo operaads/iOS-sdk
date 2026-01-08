@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.2.12) - fix激励回调
+
 (2.2.10) - 支持最低版本降至iOS13
 
 (2.2.9)  - 适配Topon Adapter

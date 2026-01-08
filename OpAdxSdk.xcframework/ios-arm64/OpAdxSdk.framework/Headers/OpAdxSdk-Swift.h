@@ -1071,9 +1071,7 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk23OpAdxRewardedAdDelegate_")
 
 /// Listener for rewarded ad interaction events
 SWIFT_PROTOCOL("_TtP8OpAdxSdk34OpAdxRewardedAdInteractionListener_")
-@protocol OpAdxRewardedAdInteractionListener <OpAdxAdInteractionListener>
-/// 用户获得奖励
-- (void)onUserRewarded:(OpAdxRewardItem * _Nonnull)rewardItem;
+@protocol OpAdxRewardedAdInteractionListener <OnUserRewardedListener, OpAdxAdInteractionListener>
 @end
 
 /// 激励广告交互监听器实现（兼容旧版本）
