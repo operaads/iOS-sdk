@@ -1,6 +1,6 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
-(2.2.14) - 更准确区分广告页面自动跳转和用户点击
+(2.2.14) - 默认打开clickableView交互
 
 (2.2.13) - 更准确区分广告页面自动跳转和用户点击
 
