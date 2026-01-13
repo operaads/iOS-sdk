@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.2.15) - 更新native上报,更新获取广告上传参数
+
 (2.2.14) - 默认打开clickableView交互
 
 (2.2.13) - 更准确区分广告页面自动跳转和用户点击
