@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.2.16) - 更新上传参数manufacturer为make、AppExt增加bundleIdentifier
+
 (2.2.15) - 更新native上报,更新获取广告上传参数
 
 (2.2.14) - 默认打开clickableView交互
