@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.2.17) - 解决了可能导致崩溃的问题(schedulexxx),优化了上报队列的内存操作
+
 (2.2.16) - 更新上传参数manufacturer为make、AppExt增加bundleIdentifier
 
 (2.2.15) - 更新native上报,更新获取广告上传参数
