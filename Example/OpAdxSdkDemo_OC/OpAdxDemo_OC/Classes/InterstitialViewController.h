@@ -1,0 +1,16 @@
+//
+//  InterstitialViewController.h
+//  OpAdxDemo_OC
+//
+//  Created by Luan Chen on 2025/12/10.
+//
+
+#import "BaseViewController.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface InterstitialViewController : BaseViewController
+
+@end
+
+NS_ASSUME_NONNULL_END
