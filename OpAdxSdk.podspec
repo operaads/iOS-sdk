@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "OpAdxSdk"
-  spec.version      = "2.2.17"
+  spec.version      = "2.5.1"
   spec.summary      = "A high-performance mobile advertising SDK for iOS."  
 
   # This description is used to generate tags and improve search results.

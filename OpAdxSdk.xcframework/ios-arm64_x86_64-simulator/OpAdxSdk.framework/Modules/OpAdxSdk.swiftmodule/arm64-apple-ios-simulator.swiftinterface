@@ -24,6 +24,31 @@ import _Concurrency
 import _StringProcessing
 import _SwiftConcurrencyShims
 import zlib
+@objc public protocol OpAdxAppOpenAdDelegate {
+  @objc optional func appOpenAdDidLoad(_ appOpenAd: OpAdxSdk.OpAdxAppOpenAdBridge)
+  @objc optional func appOpenAd(_ appOpenAd: OpAdxSdk.OpAdxAppOpenAdBridge, didFailWithError error: OpAdxSdk.OpAdxAdError)
+  @objc optional func appOpenAdDidDisplay(_ appOpenAd: OpAdxSdk.OpAdxAppOpenAdBridge)
+  @objc optional func appOpenAdDidClick(_ appOpenAd: OpAdxSdk.OpAdxAppOpenAdBridge)
+  @objc optional func appOpenAdDidClose(_ appOpenAd: OpAdxSdk.OpAdxAppOpenAdBridge)
+  @objc optional func appOpenAd(_ appOpenAd: OpAdxSdk.OpAdxAppOpenAdBridge, didFailToDisplayWithError error: OpAdxSdk.OpAdxAdError)
+}
+@objc public class OpAdxAppOpenAdBridge : ObjectiveC.NSObject {
+  @objc public func getECPM() -> Swift.Double
+  @objc weak public var delegate: (any OpAdxSdk.OpAdxAppOpenAdDelegate)?
+  @objc public var isAdValid: Swift.Bool {
+    @objc get
+  }
+  @objc final public let placementID: Swift.String
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
+  @objc public func loadAd()
+  @objc public func showAd(from viewController: UIKit.UIViewController)
+  @objc deinit
+}
+extension OpAdxSdk.OpAdxAppOpenAdBridge {
+  public var swiftAd: OpAdxSdk.OpAdxAppOpenAd {
+    get
+  }
+}
 @objc public protocol OpAdxBannerAdDelegate {
   @objc optional func bannerAdDidLoad(_ bannerAd: OpAdxSdk.OpAdxBannerAdBridge)
   @objc optional func bannerAd(_ bannerAd: OpAdxSdk.OpAdxBannerAdBridge, didFailWithError error: OpAdxSdk.OpAdxAdError)
@@ -34,7 +59,7 @@ import zlib
   @objc optional func bannerAdDidReturnToApplication(_ bannerAd: OpAdxSdk.OpAdxBannerAdBridge)
 }
 @_inheritsConvenienceInitializers @objc @_Concurrency.MainActor @preconcurrency public class OpAdxBannerAdBridge : UIKit.UIView {
-  @objc @_Concurrency.MainActor @preconcurrency final public let getECPM: Swift.Double
+  @objc @_Concurrency.MainActor @preconcurrency public func getECPM() -> Swift.Double
   @objc @_Concurrency.MainActor @preconcurrency weak public var delegate: (any OpAdxSdk.OpAdxBannerAdDelegate)?
   @objc @_Concurrency.MainActor @preconcurrency public var placementID: Swift.String? {
     get
@@ -103,13 +128,13 @@ extension OpAdxSdk.OpAdxBannerAdBridge {
   @objc optional func interstitialAd(_ interstitialAd: OpAdxSdk.OpAdxInterstitialAdBridge, didFailToDisplayWithError error: OpAdxSdk.OpAdxAdError)
 }
 @objc public class OpAdxInterstitialAdBridge : ObjectiveC.NSObject {
-  @objc final public let getECPM: Swift.Double
+  @objc public func getECPM() -> Swift.Double
   @objc weak public var delegate: (any OpAdxSdk.OpAdxInterstitialAdDelegate)?
   @objc public var isAdValid: Swift.Bool {
     @objc get
   }
   @objc final public let placementID: Swift.String
-  @objc public init(placementId: Swift.String)
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
@@ -128,7 +153,7 @@ extension OpAdxSdk.OpAdxInterstitialAdBridge {
   @objc optional func nativeAdDidFinishHandlingClick(_ nativeAd: OpAdxSdk.OpAdxNativeAdBridge)
 }
 @objc public class OpAdxNativeAdBridge : ObjectiveC.NSObject {
-  @objc final public let getECPM: Swift.Double
+  @objc public func getECPM() -> Swift.Double
   @objc weak public var delegate: (any OpAdxSdk.OpAdxNativeAdDelegate)?
   @objc public var placementID: Swift.String {
     @objc get
@@ -174,10 +199,13 @@ extension OpAdxSdk.OpAdxInterstitialAdBridge {
     @objc get
   }
   #endif
-  @objc public var mediaView: OpAdxSdk.OpAdxMediaView {
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public var boundMediaView: OpAdxSdk.OpAdxMediaView? {
     @objc get
   }
-  @objc public init(placementID: Swift.String)
+  #endif
+  @objc public init(placementID: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
+  @objc public func createMediaView() -> OpAdxSdk.OpAdxMediaView
   @objc public func loadAd()
   @objc public func registerViewForInteraction(rootView: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, adChoicePosition: OpAdxSdk.AdChoicePosition)
   #if compiler(>=5.3) && $NonescapableTypes
@@ -226,13 +254,13 @@ extension OpAdxSdk.OpAdxNativeAdBridge {
   @objc optional func rewardedAd(_ rewardedAd: OpAdxSdk.OpAdxRewardedAdBridge, didRewardUserWithItem rewardItem: OpAdxSdk.OpAdxRewardItem)
 }
 @objc public class OpAdxRewardedAdBridge : ObjectiveC.NSObject {
-  @objc final public let getECPM: Swift.Double
+  @objc public func getECPM() -> Swift.Double
   @objc weak public var delegate: (any OpAdxSdk.OpAdxRewardedAdDelegate)?
   @objc public var isAdValid: Swift.Bool {
     @objc get
   }
   @objc final public let placementID: Swift.String
-  @objc public init(placementId: Swift.String)
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
@@ -242,15 +270,31 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
     get
   }
 }
-@objc public class OpAdxRewardItem : ObjectiveC.NSObject {
-  @objc final public let type: Swift.String
-  @objc final public let amount: Swift.Int
-  @objc public init(type: Swift.String, amount: Swift.Int)
-  @objc public static func reward(with type: Swift.String, amount: Swift.Int) -> OpAdxSdk.OpAdxRewardItem
-  @objc override dynamic public var description: Swift.String {
+@objc public protocol OpAdxRewardedInterstitialAdDelegate {
+  @objc optional func rewardedInterstitialAdDidLoad(_ rewardedInterstitialAd: OpAdxSdk.OpAdxRewardedInterstitialAdBridge)
+  @objc optional func rewardedInterstitialAd(_ rewardedInterstitialAd: OpAdxSdk.OpAdxRewardedInterstitialAdBridge, didFailWithError error: OpAdxSdk.OpAdxAdError)
+  @objc optional func rewardedInterstitialAdDidDisplay(_ rewardedInterstitialAd: OpAdxSdk.OpAdxRewardedInterstitialAdBridge)
+  @objc optional func rewardedInterstitialAdDidClick(_ rewardedInterstitialAd: OpAdxSdk.OpAdxRewardedInterstitialAdBridge)
+  @objc optional func rewardedInterstitialAdDidClose(_ rewardedInterstitialAd: OpAdxSdk.OpAdxRewardedInterstitialAdBridge)
+  @objc optional func rewardedInterstitialAd(_ rewardedInterstitialAd: OpAdxSdk.OpAdxRewardedInterstitialAdBridge, didFailToDisplayWithError error: OpAdxSdk.OpAdxAdError)
+  @objc optional func rewardedInterstitialAd(_ rewardedInterstitialAd: OpAdxSdk.OpAdxRewardedInterstitialAdBridge, didRewardUserWithItem rewardItem: OpAdxSdk.OpAdxRewardItem)
+}
+@objc public class OpAdxRewardedInterstitialAdBridge : ObjectiveC.NSObject {
+  @objc public func getECPM() -> Swift.Double
+  @objc weak public var delegate: (any OpAdxSdk.OpAdxRewardedInterstitialAdDelegate)?
+  @objc public var isAdValid: Swift.Bool {
     @objc get
   }
+  @objc final public let placementID: Swift.String
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
+  @objc public func loadAd()
+  @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
+}
+extension OpAdxSdk.OpAdxRewardedInterstitialAdBridge {
+  public var swiftAd: OpAdxSdk.OpAdxRewardedInterstitialAd {
+    get
+  }
 }
 @_inheritsConvenienceInitializers @objc public class OpAdxSDK : ObjectiveC.NSObject {
   @objc public static func initialize(withConfig initConfig: OpAdxSdk.OpAdxSdkInitConfig)
@@ -262,13 +306,13 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
   @objc public static func createMediumRectangle(with placementId: Swift.String) -> OpAdxSdk.OpAdxBannerAdBridge
   @objc public static func createLeaderboard(with placementId: Swift.String) -> OpAdxSdk.OpAdxBannerAdBridge
   @objc public static func createSmartBanner(with placementId: Swift.String) -> OpAdxSdk.OpAdxBannerAdBridge
-  @objc public static func createInterstitialAd(with placementId: Swift.String) -> OpAdxSdk.OpAdxInterstitialAdBridge
-  @objc public static func createRewardedAd(with placementId: Swift.String) -> OpAdxSdk.OpAdxRewardedAdBridge
-  @objc public static func createNativeAd(with placementID: Swift.String) -> OpAdxSdk.OpAdxNativeAdBridge
+  @objc public static func createInterstitialAd(with placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxInterstitialAdBridge
+  @objc public static func createRewardedAd(with placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxRewardedAdBridge
+  @objc public static func createNativeAd(with placementID: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxNativeAdBridge
   public static func createBannerAd(placementId: Swift.String, adSize: OpAdxSdk.OpAdxAdSize) -> OpAdxSdk.OpAdxBannerAdView
-  public static func createInterstitialAd(placementId: Swift.String) -> OpAdxSdk.OpAdxInterstitialAd
-  public static func createRewardedAd(placementId: Swift.String) -> OpAdxSdk.OpAdxRewardedAd
-  public static func createNativeAd(placementId: Swift.String) -> OpAdxSdk.OpAdxNativeAd
+  public static func createInterstitialAd(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxInterstitialAd
+  public static func createRewardedAd(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxRewardedAd
+  public static func createNativeAd(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxNativeAd
   public static func createInteractionViewsBuilder(mediaView: OpAdxSdk.OpAdxMediaView) -> OpAdxSdk.OpAdxInteractionViews.Builder
   @objc public static func createInteractionViewsBuilder(with mediaView: OpAdxSdk.OpAdxMediaView) -> OpAdxSdk.OpAdxInteractionViewsBuilder
   @objc public static func createMediaView(frame: CoreFoundation.CGRect) -> OpAdxSdk.OpAdxMediaView
@@ -289,6 +333,26 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
   @objc public static var standardAdSizes: [OpAdxSdk.OpAdxAdSize] {
     @objc get
   }
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc public class OpAdxAppOpenAd : OpAdxSdk.FullscreenAd {
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
+  @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxAppOpenAdInteractionListener)
+  @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxAppOpenAdLoadListener)
+  @objc public func loadC2SBid(placementId: Swift.String, listener: any OpAdxSdk.OpAdxAppOpenAdLoadListener)
+  @objc public func loadRtb(context: Any, placementId: Swift.String, bidResponse: Swift.String, listener: any OpAdxSdk.OpAdxAppOpenAdLoadListener)
+  @objc deinit
+}
+@objc public protocol OpAdxAppOpenAdLoadListener : OpAdxSdk.OpAdxAdLoadListener {
+}
+@objc public protocol OpAdxAppOpenAdInteractionListener : OpAdxSdk.OpAdxAdInteractionListener {
+}
+@_inheritsConvenienceInitializers @objc public class OpAdxAppOpenAdLoadListenerImp : OpAdxSdk.OpAdxAdLoadListenerImp, OpAdxSdk.OpAdxAppOpenAdLoadListener {
+  @objc override public init(onAdLoaded: @escaping (ObjectiveC.NSObject) -> Swift.Void, onAdFailedToLoad: @escaping (OpAdxSdk.OpAdxAdError) -> Swift.Void)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class OpAdxAppOpenAdInteractionListenerImp : OpAdxSdk.OpAdxAdInteractionListenerImp, OpAdxSdk.OpAdxAppOpenAdInteractionListener {
   @objc override dynamic public init()
   @objc deinit
 }
@@ -338,6 +402,9 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
   @objc @_Concurrency.MainActor @preconcurrency public var isAdInvalidated: Swift.Bool {
     @objc get
   }
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc @_Concurrency.MainActor @preconcurrency public func getBid() -> (any OpAdxSdk.AdBid)?
+  #endif
   @objc @_Concurrency.MainActor @preconcurrency public func destroy()
   @objc @_Concurrency.MainActor @preconcurrency public func setAutoRefreshInterval(_ seconds: Swift.Int)
   @objc @_Concurrency.MainActor @preconcurrency public func loadAd(listener: OpAdxSdk.OpAdxBannerAdListenerImp)
@@ -425,8 +492,16 @@ public struct AdData : Swift.Codable {
   @objc func onAdFailedToShow(_ error: OpAdxSdk.OpAdxAdError)
 }
 @objc @_hasMissingDesignatedInitializers open class FullscreenAd : ObjectiveC.NSObject {
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func getBid() -> (any OpAdxSdk.AdBid)?
+  #endif
   open func isAdInvalidated() -> Swift.Bool
   open func destroy()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class IncentivizedFullscreenAd : OpAdxSdk.FullscreenAd {
+  @objc public func setSceneId(_ sceneId: Swift.String)
+  @objc public func setRewardSsvOptions(_ rewardSsvOptions: OpAdxSdk.RewardSsvOptions)
   @objc deinit
 }
 public enum AdUnitEnum : Swift.CaseIterable {
@@ -466,11 +541,48 @@ public struct AdConstants {
   public static var verificationScriptURL: Swift.String
   public static let verificationParameters: Swift.String
 }
+@objc public enum AdAuctionType : Swift.Int {
+  case regular = 0
+  case serverBidding = 1
+  case clientBidding = 2
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.Int)
+  #endif
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
 @_hasMissingDesignatedInitializers public class OpAdxInitProvider {
   public static func initialize()
   @available(iOS 13.0, *)
   public static func initializeForSwiftUI()
   @objc deinit
+}
+@objc public class OpAdxRewardItem : ObjectiveC.NSObject {
+  @objc final public let type: Swift.String
+  @objc final public let amount: Swift.Int
+  @objc public init(type: Swift.String, amount: Swift.Int)
+  @objc deinit
+}
+@objc public protocol OnUserRewardedListener {
+  @objc func onUserRewarded(reward: OpAdxSdk.OpAdxRewardItem)
+}
+@_hasMissingDesignatedInitializers @objc public class RewardSsvOptions : ObjectiveC.NSObject {
+  final public let userId: Swift.String?
+  final public let customData: Swift.String?
+  @objc deinit
+}
+extension OpAdxSdk.RewardSsvOptions {
+  public class Builder {
+    public init()
+    @discardableResult
+    public func userId(_ config: Swift.String) -> OpAdxSdk.RewardSsvOptions.Builder
+    @discardableResult
+    public func customData(_ config: Swift.String) -> OpAdxSdk.RewardSsvOptions.Builder
+    public func build() -> OpAdxSdk.RewardSsvOptions
+    @objc deinit
+  }
 }
 @_inheritsConvenienceInitializers @objc public class OpAdxSdkCore : ObjectiveC.NSObject {
   @objc public static let shared: OpAdxSdk.OpAdxSdkCore
@@ -486,6 +598,12 @@ public struct AdConstants {
   @objc public func isSDKInitialized() -> Swift.Bool
   @objc public func isSDKInitializing() -> Swift.Bool
   @objc public func initializeWithCompletion(initConfig: OpAdxSdk.OpAdxSdkInitConfig, onSuccess: @escaping () -> Swift.Void, onError: @escaping (any Swift.Error) -> Swift.Void)
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static func setOpAdxSdkMuted(_ muted: Foundation.NSNumber?)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static func getOpAdxSdkMuted() -> Foundation.NSNumber?
+  #endif
   @objc override dynamic public init()
   @objc deinit
 }
@@ -568,9 +686,10 @@ public class OpAdxImpressionTracker {
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc public class OpAdxInterstitialAd : OpAdxSdk.FullscreenAd {
-  @objc public init(placementId: Swift.String)
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxInterstitialAdInteractionListener)
   @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxInterstitialAdLoadListener)
+  @objc public func loadC2SBid(placementId: Swift.String, listener: any OpAdxSdk.OpAdxInterstitialAdLoadListener)
   @objc public func loadRtb(placementId: Swift.String, bidResponse: Swift.String, listener: any OpAdxSdk.OpAdxInterstitialAdLoadListener)
   @objc deinit
 }
@@ -603,7 +722,7 @@ public class OpAdxImpressionTracker {
 }
 @objc public class OpAdxNativeAd : ObjectiveC.NSObject {
   @objc final public let placementId: Swift.String
-  @objc public init(placementId: Swift.String)
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func adSize() -> CoreFoundation.CGSize
   #if compiler(>=5.3) && $NonescapableTypes
   @objc public func title() -> Swift.String?
@@ -626,11 +745,17 @@ public class OpAdxImpressionTracker {
   #if compiler(>=5.3) && $NonescapableTypes
   @objc public func imageUrl() -> Foundation.URL?
   #endif
-  @objc public func mediaView() -> OpAdxSdk.OpAdxMediaView
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func getBoundMediaView() -> OpAdxSdk.OpAdxMediaView?
+  #endif
+  @objc public func createMediaView() -> OpAdxSdk.OpAdxMediaView
   @objc public func registerInteractionViews(container: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, adChoicePosition: OpAdxSdk.AdChoicePosition)
   @objc public func setAdChoicePosition(_ position: OpAdxSdk.AdChoicePosition)
   @objc public func unregister()
   @objc public func isAdInvalidated() -> Swift.Bool
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func getBid() -> (any OpAdxSdk.AdBid)?
+  #endif
   @objc public func destroy()
   #if compiler(>=5.3) && $NonescapableTypes
   @objc public func loadAd(placementId: Swift.String, bidResponse: Swift.String? = nil, listener: any OpAdxSdk.OpAdxNativeAdListener)
@@ -653,6 +778,9 @@ extension OpAdxSdk.OpAdxNativeAd {
   @objc public func onAdFailedToLoad(_ error: OpAdxSdk.OpAdxAdError)
   @objc public func onAdImpression()
   @objc public func onAdClicked()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class NativeAdLoader {
   @objc deinit
 }
 @objc public enum AdChoicePosition : Swift.Int {
@@ -715,8 +843,9 @@ extension UIKit.UIView {
   @objc final public let bodyView: UIKit.UIView?
   @objc final public let callToActionView: UIKit.UIView?
   @objc final public let iconView: UIKit.UIImageView?
+  @objc final public let extraClickableViews: Swift.Set<UIKit.UIView>?
   #if compiler(>=5.3) && $NonescapableTypes
-  @objc public init(mediaView: OpAdxSdk.OpAdxMediaView, titleView: UIKit.UIView?, bodyView: UIKit.UIView?, callToActionView: UIKit.UIView?, iconView: UIKit.UIImageView?)
+  @objc public init(mediaView: OpAdxSdk.OpAdxMediaView, titleView: UIKit.UIView?, bodyView: UIKit.UIView?, callToActionView: UIKit.UIView?, iconView: UIKit.UIImageView?, extraClickableViews: Swift.Set<UIKit.UIView>?)
   #endif
   public class Builder {
     public init(mediaView: OpAdxSdk.OpAdxMediaView)
@@ -736,10 +865,35 @@ extension UIKit.UIView {
     @discardableResult
     public func setIconView(_ iconView: UIKit.UIImageView?) -> OpAdxSdk.OpAdxInteractionViews.Builder
     #endif
+    #if compiler(>=5.3) && $NonescapableTypes
+    @discardableResult
+    public func setExtraClickableViews(_ extraClickableViews: Swift.Set<UIKit.UIView>?) -> OpAdxSdk.OpAdxInteractionViews.Builder
+    #endif
     public func build() -> OpAdxSdk.OpAdxInteractionViews
     @objc deinit
   }
   @objc deinit
+}
+@objc public protocol AdBid {
+  @objc func getEcpm() -> Swift.Double
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc func notifyWin(secondPrice: Swift.Double, bidderName: Swift.String?)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc func notifyLose(lossReason: OpAdxSdk.LossReason, winnerPrice: Swift.Double, winnerBidder: Swift.String?)
+  #endif
+}
+@objc public enum LossReason : Swift.Int {
+  case internalError = 1
+  case lowerThanFloorPrice = 100
+  case lowerThanHighestPrice = 102
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.Int)
+  #endif
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
 }
 @objc public class OpAdxAdError : ObjectiveC.NSObject {
   @objc final public let code: Swift.Int
@@ -760,16 +914,22 @@ extension UIKit.UIView {
   @objc public func nserror() -> Foundation.NSError
   @objc deinit
 }
-public enum AdFormat : Swift.Encodable {
+public enum AdFormat : Swift.String, Swift.Encodable, Swift.CaseIterable {
   case native
   case banner
   case interstitial
   case rewarded
-  case other
-  public static func == (a: OpAdxSdk.AdFormat, b: OpAdxSdk.AdFormat) -> Swift.Bool
-  public func encode(to encoder: any Swift.Encoder) throws
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
+  case rewardedInterstitial
+  case appOpen
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.String)
+  #endif
+  public typealias AllCases = [OpAdxSdk.AdFormat]
+  public typealias RawValue = Swift.String
+  nonisolated public static var allCases: [OpAdxSdk.AdFormat] {
+    get
+  }
+  public var rawValue: Swift.String {
     get
   }
 }
@@ -884,13 +1044,11 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
   @_Concurrency.MainActor @preconcurrency @objc dynamic public func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentsAt urls: [Foundation.URL])
   @_Concurrency.MainActor @preconcurrency @objc dynamic public func documentPickerWasCancelled(_ controller: UIKit.UIDocumentPickerViewController)
 }
-@objc public protocol OnUserRewardedListener {
-  @objc func onUserRewarded(_ reward: OpAdxSdk.OpAdxRewardItem)
-}
-@_hasMissingDesignatedInitializers @objc public class OpAdxRewardedAd : OpAdxSdk.FullscreenAd {
-  @objc public init(placementId: Swift.String)
+@_hasMissingDesignatedInitializers @objc public class OpAdxRewardedAd : OpAdxSdk.IncentivizedFullscreenAd {
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxRewardedAdInteractionListener)
   @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxRewardedAdLoadListener)
+  @objc public func loadC2SBid(placementId: Swift.String, listener: any OpAdxSdk.OpAdxRewardedAdLoadListener)
   @objc public func loadRtb(placementId: Swift.String, bidResponse: Swift.String, listener: any OpAdxSdk.OpAdxRewardedAdLoadListener)
   @objc deinit
 }
@@ -904,17 +1062,46 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
 }
 @_inheritsConvenienceInitializers @objc public class OpAdxRewardedAdInteractionListenerImp : OpAdxSdk.OpAdxAdInteractionListenerImp, OpAdxSdk.OpAdxRewardedAdInteractionListener {
   @objc convenience public init(onAdClicked: @escaping () -> Swift.Void, onAdDisplayed: @escaping () -> Swift.Void, onAdDismissed: @escaping () -> Swift.Void, onAdFailedToShow: @escaping (OpAdxSdk.OpAdxAdError) -> Swift.Void, onUserRewarded: @escaping (OpAdxSdk.OpAdxRewardItem) -> Swift.Void)
-  @objc public func onUserRewarded(_ rewardItem: OpAdxSdk.OpAdxRewardItem)
+  @objc public func onUserRewarded(reward: OpAdxSdk.OpAdxRewardItem)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc public class OpAdxRewardedInterstitialAd : OpAdxSdk.IncentivizedFullscreenAd {
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
+  @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxRewardedInterstitialAdInteractionListener)
+  @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxRewardedInterstitialAdLoadListener)
+  @objc public func loadC2SBid(placementId: Swift.String, listener: any OpAdxSdk.OpAdxRewardedInterstitialAdLoadListener)
+  @objc public func loadRtb(placementId: Swift.String, bidResponse: Swift.String, listener: any OpAdxSdk.OpAdxRewardedInterstitialAdLoadListener)
+  @objc deinit
+}
+@objc public protocol OpAdxRewardedInterstitialAdLoadListener : OpAdxSdk.OpAdxAdLoadListener {
+}
+@objc public protocol OpAdxRewardedInterstitialAdInteractionListener : OpAdxSdk.OnUserRewardedListener, OpAdxSdk.OpAdxAdInteractionListener {
+}
+@_inheritsConvenienceInitializers @objc public class OpAdxRewardedInterstitialAdLoadListenerImp : OpAdxSdk.OpAdxAdLoadListenerImp, OpAdxSdk.OpAdxRewardedInterstitialAdLoadListener {
+  @objc override public init(onAdLoaded: @escaping (ObjectiveC.NSObject) -> Swift.Void, onAdFailedToLoad: @escaping (OpAdxSdk.OpAdxAdError) -> Swift.Void)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class OpAdxRewardedInterstitialAdInteractionListenerImp : OpAdxSdk.OpAdxAdInteractionListenerImp, OpAdxSdk.OpAdxRewardedInterstitialAdInteractionListener {
+  @objc convenience public init(onAdClicked: @escaping () -> Swift.Void, onAdDisplayed: @escaping () -> Swift.Void, onAdDismissed: @escaping () -> Swift.Void, onAdFailedToShow: @escaping (OpAdxSdk.OpAdxAdError) -> Swift.Void, onUserRewarded: @escaping (OpAdxSdk.OpAdxRewardItem) -> Swift.Void)
+  @objc public func onUserRewarded(reward: OpAdxSdk.OpAdxRewardItem)
   @objc override dynamic public init()
   @objc deinit
 }
 extension OpAdxSdk.AdUnitEnum : Swift.Equatable {}
 extension OpAdxSdk.AdUnitEnum : Swift.Hashable {}
+extension OpAdxSdk.AdAuctionType : Swift.Equatable {}
+extension OpAdxSdk.AdAuctionType : Swift.Hashable {}
+extension OpAdxSdk.AdAuctionType : Swift.RawRepresentable {}
 extension OpAdxSdk.AdChoicePosition : Swift.Equatable {}
 extension OpAdxSdk.AdChoicePosition : Swift.Hashable {}
 extension OpAdxSdk.AdChoicePosition : Swift.RawRepresentable {}
+extension OpAdxSdk.LossReason : Swift.Equatable {}
+extension OpAdxSdk.LossReason : Swift.Hashable {}
+extension OpAdxSdk.LossReason : Swift.RawRepresentable {}
 extension OpAdxSdk.AdFormat : Swift.Equatable {}
 extension OpAdxSdk.AdFormat : Swift.Hashable {}
+extension OpAdxSdk.AdFormat : Swift.RawRepresentable {}
 extension OpAdxSdk.AdMediation : Swift.Equatable {}
 extension OpAdxSdk.AdMediation : Swift.Hashable {}
 extension OpAdxSdk.AdMediation : Swift.RawRepresentable {}

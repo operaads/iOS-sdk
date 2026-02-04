@@ -307,6 +307,39 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 #if defined(__OBJC__)
 
+/// Represents the type of bidding for ad requests.
+/// Used internally to inform the ad server about the bidding strategy.
+typedef SWIFT_ENUM(NSInteger, AdAuctionType, open) {
+/// Default value. Used internally when auction type is not specified for S2S bidding or C2S bidding.
+/// Typically for waterfall mediation requests or when the auction type is N/A (e.g. for stats report).
+  AdAuctionTypeRegular = 0,
+/// Server-side bidding (aka. S2S Bidding). Set when using <code>getBidToken()</code>/<code>loadRtb()</code> APIs.
+/// The mediation server handles auction on the server side.
+  AdAuctionTypeServerBidding = 1,
+/// Client-side bidding (aka. C2S Bidding). Set when using <code>loadC2SBidAd()</code>/<code>loadC2SBid()</code> APIs.
+/// The SDK notifies auction win/loss via <code>AdBid.notifyWin</code>/<code>AdBid.notifyLose</code>.
+  AdAuctionTypeClientBidding = 2,
+};
+
+@class NSString;
+enum LossReason : NSInteger;
+/// Represents a bid for client bidding support.
+SWIFT_PROTOCOL("_TtP8OpAdxSdk5AdBid_")
+@protocol AdBid
+/// Gets the eCPM of the ad.
+/// @return The eCPM price in USD
+- (double)getEcpm SWIFT_WARN_UNUSED_RESULT;
+/// Notifies that this ad won the auction.
+/// @param secondPrice The second highest price in the auction (for second-price auction)
+/// @param bidderName The name of the winning bidder
+- (void)notifyWinWithSecondPrice:(double)secondPrice bidderName:(NSString * _Nullable)bidderName;
+/// Notifies that this ad lost the auction.
+/// @param lossReason The reason for losing (see LossReason)
+/// @param winnerPrice The price of the winning bid
+/// @param winnerBidder The name of the winning bidder
+- (void)notifyLoseWithLossReason:(enum LossReason)lossReason winnerPrice:(double)winnerPrice winnerBidder:(NSString * _Nullable)winnerBidder;
+@end
+
 /// 广告选择图标位置
 typedef SWIFT_ENUM(NSInteger, AdChoicePosition, open) {
   AdChoicePositionTopLeft = 0,
@@ -315,7 +348,6 @@ typedef SWIFT_ENUM(NSInteger, AdChoicePosition, open) {
   AdChoicePositionBottomRight = 3,
 };
 
-@class NSString;
 SWIFT_CLASS("_TtC8OpAdxSdk19AdMediationProvider")
 @interface AdMediationProvider : NSObject
 /// The version of the mediation sdk, e.g. “24.6.0” for [AdMob SDK][AdMediation.ADMOB].
@@ -355,9 +387,30 @@ SWIFT_CLASS("_TtC8OpAdxSdk26BidRespDebugViewController")
 /// Base class for fullscreen ads (interstitial and rewarded)
 SWIFT_CLASS("_TtC8OpAdxSdk12FullscreenAd")
 @interface FullscreenAd : NSObject
+- (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
+
+@class RewardSsvOptions;
+SWIFT_CLASS("_TtC8OpAdxSdk24IncentivizedFullscreenAd")
+@interface IncentivizedFullscreenAd : FullscreenAd
+/// Should be called before <code>show</code> to specify the scene where the ad will be displayed.
+/// There’s max length of the [sceneId]: should be <= 100 bytes after it’s <em>url encoded</em>, otherwise discarded.
+- (void)setSceneId:(NSString * _Nonnull)sceneId;
+/// Should be called before <code>show</code> to specify the <code>server-side verification</code> options. Will be used on user rewarded.
+- (void)setRewardSsvOptions:(RewardSsvOptions * _Nonnull)rewardSsvOptions;
+@end
+
+/// Loss reasons for client bidding auctions.
+typedef SWIFT_ENUM(NSInteger, LossReason, open) {
+/// Internal error occurred
+  LossReasonInternalError = 1,
+/// Bid was lower than the floor price
+  LossReasonLowerThanFloorPrice = 100,
+/// Bid was lower than the highest price
+  LossReasonLowerThanHighestPrice = 102,
+};
 
 SWIFT_CLASS("_TtC8OpAdxSdk30ObjectiveCInitCompleteListener")
 @interface ObjectiveCInitCompleteListener : NSObject
@@ -370,7 +423,7 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk22OnUserRewardedListener_")
 @protocol OnUserRewardedListener
 /// Called when the user earned a reward.
 /// The app is responsible for crediting the user with the reward.
-- (void)onUserRewarded:(OpAdxRewardItem * _Nonnull)reward;
+- (void)onUserRewardedWithReward:(OpAdxRewardItem * _Nonnull)reward;
 @end
 
 @class NSError;
@@ -533,13 +586,88 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 + (OpAdxAdSize * _Nonnull)recommendedAdSizeForWidth:(CGFloat)width SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@protocol OpAdxAppOpenAdInteractionListener;
+@protocol OpAdxAppOpenAdLoadListener;
+SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxAppOpenAd")
+@interface OpAdxAppOpenAd : FullscreenAd
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (void)showOn:(UIViewController * _Nonnull)viewController listener:(id <OpAdxAppOpenAdInteractionListener> _Nonnull)listener;
+- (void)loadWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxAppOpenAdLoadListener> _Nonnull)listener;
+- (void)loadC2SBidWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxAppOpenAdLoadListener> _Nonnull)listener;
+- (void)loadRtbWithContext:(id _Nonnull)context placementId:(NSString * _Nonnull)placementId bidResponse:(NSString * _Nonnull)bidResponse listener:(id <OpAdxAppOpenAdLoadListener> _Nonnull)listener;
+@end
+
+@protocol OpAdxAppOpenAdDelegate;
+/// Objective-C compatible App Open Ad bridge class
+/// Provides a Delegate pattern for easy Objective-C integration
+SWIFT_CLASS("_TtC8OpAdxSdk20OpAdxAppOpenAdBridge")
+@interface OpAdxAppOpenAdBridge : NSObject
+- (double)getECPM SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, weak) id <OpAdxAppOpenAdDelegate> _Nullable delegate;
+/// Whether the ad is ready to be shown
+@property (nonatomic, readonly) BOOL isAdValid;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+/// Initialize App Open Ad
+/// \param placementId Ad placement ID
+///
+/// \param auctionType Ad auction type
+///
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+/// Load ad
+- (void)loadAd;
+/// Show ad
+/// \param viewController The view controller to present the ad
+///
+- (void)showAdFrom:(UIViewController * _Nonnull)viewController;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+/// Objective-C compatible App Open Ad delegate protocol
+SWIFT_PROTOCOL("_TtP8OpAdxSdk22OpAdxAppOpenAdDelegate_")
+@protocol OpAdxAppOpenAdDelegate
+@optional
+/// Ad loaded successfully
+- (void)appOpenAdDidLoad:(OpAdxAppOpenAdBridge * _Nonnull)appOpenAd;
+/// Ad failed to load
+- (void)appOpenAd:(OpAdxAppOpenAdBridge * _Nonnull)appOpenAd didFailWithError:(OpAdxAdError * _Nonnull)error;
+/// Ad displayed successfully
+- (void)appOpenAdDidDisplay:(OpAdxAppOpenAdBridge * _Nonnull)appOpenAd;
+/// Ad clicked
+- (void)appOpenAdDidClick:(OpAdxAppOpenAdBridge * _Nonnull)appOpenAd;
+/// Ad closed
+- (void)appOpenAdDidClose:(OpAdxAppOpenAdBridge * _Nonnull)appOpenAd;
+/// Ad failed to display
+- (void)appOpenAd:(OpAdxAppOpenAdBridge * _Nonnull)appOpenAd didFailToDisplayWithError:(OpAdxAdError * _Nonnull)error;
+@end
+
+SWIFT_PROTOCOL("_TtP8OpAdxSdk33OpAdxAppOpenAdInteractionListener_")
+@protocol OpAdxAppOpenAdInteractionListener <OpAdxAdInteractionListener>
+@end
+
+/// 开屏广告交互监听器实现
+SWIFT_CLASS("_TtC8OpAdxSdk36OpAdxAppOpenAdInteractionListenerImp")
+@interface OpAdxAppOpenAdInteractionListenerImp : OpAdxAdInteractionListenerImp <OpAdxAppOpenAdInteractionListener>
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+SWIFT_PROTOCOL("_TtP8OpAdxSdk26OpAdxAppOpenAdLoadListener_")
+@protocol OpAdxAppOpenAdLoadListener <OpAdxAdLoadListener>
+@end
+
+/// 开屏广告加载监听器实现
+SWIFT_CLASS("_TtC8OpAdxSdk29OpAdxAppOpenAdLoadListenerImp")
+@interface OpAdxAppOpenAdLoadListenerImp : OpAdxAdLoadListenerImp <OpAdxAppOpenAdLoadListener>
+- (nonnull instancetype)initOnAdLoaded:(void (^ _Nonnull)(NSObject * _Nonnull))onAdLoaded onAdFailedToLoad:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToLoad OBJC_DESIGNATED_INITIALIZER;
+@end
+
 @protocol OpAdxBannerAdDelegate;
 @class UIWindow;
 /// Objective-C 兼容的横幅广告桥接类
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxBannerAdBridge")
 @interface OpAdxBannerAdBridge : UIView
-@property (nonatomic, readonly) double getECPM;
+- (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxBannerAdDelegate> _Nullable delegate;
 /// 广告位ID
 @property (nonatomic, readonly, copy) NSString * _Nullable placementID;
@@ -657,6 +785,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxBannerAdView")
 - (void)resume;
 - (void)pause;
 @property (nonatomic, readonly) BOOL isAdInvalidated;
+- (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (void)destroy;
 /// \param seconds custom auto refresh interval in seconds, will be limited to acceptable range.
 ///
@@ -675,7 +804,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxInteractionViews")
 @property (nonatomic, readonly, strong) UIView * _Nullable bodyView;
 @property (nonatomic, readonly, strong) UIView * _Nullable callToActionView;
 @property (nonatomic, readonly, strong) UIImageView * _Nullable iconView;
-- (nonnull instancetype)initWithMediaView:(OpAdxMediaView * _Nonnull)mediaView titleView:(UIView * _Nullable)titleView bodyView:(UIView * _Nullable)bodyView callToActionView:(UIView * _Nullable)callToActionView iconView:(UIImageView * _Nullable)iconView OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSSet<UIView *> * _Nullable extraClickableViews;
+- (nonnull instancetype)initWithMediaView:(OpAdxMediaView * _Nonnull)mediaView titleView:(UIView * _Nullable)titleView bodyView:(UIView * _Nullable)bodyView callToActionView:(UIView * _Nullable)callToActionView iconView:(UIImageView * _Nullable)iconView extraClickableViews:(NSSet<UIView *> * _Nullable)extraClickableViews OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -706,7 +836,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk28OpAdxInteractionViewsBuilder")
 /// Represents an interstitial ad that can be displayed between content transitions
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxInterstitialAd")
 @interface OpAdxInterstitialAd : FullscreenAd
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Shows the interstitial ad on the specified view controller
 /// \param viewController The view controller to present the ad on
 ///
@@ -719,6 +849,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxInterstitialAd")
 /// \param listener The listener to handle load events
 ///
 - (void)loadWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxInterstitialAdLoadListener> _Nonnull)listener;
+- (void)loadC2SBidWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxInterstitialAdLoadListener> _Nonnull)listener;
 - (void)loadRtbWithPlacementId:(NSString * _Nonnull)placementId bidResponse:(NSString * _Nonnull)bidResponse listener:(id <OpAdxInterstitialAdLoadListener> _Nonnull)listener;
 @end
 
@@ -727,7 +858,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxInterstitialAd")
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 @interface OpAdxInterstitialAdBridge : NSObject
-@property (nonatomic, readonly) double getECPM;
+- (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxInterstitialAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -735,7 +866,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 /// 初始化插屏广告
 /// \param placementId 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// 加载广告
 - (void)loadAd;
 /// 展示广告
@@ -806,7 +937,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 @interface OpAdxNativeAd : NSObject
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (CGSize)adSize SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nullable)title SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nullable)descriptionStr SWIFT_WARN_UNUSED_RESULT;
@@ -815,11 +946,13 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (NSString * _Nullable)sponsor SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)iconUrl SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)imageUrl SWIFT_WARN_UNUSED_RESULT;
-- (OpAdxMediaView * _Nonnull)mediaView SWIFT_WARN_UNUSED_RESULT;
+- (OpAdxMediaView * _Nullable)getBoundMediaView SWIFT_WARN_UNUSED_RESULT;
+- (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 - (void)registerInteractionViewsWithContainer:(OpAdxNativeAdRootView * _Nonnull)container interactionViews:(OpAdxInteractionViews * _Nonnull)interactionViews adChoicePosition:(enum AdChoicePosition)adChoicePosition;
 - (void)setAdChoicePosition:(enum AdChoicePosition)position;
 - (void)unregister;
 - (BOOL)isAdInvalidated SWIFT_WARN_UNUSED_RESULT;
+- (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (void)destroy;
 - (void)loadAdWithPlacementId:(NSString * _Nonnull)placementId bidResponse:(NSString * _Nullable)bidResponse listener:(id <OpAdxNativeAdListener> _Nonnull)listener;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -839,7 +972,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<NSStri
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @interface OpAdxNativeAdBridge : NSObject
-@property (nonatomic, readonly) double getECPM;
+- (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxNativeAdDelegate> _Nullable delegate;
 /// 广告位ID
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
@@ -859,11 +992,12 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly) BOOL isAdInvalidated;
 @property (nonatomic, readonly, copy) NSURL * _Nullable iconUrl;
 @property (nonatomic, readonly, copy) NSURL * _Nullable imageUrl;
-@property (nonatomic, readonly, strong) OpAdxMediaView * _Nonnull mediaView;
+@property (nonatomic, readonly, strong) OpAdxMediaView * _Nullable boundMediaView;
 /// 初始化原生广告
 /// \param placementID 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementID:(NSString * _Nonnull)placementID OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementID:(NSString * _Nonnull)placementID auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 /// 加载广告
 - (void)loadAd;
 /// 注册视图进行交互
@@ -986,20 +1120,9 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk38OpAdxOnSdkInitCompleteListenerProtocol_")
 /// 用于在 Objective-C 代码中传递奖励信息
 SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardItem")
 @interface OpAdxRewardItem : NSObject
-/// 奖励类型
 @property (nonatomic, readonly, copy) NSString * _Nonnull type;
-/// 奖励数量
 @property (nonatomic, readonly) NSInteger amount;
-/// 初始化奖励项
-/// \param type 奖励类型
-///
-/// \param amount 奖励数量
-///
 - (nonnull instancetype)initWithType:(NSString * _Nonnull)type amount:(NSInteger)amount OBJC_DESIGNATED_INITIALIZER;
-/// 便利初始化方法
-+ (OpAdxRewardItem * _Nonnull)rewardWith:(NSString * _Nonnull)type amount:(NSInteger)amount SWIFT_WARN_UNUSED_RESULT;
-/// 描述
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1008,8 +1131,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardItem")
 @protocol OpAdxRewardedAdLoadListener;
 /// Represents a rewarded ad that users can interact with to earn rewards
 SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardedAd")
-@interface OpAdxRewardedAd : FullscreenAd
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+@interface OpAdxRewardedAd : IncentivizedFullscreenAd
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Shows the rewarded ad on the specified view controller
 /// \param viewController The view controller to present the ad on
 ///
@@ -1022,6 +1145,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardedAd")
 /// \param listener The listener to handle load events
 ///
 - (void)loadWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxRewardedAdLoadListener> _Nonnull)listener;
+- (void)loadC2SBidWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxRewardedAdLoadListener> _Nonnull)listener;
 - (void)loadRtbWithPlacementId:(NSString * _Nonnull)placementId bidResponse:(NSString * _Nonnull)bidResponse listener:(id <OpAdxRewardedAdLoadListener> _Nonnull)listener;
 @end
 
@@ -1030,7 +1154,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardedAd")
 /// 提供 Delegate 模式，方便 Objective-C 调用
 SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 @interface OpAdxRewardedAdBridge : NSObject
-@property (nonatomic, readonly) double getECPM;
+- (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxRewardedAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -1038,7 +1162,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 /// 初始化激励广告
 /// \param placementId 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// 加载广告
 - (void)loadAd;
 /// 展示广告
@@ -1078,7 +1202,7 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk34OpAdxRewardedAdInteractionListener_")
 SWIFT_CLASS("_TtC8OpAdxSdk37OpAdxRewardedAdInteractionListenerImp")
 @interface OpAdxRewardedAdInteractionListenerImp : OpAdxAdInteractionListenerImp <OpAdxRewardedAdInteractionListener>
 - (nonnull instancetype)initOnAdClicked:(void (^ _Nonnull)(void))onAdClicked onAdDisplayed:(void (^ _Nonnull)(void))onAdDisplayed onAdDismissed:(void (^ _Nonnull)(void))onAdDismissed onAdFailedToShow:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToShow onUserRewarded:(void (^ _Nonnull)(OpAdxRewardItem * _Nonnull))onUserRewarded;
-- (void)onUserRewarded:(OpAdxRewardItem * _Nonnull)rewardItem;
+- (void)onUserRewardedWithReward:(OpAdxRewardItem * _Nonnull)reward;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1090,6 +1214,98 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk27OpAdxRewardedAdLoadListener_")
 /// 激励广告加载监听器实现（兼容旧版本）
 SWIFT_CLASS("_TtC8OpAdxSdk30OpAdxRewardedAdLoadListenerImp")
 @interface OpAdxRewardedAdLoadListenerImp : OpAdxAdLoadListenerImp <OpAdxRewardedAdLoadListener>
+- (nonnull instancetype)initOnAdLoaded:(void (^ _Nonnull)(NSObject * _Nonnull))onAdLoaded onAdFailedToLoad:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToLoad OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@protocol OpAdxRewardedInterstitialAdInteractionListener;
+@protocol OpAdxRewardedInterstitialAdLoadListener;
+/// Represents a rewardedInterstitial ad that users can interact with to earn rewards
+SWIFT_CLASS("_TtC8OpAdxSdk27OpAdxRewardedInterstitialAd")
+@interface OpAdxRewardedInterstitialAd : IncentivizedFullscreenAd
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+/// Shows the rewardedInterstitial ad on the specified view controller
+/// \param viewController The view controller to present the ad on
+///
+/// \param listener The listener to handle ad interaction events
+///
+- (void)showOn:(UIViewController * _Nonnull)viewController listener:(id <OpAdxRewardedInterstitialAdInteractionListener> _Nonnull)listener;
+/// Loads a rewardedInterstitial ad asynchronously
+/// \param placementId The placement identifier for the ad
+///
+/// \param listener The listener to handle load events
+///
+- (void)loadWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxRewardedInterstitialAdLoadListener> _Nonnull)listener;
+- (void)loadC2SBidWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxRewardedInterstitialAdLoadListener> _Nonnull)listener;
+- (void)loadRtbWithPlacementId:(NSString * _Nonnull)placementId bidResponse:(NSString * _Nonnull)bidResponse listener:(id <OpAdxRewardedInterstitialAdLoadListener> _Nonnull)listener;
+@end
+
+@protocol OpAdxRewardedInterstitialAdDelegate;
+/// Objective-C compatible Rewarded Interstitial Ad bridge class
+/// Provides a Delegate pattern for easy Objective-C integration
+SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
+@interface OpAdxRewardedInterstitialAdBridge : NSObject
+- (double)getECPM SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, weak) id <OpAdxRewardedInterstitialAdDelegate> _Nullable delegate;
+/// Whether the ad is ready to be shown
+@property (nonatomic, readonly) BOOL isAdValid;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+/// Initialize Rewarded Interstitial Ad
+/// \param placementId Ad placement ID
+///
+/// \param auctionType Ad auction type
+///
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+/// Load ad
+- (void)loadAd;
+/// Show ad
+/// \param viewController The view controller to present the ad
+///
+- (void)showAdFrom:(UIViewController * _Nonnull)viewController;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+/// Objective-C compatible Rewarded Interstitial Ad delegate protocol
+SWIFT_PROTOCOL("_TtP8OpAdxSdk35OpAdxRewardedInterstitialAdDelegate_")
+@protocol OpAdxRewardedInterstitialAdDelegate
+@optional
+/// Ad loaded successfully
+- (void)rewardedInterstitialAdDidLoad:(OpAdxRewardedInterstitialAdBridge * _Nonnull)rewardedInterstitialAd;
+/// Ad failed to load
+- (void)rewardedInterstitialAd:(OpAdxRewardedInterstitialAdBridge * _Nonnull)rewardedInterstitialAd didFailWithError:(OpAdxAdError * _Nonnull)error;
+/// Ad displayed successfully
+- (void)rewardedInterstitialAdDidDisplay:(OpAdxRewardedInterstitialAdBridge * _Nonnull)rewardedInterstitialAd;
+/// Ad clicked
+- (void)rewardedInterstitialAdDidClick:(OpAdxRewardedInterstitialAdBridge * _Nonnull)rewardedInterstitialAd;
+/// Ad closed
+- (void)rewardedInterstitialAdDidClose:(OpAdxRewardedInterstitialAdBridge * _Nonnull)rewardedInterstitialAd;
+/// Ad failed to display
+- (void)rewardedInterstitialAd:(OpAdxRewardedInterstitialAdBridge * _Nonnull)rewardedInterstitialAd didFailToDisplayWithError:(OpAdxAdError * _Nonnull)error;
+/// User earned a reward
+- (void)rewardedInterstitialAd:(OpAdxRewardedInterstitialAdBridge * _Nonnull)rewardedInterstitialAd didRewardUserWithItem:(OpAdxRewardItem * _Nonnull)rewardItem;
+@end
+
+/// Listener for rewardedInterstitial ad interaction events
+SWIFT_PROTOCOL("_TtP8OpAdxSdk46OpAdxRewardedInterstitialAdInteractionListener_")
+@protocol OpAdxRewardedInterstitialAdInteractionListener <OnUserRewardedListener, OpAdxAdInteractionListener>
+@end
+
+/// 激励广告交互监听器实现（兼容旧版本）
+SWIFT_CLASS("_TtC8OpAdxSdk49OpAdxRewardedInterstitialAdInteractionListenerImp")
+@interface OpAdxRewardedInterstitialAdInteractionListenerImp : OpAdxAdInteractionListenerImp <OpAdxRewardedInterstitialAdInteractionListener>
+- (nonnull instancetype)initOnAdClicked:(void (^ _Nonnull)(void))onAdClicked onAdDisplayed:(void (^ _Nonnull)(void))onAdDisplayed onAdDismissed:(void (^ _Nonnull)(void))onAdDismissed onAdFailedToShow:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToShow onUserRewarded:(void (^ _Nonnull)(OpAdxRewardItem * _Nonnull))onUserRewarded;
+- (void)onUserRewardedWithReward:(OpAdxRewardItem * _Nonnull)reward;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+/// Listener for rewardedInterstitial ad load events
+SWIFT_PROTOCOL("_TtP8OpAdxSdk39OpAdxRewardedInterstitialAdLoadListener_")
+@protocol OpAdxRewardedInterstitialAdLoadListener <OpAdxAdLoadListener>
+@end
+
+/// 激励广告加载监听器实现（兼容旧版本）
+SWIFT_CLASS("_TtC8OpAdxSdk42OpAdxRewardedInterstitialAdLoadListenerImp")
+@interface OpAdxRewardedInterstitialAdLoadListenerImp : OpAdxAdLoadListenerImp <OpAdxRewardedInterstitialAdLoadListener>
 - (nonnull instancetype)initOnAdLoaded:(void (^ _Nonnull)(NSObject * _Nonnull))onAdLoaded onAdFailedToLoad:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToLoad OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1113,11 +1329,11 @@ SWIFT_CLASS("_TtC8OpAdxSdk8OpAdxSDK")
 /// 创建智能横幅广告（自适应尺寸，Objective-C 风格）
 + (OpAdxBannerAdBridge * _Nonnull)createSmartBannerWith:(NSString * _Nonnull)placementId SWIFT_WARN_UNUSED_RESULT;
 /// 创建插屏广告（Objective-C 风格）
-+ (OpAdxInterstitialAdBridge * _Nonnull)createInterstitialAdWith:(NSString * _Nonnull)placementId SWIFT_WARN_UNUSED_RESULT;
++ (OpAdxInterstitialAdBridge * _Nonnull)createInterstitialAdWith:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
 /// 创建激励广告（Objective-C 风格）
-+ (OpAdxRewardedAdBridge * _Nonnull)createRewardedAdWith:(NSString * _Nonnull)placementId SWIFT_WARN_UNUSED_RESULT;
++ (OpAdxRewardedAdBridge * _Nonnull)createRewardedAdWith:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
 /// 创建原生广告（Objective-C 风格）
-+ (OpAdxNativeAdBridge * _Nonnull)createNativeAdWith:(NSString * _Nonnull)placementID SWIFT_WARN_UNUSED_RESULT;
++ (OpAdxNativeAdBridge * _Nonnull)createNativeAdWith:(NSString * _Nonnull)placementID auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
 /// 创建原生广告交互视图构建器（Objective-C 风格）
 + (OpAdxInteractionViewsBuilder * _Nonnull)createInteractionViewsBuilderWith:(OpAdxMediaView * _Nonnull)mediaView SWIFT_WARN_UNUSED_RESULT;
 /// 创建媒体视图
@@ -1167,6 +1383,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSdkCore
 - (BOOL)isSDKInitializing SWIFT_WARN_UNUSED_RESULT;
 /// Objective-C 兼容的错误回调包装器
 - (void)initializeWithCompletionWithInitConfig:(OpAdxSdkInitConfig * _Nonnull)initConfig onSuccess:(void (^ _Nonnull)(void))onSuccess onError:(void (^ _Nonnull)(NSError * _Nonnull))onError;
++ (void)setOpAdxSdkMuted:(NSNumber * _Nullable)muted;
++ (NSNumber * _Nullable)getOpAdxSdkMuted SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1223,6 +1441,13 @@ SWIFT_CLASS("_TtCC8OpAdxSdk18OpAdxSdkInitConfig7Builder")
 
 @interface OpAdxSdkInitConfig (SWIFT_EXTENSION(OpAdxSdk))
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@end
+
+/// The options for <code>server-side verification</code> callback, will be used when notifying track url on user rewarded.
+SWIFT_CLASS("_TtC8OpAdxSdk16RewardSsvOptions")
+@interface RewardSsvOptions : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 @interface UIView (SWIFT_EXTENSION(OpAdxSdk))
