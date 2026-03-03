@@ -50,7 +50,7 @@
 
 - (void)setupUI {
     self.view.backgroundColor = [UIColor whiteColor];
-    self.title = @"Opera Ads Demo";
+    self.title = @"Opera Ads Demo oc";
     
     // SDK Version Label
     self.sdkVersionLabel = [[UILabel alloc] init];

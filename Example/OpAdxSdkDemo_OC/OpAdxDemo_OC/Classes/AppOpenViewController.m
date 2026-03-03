@@ -70,7 +70,7 @@
 #pragma mark - OpAdxAppOpenAdDelegate
 
 - (void)appOpenAdDidLoad:(OpAdxAppOpenAdBridge *)appOpenAd {
-    NSLog(@"[ADX] AppOpen广告加载成功: %@", appOpenAd.placementID);
+    NSLog(@"[ADX] AppOpen广告加载成功: %@", appOpenAd.placementId);
     [self.logView print:[NSString stringWithFormat:@"Loaded."]];
    
     [self enableShowAd];
@@ -79,19 +79,19 @@
 }
 
 - (void)appOpenAd:(OpAdxAppOpenAdBridge *)appOpenAd didFailWithError:(OpAdxAdError *)error {
-    NSLog(@"[ADX] AppOpen广告加载失败: %@ %@", appOpenAd.placementID, error);
+    NSLog(@"[ADX] AppOpen广告加载失败: %@ %@", appOpenAd.placementId, error);
     [self.logView print:error.message];
     
 }
 
 - (void)appOpenAdDidClick:(OpAdxAppOpenAdBridge *)appOpenAd {
-    NSLog(@"[ADX] AppOpen广告被点击: %@", appOpenAd.placementID);
+    NSLog(@"[ADX] AppOpen广告被点击: %@", appOpenAd.placementId);
     [self.logView print:@"onAdDidClick"];
     
 }
 
 - (void)appOpenAdDidClose:(OpAdxAppOpenAdBridge *)appOpenAd {
-    NSLog(@"[ADX] AppOpen广告关闭: %@", appOpenAd.placementID);
+    NSLog(@"[ADX] AppOpen广告关闭: %@", appOpenAd.placementId);
     [self.logView print:@"onAdDidClose"];
     // 清理
     self.appOpenAd = nil;
@@ -99,7 +99,7 @@
 }
 
 - (void)appOpenAdWillLogImpression:(OpAdxAppOpenAdBridge *)appOpenAd {
-    NSLog(@"[ADX] AppOpen广告展示: %@", appOpenAd.placementID);
+    NSLog(@"[ADX] AppOpen广告展示: %@", appOpenAd.placementId);
     [self.logView print:@"onAdImpression"];
     
 }

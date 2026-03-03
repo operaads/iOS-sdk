@@ -29,9 +29,9 @@
     [self destroyAd];
     
     __weak typeof(self) weakSelf = self;
-    NSString *placementID = self.placementId;
+    NSString *placementId = self.placementId;
     
-    OpAdxBannerAdBridge *bannerAd = [[OpAdxBannerAdBridge alloc] initWithPlacementId:placementID adSize:OpAdxAdSize.BANNER_MREC];
+    OpAdxBannerAdBridge *bannerAd = [[OpAdxBannerAdBridge alloc] initWithPlacementId:placementId adSize:OpAdxAdSize.BANNER_MREC];
     self.bannerAdView = bannerAd;
     bannerAd.delegate = self;
     [bannerAd loadAd];
@@ -92,7 +92,7 @@
 #pragma mark - OpAdxBannerAdDelegate
 
 - (void)bannerAdDidLoad:(OpAdxBannerAdBridge *)bannerAd {
-    NSLog(@"[ADX] Banner广告加载成功: %@", bannerAd.placementID);
+    NSLog(@"[ADX] Banner广告加载成功: %@", bannerAd.placementId);
     
     [self.logView print:[NSString stringWithFormat:@"Loaded, adSize: %@ ", bannerAd.adSize]];
    
@@ -108,12 +108,12 @@
 }
 
 - (void)bannerAdDidClick:(OpAdxBannerAdBridge *)bannerAd {
-    NSLog(@"[ADX] Banner广告被点击: %@", bannerAd.placementID);
+    NSLog(@"[ADX] Banner广告被点击: %@", bannerAd.placementId);
     [self.logView print:@"onAdClicked"];
 }
 
 - (void)bannerAdWillLogImpression:(OpAdxBannerAdBridge *)bannerAd {
-    NSLog(@"[ADX] Banner广告展示: %@", bannerAd.placementID);
+    NSLog(@"[ADX] Banner广告展示: %@", bannerAd.placementId);
     [self.logView print:@"onAdImpression"];
     
 }

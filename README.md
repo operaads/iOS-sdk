@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.8.1) - 优化 
+
 (2.5.1) - 支持AppOpen和RewardedInterstitial格式 
  
 (2.2.18) - native分离数据和视图 不再强持有OpAdxMediaView    

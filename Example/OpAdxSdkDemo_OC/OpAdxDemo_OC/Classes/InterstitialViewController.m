@@ -71,7 +71,7 @@
 #pragma mark - OpAdxInterstitialAdDelegate
 
 - (void)interstitialAdDidLoad:(OpAdxInterstitialAdBridge *)interstitialAd {
-    NSLog(@"[ADX] Interstitial广告加载成功: %@", interstitialAd.placementID);
+    NSLog(@"[ADX] Interstitial广告加载成功: %@", interstitialAd.placementId);
     [self.logView print:[NSString stringWithFormat:@"Loaded."]];
    
     [self enableShowAd];
@@ -80,19 +80,19 @@
 }
 
 - (void)interstitialAd:(OpAdxInterstitialAdBridge *)interstitialAd didFailWithError:(OpAdxAdError *)error {
-    NSLog(@"[ADX] Interstitial广告加载失败: %@ %@", interstitialAd.placementID, error);
+    NSLog(@"[ADX] Interstitial广告加载失败: %@ %@", interstitialAd.placementId, error);
     [self.logView print:error.message];
     
 }
 
 - (void)interstitialAdDidClick:(OpAdxInterstitialAdBridge *)interstitialAd {
-    NSLog(@"[ADX] Interstitial广告被点击: %@", interstitialAd.placementID);
+    NSLog(@"[ADX] Interstitial广告被点击: %@", interstitialAd.placementId);
     [self.logView print:@"onAdDidClick"];
     
 }
 
 - (void)interstitialAdDidClose:(OpAdxInterstitialAdBridge *)interstitialAd {
-    NSLog(@"[ADX] Interstitial广告关闭: %@", interstitialAd.placementID);
+    NSLog(@"[ADX] Interstitial广告关闭: %@", interstitialAd.placementId);
     [self.logView print:@"onAdDidClose"];
     // 清理
     self.interstitialAd = nil;
@@ -100,7 +100,7 @@
 }
 
 - (void)interstitialAdWillLogImpression:(OpAdxInterstitialAdBridge *)interstitialAd {
-    NSLog(@"[ADX] Interstitial广告展示: %@", interstitialAd.placementID);
+    NSLog(@"[ADX] Interstitial广告展示: %@", interstitialAd.placementId);
     [self.logView print:@"onAdImpression"];
     
 }

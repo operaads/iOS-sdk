@@ -37,7 +37,7 @@
     
     [self.logView print:@"Loading..."];
     
-    OpAdxNativeAdBridge *nativeAd = [[OpAdxNativeAdBridge alloc] initWithPlacementID:self.placementId auctionType: AdAuctionTypeRegular];
+    OpAdxNativeAdBridge *nativeAd = [[OpAdxNativeAdBridge alloc] initWithPlacementId:self.placementId auctionType: AdAuctionTypeRegular];
     self.nativeAd = nativeAd;
     nativeAd.delegate = self;
     [nativeAd loadAd];
@@ -91,7 +91,7 @@
 #pragma mark - OpAdxNativeAdDelegate
 
 - (void)nativeAdDidLoad:(OpAdxNativeAdBridge *)nativeAd {
-    NSLog(@"[ADX] Native广告加载成功: %@", nativeAd.placementID);
+    NSLog(@"[ADX] Native广告加载成功: %@", nativeAd.placementId);
     NSString *title = nativeAd.title;
     if (title && title.length) {
         [self.logView print:[NSString stringWithFormat:@"Loaded, ad: %@",title]];
@@ -104,18 +104,18 @@
 }
 
 - (void)nativeAd:(OpAdxNativeAdBridge *)nativeAd didFailWithError:(OpAdxAdError *)error {
-    NSLog(@"[ADX] Native广告加载失败: %@ %@", nativeAd.placementID, error);
+    NSLog(@"[ADX] Native广告加载失败: %@ %@", nativeAd.placementId, error);
     [self.logView print:error.message];
     
 }
 
 - (void)nativeAdDidClick:(OpAdxNativeAdBridge *)nativeAd {
-    NSLog(@"[ADX] Native广告被点击: %@", nativeAd.placementID);
+    NSLog(@"[ADX] Native广告被点击: %@", nativeAd.placementId);
     [self.logView print:@"onAdClicked"];
 }
 
 - (void)nativeAdWillLogImpression:(OpAdxNativeAdBridge *)nativeAd {
-    NSLog(@"[ADX] Native广告展示: %@", nativeAd.placementID);
+    NSLog(@"[ADX] Native广告展示: %@", nativeAd.placementId);
     [self.logView print:@"onAdImpression"];
     
 }

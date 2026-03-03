@@ -38,7 +38,8 @@ import zlib
   @objc public var isAdValid: Swift.Bool {
     @objc get
   }
-  @objc final public let placementID: Swift.String
+  @objc final public let placementId: Swift.String
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func showAd(from viewController: UIKit.UIViewController)
@@ -61,7 +62,7 @@ extension OpAdxSdk.OpAdxAppOpenAdBridge {
 @_inheritsConvenienceInitializers @objc @_Concurrency.MainActor @preconcurrency public class OpAdxBannerAdBridge : UIKit.UIView {
   @objc @_Concurrency.MainActor @preconcurrency public func getECPM() -> Swift.Double
   @objc @_Concurrency.MainActor @preconcurrency weak public var delegate: (any OpAdxSdk.OpAdxBannerAdDelegate)?
-  @objc @_Concurrency.MainActor @preconcurrency public var placementID: Swift.String? {
+  @objc @_Concurrency.MainActor @preconcurrency public var placementId: Swift.String? {
     get
   }
   @objc @_Concurrency.MainActor @preconcurrency public var adSize: OpAdxSdk.OpAdxAdSize? {
@@ -133,7 +134,8 @@ extension OpAdxSdk.OpAdxBannerAdBridge {
   @objc public var isAdValid: Swift.Bool {
     @objc get
   }
-  @objc final public let placementID: Swift.String
+  @objc final public let placementId: Swift.String
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func showAd(from viewController: UIKit.UIViewController)
@@ -155,7 +157,7 @@ extension OpAdxSdk.OpAdxInterstitialAdBridge {
 @objc public class OpAdxNativeAdBridge : ObjectiveC.NSObject {
   @objc public func getECPM() -> Swift.Double
   @objc weak public var delegate: (any OpAdxSdk.OpAdxNativeAdDelegate)?
-  @objc public var placementID: Swift.String {
+  @objc public var placementId: Swift.String {
     @objc get
   }
   #if compiler(>=5.3) && $NonescapableTypes
@@ -204,7 +206,8 @@ extension OpAdxSdk.OpAdxInterstitialAdBridge {
     @objc get
   }
   #endif
-  @objc public init(placementID: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
+  @objc public init(placementId: Swift.String)
+  @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func createMediaView() -> OpAdxSdk.OpAdxMediaView
   @objc public func loadAd()
   @objc public func registerViewForInteraction(rootView: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, adChoicePosition: OpAdxSdk.AdChoicePosition)
@@ -259,7 +262,8 @@ extension OpAdxSdk.OpAdxNativeAdBridge {
   @objc public var isAdValid: Swift.Bool {
     @objc get
   }
-  @objc final public let placementID: Swift.String
+  @objc final public let placementId: Swift.String
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func showAd(from viewController: UIKit.UIViewController)
@@ -285,7 +289,8 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
   @objc public var isAdValid: Swift.Bool {
     @objc get
   }
-  @objc final public let placementID: Swift.String
+  @objc final public let placementId: Swift.String
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func showAd(from viewController: UIKit.UIViewController)
@@ -308,7 +313,7 @@ extension OpAdxSdk.OpAdxRewardedInterstitialAdBridge {
   @objc public static func createSmartBanner(with placementId: Swift.String) -> OpAdxSdk.OpAdxBannerAdBridge
   @objc public static func createInterstitialAd(with placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxInterstitialAdBridge
   @objc public static func createRewardedAd(with placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxRewardedAdBridge
-  @objc public static func createNativeAd(with placementID: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxNativeAdBridge
+  @objc public static func createNativeAd(with placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxNativeAdBridge
   public static func createBannerAd(placementId: Swift.String, adSize: OpAdxSdk.OpAdxAdSize) -> OpAdxSdk.OpAdxBannerAdView
   public static func createInterstitialAd(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxInterstitialAd
   public static func createRewardedAd(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType) -> OpAdxSdk.OpAdxRewardedAd
@@ -992,6 +997,8 @@ public enum AdMediation : Swift.String {
   @objc public static let BANNER_970x250: OpAdxSdk.OpAdxAdSize
   @objc public static let BANNER_300x50: OpAdxSdk.OpAdxAdSize
   @objc public static let BANNER_728x90: OpAdxSdk.OpAdxAdSize
+  @objc public static let BANNER_320x100: OpAdxSdk.OpAdxAdSize
+  @objc public static let BANNER_468x60: OpAdxSdk.OpAdxAdSize
   #if compiler(>=5.3) && $NonescapableTypes
   @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
   #endif

@@ -553,6 +553,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize 
 + (OpAdxAdSize * _Nonnull)BANNER_300x50 SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize * _Nonnull BANNER_728x90;)
 + (OpAdxAdSize * _Nonnull)BANNER_728x90 SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize * _Nonnull BANNER_320x100;)
++ (OpAdxAdSize * _Nonnull)BANNER_320x100 SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize * _Nonnull BANNER_468x60;)
++ (OpAdxAdSize * _Nonnull)BANNER_468x60 SWIFT_WARN_UNUSED_RESULT;
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly) NSUInteger hash;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
@@ -568,13 +572,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize 
 @end
 
 @interface OpAdxAdSize (SWIFT_EXTENSION(OpAdxSdk))
-/// Converts the ad size to a string representation.
-- (NSString * _Nonnull)toString SWIFT_WARN_UNUSED_RESULT;
-/// Creates an ad size from a string representation.
-+ (OpAdxAdSize * _Nullable)fromString:(NSString * _Nonnull)string SWIFT_WARN_UNUSED_RESULT;
-@end
-
-@interface OpAdxAdSize (SWIFT_EXTENSION(OpAdxSdk))
 /// Creates a custom ad size.
 + (OpAdxAdSize * _Nonnull)customWithWidth:(NSInteger)width height:(NSInteger)height SWIFT_WARN_UNUSED_RESULT;
 /// Creates an adaptive banner size for the given width and max height.
@@ -584,6 +581,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 + (NSArray<OpAdxAdSize *> * _Nonnull)standardSizes SWIFT_WARN_UNUSED_RESULT;
 /// Gets recommended ad size for the given container width.
 + (OpAdxAdSize * _Nonnull)recommendedAdSizeForWidth:(CGFloat)width SWIFT_WARN_UNUSED_RESULT;
+@end
+
+@interface OpAdxAdSize (SWIFT_EXTENSION(OpAdxSdk))
+/// Converts the ad size to a string representation.
+- (NSString * _Nonnull)toString SWIFT_WARN_UNUSED_RESULT;
+/// Creates an ad size from a string representation.
++ (OpAdxAdSize * _Nullable)fromString:(NSString * _Nonnull)string SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @protocol OpAdxAppOpenAdInteractionListener;
@@ -606,7 +610,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk20OpAdxAppOpenAdBridge")
 @property (nonatomic, weak) id <OpAdxAppOpenAdDelegate> _Nullable delegate;
 /// Whether the ad is ready to be shown
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// Initialize App Open Ad
 /// \param placementId Ad placement ID
 ///
@@ -670,7 +675,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxBannerAdBridge")
 - (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxBannerAdDelegate> _Nullable delegate;
 /// 广告位ID
-@property (nonatomic, readonly, copy) NSString * _Nullable placementID;
+@property (nonatomic, readonly, copy) NSString * _Nullable placementId;
 /// 广告尺寸
 @property (nonatomic, readonly, strong) OpAdxAdSize * _Nullable adSize;
 /// 广告是否已失效
@@ -862,7 +867,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 @property (nonatomic, weak) id <OpAdxInterstitialAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化插屏广告
 /// \param placementId 广告位ID
 ///
@@ -975,7 +981,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 - (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxNativeAdDelegate> _Nullable delegate;
 /// 广告位ID
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
 /// 广告标题
 @property (nonatomic, readonly, copy) NSString * _Nullable title;
 /// 广告描述
@@ -993,10 +999,11 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly, copy) NSURL * _Nullable iconUrl;
 @property (nonatomic, readonly, copy) NSURL * _Nullable imageUrl;
 @property (nonatomic, readonly, strong) OpAdxMediaView * _Nullable boundMediaView;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化原生广告
-/// \param placementID 广告位ID
+/// \param placementId 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementID:(NSString * _Nonnull)placementID auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 /// 加载广告
 - (void)loadAd;
@@ -1158,7 +1165,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 @property (nonatomic, weak) id <OpAdxRewardedAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化激励广告
 /// \param placementId 广告位ID
 ///
@@ -1248,7 +1256,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 @property (nonatomic, weak) id <OpAdxRewardedInterstitialAdDelegate> _Nullable delegate;
 /// Whether the ad is ready to be shown
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// Initialize Rewarded Interstitial Ad
 /// \param placementId Ad placement ID
 ///
@@ -1333,7 +1342,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk8OpAdxSDK")
 /// 创建激励广告（Objective-C 风格）
 + (OpAdxRewardedAdBridge * _Nonnull)createRewardedAdWith:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
 /// 创建原生广告（Objective-C 风格）
-+ (OpAdxNativeAdBridge * _Nonnull)createNativeAdWith:(NSString * _Nonnull)placementID auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
++ (OpAdxNativeAdBridge * _Nonnull)createNativeAdWith:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
 /// 创建原生广告交互视图构建器（Objective-C 风格）
 + (OpAdxInteractionViewsBuilder * _Nonnull)createInteractionViewsBuilderWith:(OpAdxMediaView * _Nonnull)mediaView SWIFT_WARN_UNUSED_RESULT;
 /// 创建媒体视图
@@ -2030,6 +2039,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize 
 + (OpAdxAdSize * _Nonnull)BANNER_300x50 SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize * _Nonnull BANNER_728x90;)
 + (OpAdxAdSize * _Nonnull)BANNER_728x90 SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize * _Nonnull BANNER_320x100;)
++ (OpAdxAdSize * _Nonnull)BANNER_320x100 SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize * _Nonnull BANNER_468x60;)
++ (OpAdxAdSize * _Nonnull)BANNER_468x60 SWIFT_WARN_UNUSED_RESULT;
 - (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly) NSUInteger hash;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
@@ -2045,13 +2058,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxAdSize 
 @end
 
 @interface OpAdxAdSize (SWIFT_EXTENSION(OpAdxSdk))
-/// Converts the ad size to a string representation.
-- (NSString * _Nonnull)toString SWIFT_WARN_UNUSED_RESULT;
-/// Creates an ad size from a string representation.
-+ (OpAdxAdSize * _Nullable)fromString:(NSString * _Nonnull)string SWIFT_WARN_UNUSED_RESULT;
-@end
-
-@interface OpAdxAdSize (SWIFT_EXTENSION(OpAdxSdk))
 /// Creates a custom ad size.
 + (OpAdxAdSize * _Nonnull)customWithWidth:(NSInteger)width height:(NSInteger)height SWIFT_WARN_UNUSED_RESULT;
 /// Creates an adaptive banner size for the given width and max height.
@@ -2061,6 +2067,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 + (NSArray<OpAdxAdSize *> * _Nonnull)standardSizes SWIFT_WARN_UNUSED_RESULT;
 /// Gets recommended ad size for the given container width.
 + (OpAdxAdSize * _Nonnull)recommendedAdSizeForWidth:(CGFloat)width SWIFT_WARN_UNUSED_RESULT;
+@end
+
+@interface OpAdxAdSize (SWIFT_EXTENSION(OpAdxSdk))
+/// Converts the ad size to a string representation.
+- (NSString * _Nonnull)toString SWIFT_WARN_UNUSED_RESULT;
+/// Creates an ad size from a string representation.
++ (OpAdxAdSize * _Nullable)fromString:(NSString * _Nonnull)string SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @protocol OpAdxAppOpenAdInteractionListener;
@@ -2083,7 +2096,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk20OpAdxAppOpenAdBridge")
 @property (nonatomic, weak) id <OpAdxAppOpenAdDelegate> _Nullable delegate;
 /// Whether the ad is ready to be shown
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// Initialize App Open Ad
 /// \param placementId Ad placement ID
 ///
@@ -2147,7 +2161,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxBannerAdBridge")
 - (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxBannerAdDelegate> _Nullable delegate;
 /// 广告位ID
-@property (nonatomic, readonly, copy) NSString * _Nullable placementID;
+@property (nonatomic, readonly, copy) NSString * _Nullable placementId;
 /// 广告尺寸
 @property (nonatomic, readonly, strong) OpAdxAdSize * _Nullable adSize;
 /// 广告是否已失效
@@ -2339,7 +2353,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 @property (nonatomic, weak) id <OpAdxInterstitialAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化插屏广告
 /// \param placementId 广告位ID
 ///
@@ -2452,7 +2467,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 - (double)getECPM SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxNativeAdDelegate> _Nullable delegate;
 /// 广告位ID
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
 /// 广告标题
 @property (nonatomic, readonly, copy) NSString * _Nullable title;
 /// 广告描述
@@ -2470,10 +2485,11 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly, copy) NSURL * _Nullable iconUrl;
 @property (nonatomic, readonly, copy) NSURL * _Nullable imageUrl;
 @property (nonatomic, readonly, strong) OpAdxMediaView * _Nullable boundMediaView;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化原生广告
-/// \param placementID 广告位ID
+/// \param placementId 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementID:(NSString * _Nonnull)placementID auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 /// 加载广告
 - (void)loadAd;
@@ -2635,7 +2651,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 @property (nonatomic, weak) id <OpAdxRewardedAdDelegate> _Nullable delegate;
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化激励广告
 /// \param placementId 广告位ID
 ///
@@ -2725,7 +2742,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 @property (nonatomic, weak) id <OpAdxRewardedInterstitialAdDelegate> _Nullable delegate;
 /// Whether the ad is ready to be shown
 @property (nonatomic, readonly) BOOL isAdValid;
-@property (nonatomic, readonly, copy) NSString * _Nonnull placementID;
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// Initialize Rewarded Interstitial Ad
 /// \param placementId Ad placement ID
 ///
@@ -2810,7 +2828,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk8OpAdxSDK")
 /// 创建激励广告（Objective-C 风格）
 + (OpAdxRewardedAdBridge * _Nonnull)createRewardedAdWith:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
 /// 创建原生广告（Objective-C 风格）
-+ (OpAdxNativeAdBridge * _Nonnull)createNativeAdWith:(NSString * _Nonnull)placementID auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
++ (OpAdxNativeAdBridge * _Nonnull)createNativeAdWith:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType SWIFT_WARN_UNUSED_RESULT;
 /// 创建原生广告交互视图构建器（Objective-C 风格）
 + (OpAdxInteractionViewsBuilder * _Nonnull)createInteractionViewsBuilderWith:(OpAdxMediaView * _Nonnull)mediaView SWIFT_WARN_UNUSED_RESULT;
 /// 创建媒体视图

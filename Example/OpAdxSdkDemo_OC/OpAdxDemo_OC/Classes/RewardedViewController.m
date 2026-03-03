@@ -73,7 +73,7 @@
 #pragma mark - OpAdxRewardedAdDelegate
 
 - (void)rewardedAdDidLoad:(OpAdxRewardedAdBridge *)rewardedAd {
-    NSLog(@"[ADX] Reward广告加载成功: %@", rewardedAd.placementID);
+    NSLog(@"[ADX] Reward广告加载成功: %@", rewardedAd.placementId);
     [self.logView print:[NSString stringWithFormat:@"Loaded."]];
    
     [self enableShowAd];
@@ -88,13 +88,13 @@
 }
 
 - (void)rewardedAdDidClick:(OpAdxRewardedAdBridge *)rewardedAd {
-    NSLog(@"[ADX] Reward广告被点击: %@", rewardedAd.placementID);
+    NSLog(@"[ADX] Reward广告被点击: %@", rewardedAd.placementId);
     [self.logView print:@"onAdDidClick"];
     
 }
 
 - (void)rewardedAdDidClose:(OpAdxRewardedAdBridge *)rewardedAd {
-    NSLog(@"[ADX] Reward广告关闭: %@", rewardedAd.placementID);
+    NSLog(@"[ADX] Reward广告关闭: %@", rewardedAd.placementId);
     [self.logView print:@"onAdDidClose"];
     
     // 清理
@@ -103,7 +103,7 @@
 
 - (void)rewardedAd:(OpAdxRewardedAdBridge *)rewardedAd didRewardUserWithItem:(OpAdxRewardItem *)rewardItem {
     NSLog(@"[ADX] Reward广告发放奖励: %@, 奖励类型: %@, 数量: %ld",
-          rewardedAd.placementID,
+          rewardedAd.placementId,
           rewardItem.type,
           (long)rewardItem.amount);
     [self.logView print:@"onAdReward"];
@@ -111,7 +111,7 @@
 }
 
 - (void)rewardedAdWillLogImpression:(OpAdxRewardedAdBridge *)rewardedAd {
-    NSLog(@"[ADX] Reward广告展示: %@", rewardedAd.placementID);
+    NSLog(@"[ADX] Reward广告展示: %@", rewardedAd.placementId);
     [self.logView print:@"onAdImpression"];
     
 }

@@ -16,9 +16,9 @@ class MainViewController: UIViewController {
     private let items: [MainItem] = [
         MainItem(format: "Native", placementId: AdConfig.getPlacementId(adFormat: .native, forceVideo: false)),
         MainItem(format: "Banner", placementId: AdConfig.getPlacementId(adFormat: .banner, forceVideo: false)),
+        MainItem(format: "AppOpen", placementId: AdConfig.getPlacementId(adFormat: .interstitial, forceVideo: false)),
         MainItem(format: "Interstitial", placementId: AdConfig.getPlacementId(adFormat: .interstitial, forceVideo: false)),
         MainItem(format: "Rewarded", placementId: AdConfig.getPlacementId(adFormat: .rewarded, forceVideo: false)),
-        MainItem(format: "AppOpen", placementId: AdConfig.getPlacementId(adFormat: .interstitial, forceVideo: false)),
         MainItem(format: "RewardedInterstitial", placementId: AdConfig.getPlacementId(adFormat: .rewarded, forceVideo: false)),
         MainItem(format: "Bid Response Debugging", placementId: "Debug custom bid responses")
     ]
