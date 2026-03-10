@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.8.2) - 解决bundleId问题 
+
 (2.8.1) - 优化 
 
 (2.5.1) - 支持AppOpen和RewardedInterstitial格式 

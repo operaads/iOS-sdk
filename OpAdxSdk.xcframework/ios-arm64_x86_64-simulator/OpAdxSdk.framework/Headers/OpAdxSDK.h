@@ -18,7 +18,9 @@ FOUNDATION_EXPORT const unsigned char OperaAdxSDKVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <OperaAdxSDK/PublicHeader.h>
 
 // Objective-C 兼容的接口
+#if __has_include(<OpAdxSdk/OpAdxSdk-Swift.h>)
 #import <OpAdxSdk/OpAdxSdk-Swift.h>
+#endif
 
 // 如果需要保留单独的 Objective-C 头文件，可以在这里导入
 // #import <OperaAdxSDK/OperaAdxInterstitialAdDelegate.h>

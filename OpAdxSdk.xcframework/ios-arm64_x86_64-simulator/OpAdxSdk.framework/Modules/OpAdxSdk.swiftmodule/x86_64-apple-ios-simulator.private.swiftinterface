@@ -1,7 +1,7 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 6.2.3 effective-5.10 (swiftlang-6.2.3.3.21 clang-1700.6.3.2)
+// swift-compiler-version: Apple Swift version 6.2.4 effective-5.10 (swiftlang-6.2.4.1.4 clang-1700.6.4.2)
 // swift-module-flags: -target x86_64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name OpAdxSdk
-// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.2.3
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.2.4
 import AVFoundation
 import AdSupport
 import AppTrackingTransparency
@@ -15,6 +15,7 @@ import Foundation
 import ImageIO
 import MobileCoreServices
 import Network
+import StoreKit
 import Swift
 import SystemConfiguration
 import UIKit
@@ -338,10 +339,35 @@ extension OpAdxSdk.OpAdxRewardedInterstitialAdBridge {
   @objc public static var standardAdSizes: [OpAdxSdk.OpAdxAdSize] {
     @objc get
   }
+  @objc public static var skAdNetworkManager: OpAdxSdk.OpAdxSKAdNetworkManager {
+    @objc get
+  }
+  @objc public static var skAdNetworkConversionMapper: OpAdxSdk.OpAdxSKAdNetworkConversionMapper {
+    @objc get
+  }
+  @objc public static func setSKAdNetworkEnabled(_ enabled: Swift.Bool)
+  @objc public static func setSKAdNetworkDebugLogEnabled(_ enabled: Swift.Bool)
+  @objc public static func updateIOSAppId(_ iOSAppId: Swift.String)
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static var currentIOSAppId: Swift.String? {
+    @objc get
+  }
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static func trackSKAdNetworkEvent(_ event: OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static func trackSKAdNetworkPurchase(amount: Swift.Double, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
+  @objc public static func registerCustomSKAdNetworkEvent(_ eventName: Swift.String, conversionValue: Swift.Int)
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static func trackCustomSKAdNetworkEvent(_ eventName: Swift.String, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
   @objc override dynamic public init()
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc public class OpAdxAppOpenAd : OpAdxSdk.FullscreenAd {
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxAppOpenAdInteractionListener)
   @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxAppOpenAdLoadListener)
@@ -434,7 +460,7 @@ public class OpAdxClosureSdkInitCompleteListener : OpAdxSdk.OpAdxOnSdkInitComple
 }
 @_hasMissingDesignatedInitializers @objc public class OpAdxSdkInitConfig : ObjectiveC.NSObject {
   @objc final public let applicationId: Swift.String
-  @objc final public let iOSAppId: Swift.String?
+  @objc public var iOSAppId: Swift.String?
   @objc final public let publisherName: Swift.String?
   @objc public var mediationProvider: OpAdxSdk.AdMediationProvider?
   @objc final public let usPrivacy: Swift.String?
@@ -609,6 +635,10 @@ extension OpAdxSdk.RewardSsvOptions {
   #if compiler(>=5.3) && $NonescapableTypes
   @objc public static func getOpAdxSdkMuted() -> Foundation.NSNumber?
   #endif
+  @objc public func updateIOSAppId(_ iOSAppId: Swift.String)
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func getCurrentIOSAppId() -> Swift.String?
+  #endif
   @objc override dynamic public init()
   @objc deinit
 }
@@ -691,6 +721,7 @@ public class OpAdxImpressionTracker {
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc public class OpAdxInterstitialAd : OpAdxSdk.FullscreenAd {
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxInterstitialAdInteractionListener)
   @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxInterstitialAdLoadListener)
@@ -727,6 +758,7 @@ public class OpAdxImpressionTracker {
 }
 @objc public class OpAdxNativeAd : ObjectiveC.NSObject {
   @objc final public let placementId: Swift.String
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func adSize() -> CoreFoundation.CGSize
   #if compiler(>=5.3) && $NonescapableTypes
@@ -904,18 +936,18 @@ extension UIKit.UIView {
   @objc final public let code: Swift.Int
   @objc final public let message: Swift.String
   @objc public init(code: Swift.Int, message: Swift.String)
-  public static let UNKNOWN_ERROR: Swift.Int
-  public static let ILLEGAL_API_CALL: Swift.Int
-  public static let INVALID_PARAMETER: Swift.Int
-  public static let ASSETS_ERROR: Swift.Int
-  public static let NETWORK_ERROR: Swift.Int
-  public static let NO_FILL: Swift.Int
-  public static let SDK_INITIALIZATION_ERROR: Swift.Int
-  public static let SHOW_AD_REUSED: Swift.Int
-  public static let SHOW_AD_NOT_FOREGROUND: Swift.Int
-  public static let SHOW_AD_INVALIDATED: Swift.Int
-  public static let SHOW_AD_START_ACTIVITY_ERROR: Swift.Int
-  public static let BID_RESP_DEBUGGING_NOT_ALLOWED: Swift.Int
+  @objc public static let UNKNOWN_ERROR: Swift.Int
+  @objc public static let ILLEGAL_API_CALL: Swift.Int
+  @objc public static let INVALID_PARAMETER: Swift.Int
+  @objc public static let ASSETS_ERROR: Swift.Int
+  @objc public static let NETWORK_ERROR: Swift.Int
+  @objc public static let NO_FILL: Swift.Int
+  @objc public static let SDK_INITIALIZATION_ERROR: Swift.Int
+  @objc public static let SHOW_AD_REUSED: Swift.Int
+  @objc public static let SHOW_AD_NOT_FOREGROUND: Swift.Int
+  @objc public static let SHOW_AD_INVALIDATED: Swift.Int
+  @objc public static let SHOW_AD_START_ACTIVITY_ERROR: Swift.Int
+  @objc public static let BID_RESP_DEBUGGING_NOT_ALLOWED: Swift.Int
   @objc public func nserror() -> Foundation.NSError
   @objc deinit
 }
@@ -1051,7 +1083,139 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
   @_Concurrency.MainActor @preconcurrency @objc dynamic public func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentsAt urls: [Foundation.URL])
   @_Concurrency.MainActor @preconcurrency @objc dynamic public func documentPickerWasCancelled(_ controller: UIKit.UIDocumentPickerViewController)
 }
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class OpAdxSKAdNetworkConversionMapper : ObjectiveC.NSObject {
+  @objc public static let shared: OpAdxSdk.OpAdxSKAdNetworkConversionMapper
+  @objc public enum ConversionEvent : Swift.Int {
+    case appInstalled = 0
+    case appOpened = 1
+    case registration = 2
+    case tutorialStarted = 3
+    case tutorialCompleted = 5
+    case firstSession = 10
+    case level1Completed = 11
+    case level2Completed = 12
+    case level5Completed = 15
+    case level10Completed = 19
+    case firstContentView = 20
+    case firstSearch = 21
+    case addToWishlist = 22
+    case addToCart = 25
+    case initiateCheckout = 27
+    case trialStarted = 30
+    case subscriptionStarted = 35
+    case firstPurchase = 40
+    case secondPurchase = 42
+    case highValuePurchase = 45
+    case vipPurchase = 49
+    case day3Retention = 50
+    case day7Retention = 52
+    case day14Retention = 55
+    case day30Retention = 58
+    case powerUser = 59
+    case subscriptionRenewal = 60
+    case referralCompleted = 61
+    case whale = 62
+    case maxValue = 63
+    #if compiler(>=5.3) && $NonescapableTypes
+    public init?(rawValue: Swift.Int)
+    #endif
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func registerCustomEvent(_ eventName: Swift.String, conversionValue: Swift.Int)
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func getConversionValue(forEvent eventName: Swift.String) -> Foundation.NSNumber?
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func trackEvent(_ event: OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func trackCustomEvent(_ eventName: Swift.String, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func trackPurchase(amount: Swift.Double, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
+  @objc deinit
+}
+@objc extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper {
+  @objc public static func conversionValue(for event: OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent) -> Swift.Int
+}
+@objc public class OpAdxSKAdNetworkSignatureData : ObjectiveC.NSObject {
+  @objc final public let networkIdentifier: Swift.String
+  @objc final public let campaignIdentifier: Foundation.NSNumber
+  @objc final public let destinationAppStoreIdentifier: Foundation.NSNumber
+  @objc final public let nonce: Swift.String
+  @objc final public let sourceAppStoreIdentifier: Foundation.NSNumber
+  @objc final public let timestamp: Foundation.NSNumber
+  @objc final public let signature: Swift.String
+  @objc final public let version: Swift.String?
+  @objc final public let sourceIdentifier: Foundation.NSNumber?
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public init(networkIdentifier: Swift.String, campaignIdentifier: Foundation.NSNumber, destinationAppStoreIdentifier: Foundation.NSNumber, nonce: Swift.String, sourceAppStoreIdentifier: Foundation.NSNumber, timestamp: Foundation.NSNumber, signature: Swift.String, version: Swift.String? = nil, sourceIdentifier: Foundation.NSNumber? = nil)
+  #endif
+  @objc deinit
+}
+@objc public class OpAdxSKAdNetworkConversionConfiguration : ObjectiveC.NSObject {
+  @objc final public let conversionValue: Swift.Int
+  @objc final public let coarseConversionValue: Swift.String?
+  @objc final public let lockWindow: Swift.Bool
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public init(conversionValue: Swift.Int, coarseConversionValue: Swift.String? = nil, lockWindow: Swift.Bool = false)
+  #endif
+  @objc public static let coarseConversionValueLow: Swift.String
+  @objc public static let coarseConversionValueMedium: Swift.String
+  @objc public static let coarseConversionValueHigh: Swift.String
+  @objc deinit
+}
+@objc public enum OpAdxSKAdNetworkVersion : Swift.Int {
+  case version2_0 = 20
+  case version2_1 = 21
+  case version2_2 = 22
+  case version3_0 = 30
+  case version4_0 = 40
+  #if compiler(>=5.3) && $NonescapableTypes
+  public init?(rawValue: Swift.Int)
+  #endif
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class OpAdxSKAdNetworkManager : ObjectiveC.NSObject {
+  @objc public static let shared: OpAdxSdk.OpAdxSKAdNetworkManager
+  @objc public var isEnabled: Swift.Bool
+  @objc public var enableDebugLog: Swift.Bool
+  @objc public func registerApp()
+  @objc public func startAttribution(with signatureData: OpAdxSdk.OpAdxSKAdNetworkSignatureData)
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public func updateConversionValue(_ conversionValue: Swift.Int, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
+  #if compiler(>=5.3) && $NonescapableTypes
+  @available(iOS 16.1, *)
+  @objc public func updateConversionValue(with configuration: OpAdxSdk.OpAdxSKAdNetworkConversionConfiguration, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  #endif
+  @objc deinit
+}
+@objc extension OpAdxSdk.OpAdxSKAdNetworkManager {
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static func createSignatureData(from dictionary: [Swift.String : Any]) -> OpAdxSdk.OpAdxSKAdNetworkSignatureData?
+  #endif
+}
+@_inheritsConvenienceInitializers @objc public class OpAdxSKAdNetworkSignatureGenerator : ObjectiveC.NSObject {
+  #if compiler(>=5.3) && $NonescapableTypes
+  @objc public static func generateSignature(version: Swift.String, networkIdentifier: Swift.String, campaignId: Swift.Int, destinationAppStoreId: Swift.Int, nonce: Swift.String, sourceAppStoreId: Swift.Int, timestamp: Swift.Int64, privateKey: Swift.String, sourceIdentifier: Foundation.NSNumber? = nil) -> Swift.String?
+  #endif
+  @objc public static func verifySignature(_ signatureData: OpAdxSdk.OpAdxSKAdNetworkSignatureData, publicKey: Swift.String) -> Swift.Bool
+  @objc public static func generateNonce() -> Swift.String
+  @objc public static func generateTimestamp() -> Swift.Int64
+  @objc public static func isValidCampaignId(_ campaignId: Swift.Int) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
 @_hasMissingDesignatedInitializers @objc public class OpAdxRewardedAd : OpAdxSdk.IncentivizedFullscreenAd {
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxRewardedAdInteractionListener)
   @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxRewardedAdLoadListener)
@@ -1074,6 +1238,7 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc public class OpAdxRewardedInterstitialAd : OpAdxSdk.IncentivizedFullscreenAd {
+  @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func show(on viewController: UIKit.UIViewController, listener: any OpAdxSdk.OpAdxRewardedInterstitialAdInteractionListener)
   @objc public func load(placementId: Swift.String, listener: any OpAdxSdk.OpAdxRewardedInterstitialAdLoadListener)
@@ -1112,3 +1277,9 @@ extension OpAdxSdk.AdFormat : Swift.RawRepresentable {}
 extension OpAdxSdk.AdMediation : Swift.Equatable {}
 extension OpAdxSdk.AdMediation : Swift.Hashable {}
 extension OpAdxSdk.AdMediation : Swift.RawRepresentable {}
+extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent : Swift.Equatable {}
+extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent : Swift.Hashable {}
+extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent : Swift.RawRepresentable {}
+extension OpAdxSdk.OpAdxSKAdNetworkVersion : Swift.Equatable {}
+extension OpAdxSdk.OpAdxSKAdNetworkVersion : Swift.Hashable {}
+extension OpAdxSdk.OpAdxSKAdNetworkVersion : Swift.RawRepresentable {}
