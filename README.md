@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log (Object-C)
 
+(2.8.3) - 使用xcode(16.2)编译,提高兼容性 
+
 (2.8.2) - 解决bundleId问题 
 
 (2.8.1) - 优化 
@@ -37,7 +39,7 @@ OpAdxSdk 是一个高性能的 iOS 移动广告 SDK，支持 Banner、插屏、�
 
   * **iOS 13+** 
   * **CocoaPods**
-  * **Xcode 16.4+**
+  * **Xcode 16.2+**
   * **Swift 5.0+** 
   
 ---  
