@@ -417,6 +417,15 @@ typedef SWIFT_ENUM(NSInteger, LossReason, open) {
   LossReasonLowerThanHighestPrice = 102,
 };
 
+@protocol OpAdxNativeAdListener;
+
+SWIFT_CLASS("_TtC8OpAdxSdk14NativeAdLoader")
+@interface NativeAdLoader : NSObject
++ (void)loadAdWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxNativeAdListener> _Nonnull)listener;
++ (void)loadC2SBidAdWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxNativeAdListener> _Nonnull)listener;
++ (void)loadRtbAdWithPlacementId:(NSString * _Nonnull)placementId bidResponse:(NSString * _Nonnull)bidResponse listener:(id <OpAdxNativeAdListener> _Nonnull)listener;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
 
 
 SWIFT_CLASS("_TtC8OpAdxSdk30ObjectiveCInitCompleteListener")
@@ -853,8 +862,39 @@ SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxBannerAdView")
 ///
 - (void)setAutoRefreshInterval:(NSInteger)seconds;
 - (void)loadAdWithListener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
+- (void)loadC2SBidAdWithListener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
+- (void)loadRtbAdWithBidResponse:(NSString * _Nonnull)bidResponse listener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
 /// 设置是否启用自动刷新
 - (void)setAutoRefreshEnabled:(BOOL)enabled;
+@end
+
+
+SWIFT_PROTOCOL("_TtP8OpAdxSdk21OpAdxBidTokenCallback_")
+@protocol OpAdxBidTokenCallback
+/// Called when a bid token is collected successfully.
+/// @param bidToken the non-empty bid token
+- (void)onSuccessWithBidToken:(NSString * _Nonnull)bidToken;
+/// Called when an error occurs while collecting a bid token.
+- (void)onErrorWithError:(OpAdxAdError * _Nonnull)error;
+@end
+
+
+SWIFT_CLASS_NAMED("OpAdxBidTokenRequest")
+@interface OpAdxBidTokenRequest : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+SWIFT_CLASS_NAMED("OpAdxBidTokenRequestBuilder")
+@interface OpAdxBidTokenRequestBuilder : NSObject
+- (nonnull instancetype)initWithAdMediation:(NSString * _Nonnull)adMediation OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)placementId:(NSString * _Nullable)config;
+- (nonnull instancetype)adFormat:(NSString * _Nullable)config;
+- (nonnull instancetype)adSize:(OpAdxAdSize * _Nullable)config;
+- (OpAdxBidTokenRequest * _Nonnull)build SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 @class OpAdxMediaView;
@@ -937,6 +977,10 @@ SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// 加载广告
 - (void)loadAd;
+/// 加载 Client Bidding 广告
+- (void)loadC2SBid;
+/// 获取 AdBid 对象（用于 Client Bidding）
+- (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 /// 展示广告
 /// \param viewController 展示广告的视图控制器
 ///
@@ -991,6 +1035,70 @@ SWIFT_CLASS("_TtC8OpAdxSdk34OpAdxInterstitialAdLoadListenerImp")
 - (nonnull instancetype)initOnAdLoaded:(void (^ _Nonnull)(NSObject * _Nonnull))onAdLoaded onAdFailedToLoad:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToLoad OBJC_DESIGNATED_INITIALIZER;
 @end
 
+/// SDK日志级别
+typedef SWIFT_ENUM(NSInteger, OpAdxLogLevel, open) {
+  OpAdxLogLevelVerbose = 0,
+  OpAdxLogLevelDebug = 1,
+  OpAdxLogLevelInfo = 2,
+  OpAdxLogLevelWarning = 3,
+  OpAdxLogLevelError = 4,
+  OpAdxLogLevelNone = 5,
+};
+
+
+/// Opera Ads SDK 日志工具
+SWIFT_CLASS("_TtC8OpAdxSdk11OpAdxLogger")
+@interface OpAdxLogger : NSObject
+/// 当前日志级别，默认为 info
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) enum OpAdxLogLevel logLevel;)
++ (enum OpAdxLogLevel)logLevel SWIFT_WARN_UNUSED_RESULT;
++ (void)setLogLevel:(enum OpAdxLogLevel)value;
+/// 是否启用日志（快捷方式）
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isEnabled;)
++ (BOOL)isEnabled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIsEnabled:(BOOL)newValue;
+/// 输出详细日志
++ (void)verbose:(NSString * _Nonnull)message tag:(NSString * _Nonnull)tag;
+/// 输出调试日志
++ (void)debug:(NSString * _Nonnull)message tag:(NSString * _Nonnull)tag;
+/// 输出信息日志
++ (void)info:(NSString * _Nonnull)message tag:(NSString * _Nonnull)tag;
+/// 输出警告日志
++ (void)warning:(NSString * _Nonnull)message tag:(NSString * _Nonnull)tag;
+/// 输出错误日志
++ (void)logError:(NSString * _Nonnull)message tag:(NSString * _Nonnull)tag;
+/// 记录广告加载开始
++ (void)logAdLoadStartWithAdFormat:(NSString * _Nonnull)adFormat placementId:(NSString * _Nonnull)placementId;
+/// 记录广告加载成功
++ (void)logAdLoadSuccessWithAdFormat:(NSString * _Nonnull)adFormat placementId:(NSString * _Nonnull)placementId ecpm:(double)ecpm;
+/// 记录广告加载失败
++ (void)logAdLoadFailedWithAdFormat:(NSString * _Nonnull)adFormat placementId:(NSString * _Nonnull)placementId error:(OpAdxAdError * _Nonnull)error;
+/// 记录广告展示
++ (void)logAdImpressionWithAdFormat:(NSString * _Nonnull)adFormat placementId:(NSString * _Nonnull)placementId;
+/// 记录广告点击
++ (void)logAdClickWithAdFormat:(NSString * _Nonnull)adFormat placementId:(NSString * _Nonnull)placementId;
+/// 记录广告关闭
++ (void)logAdClosedWithAdFormat:(NSString * _Nonnull)adFormat placementId:(NSString * _Nonnull)placementId;
+/// 记录竞价胜出
++ (void)logBidWinWithPlacementId:(NSString * _Nonnull)placementId ecpm:(double)ecpm secondPrice:(double)secondPrice;
+/// 记录竞价失败
++ (void)logBidLoseWithPlacementId:(NSString * _Nonnull)placementId ecpm:(double)ecpm reason:(NSString * _Nonnull)reason;
+/// 记录Bid Token获取
++ (void)logBidTokenRequestWithAdFormat:(NSString * _Nullable)adFormat placementId:(NSString * _Nullable)placementId;
+/// 记录Bid Token成功
++ (void)logBidTokenSuccessWithTokenLength:(NSInteger)tokenLength;
+/// 记录Bid Token失败
++ (void)logBidTokenFailedWithError:(OpAdxAdError * _Nonnull)error;
+/// 记录SDK初始化开始
++ (void)logSDKInitStartWithAppId:(NSString * _Nonnull)appId;
+/// 记录SDK初始化成功
++ (void)logSDKInitSuccessWithVersion:(NSString * _Nonnull)version;
+/// 记录SDK初始化失败
++ (void)logSDKInitFailedWithError:(NSError * _Nonnull)error;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
 
 SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 @interface OpAdxMediaView : UIView
@@ -1008,7 +1116,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 
 @class NSNumber;
 @class OpAdxNativeAdRootView;
-@protocol OpAdxNativeAdListener;
 
 SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 @interface OpAdxNativeAd : NSObject
@@ -1021,6 +1128,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (NSNumber * _Nullable)starRating SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nullable)callToAction SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nullable)sponsor SWIFT_WARN_UNUSED_RESULT;
+/// Privacy policy URL for the native ad (ADRD-451)
+- (NSURL * _Nullable)privacy SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)iconUrl SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)imageUrl SWIFT_WARN_UNUSED_RESULT;
 - (OpAdxMediaView * _Nullable)getBoundMediaView SWIFT_WARN_UNUSED_RESULT;
@@ -1031,7 +1140,9 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (BOOL)isAdInvalidated SWIFT_WARN_UNUSED_RESULT;
 - (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (void)destroy;
-- (void)loadAdWithPlacementId:(NSString * _Nonnull)placementId bidResponse:(NSString * _Nullable)bidResponse listener:(id <OpAdxNativeAdListener> _Nonnull)listener;
+- (void)loadAdWithListener:(id <OpAdxNativeAdListener> _Nonnull)listener;
+- (void)loadC2SBidWithListener:(id <OpAdxNativeAdListener> _Nonnull)listener;
+- (void)loadRtbWithBidResponse:(NSString * _Nonnull)bidResponse listener:(id <OpAdxNativeAdListener> _Nonnull)listener;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1065,6 +1176,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly, copy) NSString * _Nullable callToAction;
 /// 广告赞助商
 @property (nonatomic, readonly, copy) NSString * _Nullable sponsor;
+/// 隐私政策URL (ADRD-451)
+@property (nonatomic, readonly, copy) NSURL * _Nullable privacy;
 /// 广告尺寸
 @property (nonatomic, readonly) CGSize adSize;
 /// 广告是否已失效
@@ -1431,6 +1544,12 @@ SWIFT_CLASS("_TtC8OpAdxSdk8OpAdxSDK")
 + (void)initializeWithConfig:(OpAdxSdkInitConfig * _Nonnull)initConfig;
 /// 初始化 SDK（带回调，Objective-C 风格）
 + (void)initializeWithConfig:(OpAdxSdkInitConfig * _Nonnull)initConfig onSuccess:(void (^ _Nullable)(void))onSuccess onError:(void (^ _Nullable)(NSError * _Nonnull))onError;
+/// 获取编码的 bid token，应在 SDK 初始化后调用（Objective-C API）
+/// \param request Bid token 请求对象（使用 OpAdxBidTokenRequest.Builder 构建）
+///
+/// \param callback 回调接口
+///
++ (void)getBidTokenWithRequest:(OpAdxBidTokenRequest * _Nonnull)request callback:(id <OpAdxBidTokenCallback> _Nonnull)callback;
 /// 创建横幅广告（Objective-C 风格）
 + (OpAdxBannerAdBridge * _Nonnull)createBannerAdWith:(NSString * _Nonnull)placementId adSize:(OpAdxAdSize * _Nonnull)adSize SWIFT_WARN_UNUSED_RESULT;
 /// 创建标准横幅广告（320x50，Objective-C 风格）
@@ -1619,7 +1738,9 @@ typedef SWIFT_ENUM(NSInteger, ConversionEvent, open) {
 + (NSInteger)conversionValueFor:(enum ConversionEvent)event SWIFT_WARN_UNUSED_RESULT;
 @end
 
+enum SKOverlayDisplayStrategy : NSInteger;
 @class OpAdxSKAdNetworkSignatureData;
+@class UIWindowScene;
 
 /// SKAdNetwork 管理器 - 处理广告归因和转化值更新
 SWIFT_CLASS("_TtC8OpAdxSdk23OpAdxSKAdNetworkManager")
@@ -1632,6 +1753,22 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 @property (nonatomic) BOOL isEnabled;
 /// 是否启用调试日志
 @property (nonatomic) BOOL enableDebugLog;
+/// 是否使用 SKOverlay 显示广告（fidelity=0）。默认为 true。
+/// 如果为 false，将使用普通浏览器跳转方式（fidelity=1）
+@property (nonatomic) BOOL useSKOverlay;
+/// SKOverlay 显示策略
+/// <ul>
+///   <li>
+///     auto（默认）: 自动根据广告格式选择（推荐）
+///   </li>
+///   <li>
+///     onImpression: 所有广告展示时就显示 SKOverlay
+///   </li>
+///   <li>
+///     onClick: 所有广告点击时才显示 SKOverlay
+///   </li>
+/// </ul>
+@property (nonatomic) enum SKOverlayDisplayStrategy overlayDisplayStrategy;
 /// 注册应用到 SKAdNetwork（应在应用启动时调用一次）
 - (void)registerApp;
 /// 启动 SKAdNetwork 归因（当用户点击广告时调用）
@@ -1650,11 +1787,23 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 /// \param completion 完成回调
 ///
 - (void)updateConversionValueWith:(OpAdxSKAdNetworkConversionConfiguration * _Nonnull)configuration completion:(void (^ _Nullable)(NSError * _Nullable))completion SWIFT_AVAILABILITY(ios,introduced=16.1);
+/// 显示 SKOverlay（应用内 App Store 覆盖层）
+/// \param skAdNetworkData SKAdNetwork 数据字典
+///
+/// \param windowScene 用于显示 overlay 的 window scene（iOS 13+）
+///
+///
+/// returns:
+/// 是否成功显示 SKOverlay
+- (BOOL)presentOverlayWith:(NSDictionary<NSString *, id> * _Nonnull)skAdNetworkData in:(UIWindowScene * _Nullable)windowScene SWIFT_WARN_UNUSED_RESULT SWIFT_AVAILABILITY(ios,introduced=14.0);
+/// 关闭当前显示的 SKOverlay
+- (void)dismissOverlay SWIFT_AVAILABILITY(ios,introduced=14.0);
 @end
 
 
 @interface OpAdxSKAdNetworkManager (SWIFT_EXTENSION(OpAdxSdk))
 /// 从字典创建签名数据（便于从服务器响应解析）
+/// 支持 SKAdNetwork 4.0+ 格式（fidelities数组）和旧版本格式
 /// \param dictionary 包含签名参数的字典
 ///
 ///
@@ -1772,6 +1921,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSdkCore
 - (void)initializeWithCompletionWithInitConfig:(OpAdxSdkInitConfig * _Nonnull)initConfig onSuccess:(void (^ _Nonnull)(void))onSuccess onError:(void (^ _Nonnull)(NSError * _Nonnull))onError;
 + (void)setOpAdxSdkMuted:(NSNumber * _Nullable)muted;
 + (NSNumber * _Nullable)getOpAdxSdkMuted SWIFT_WARN_UNUSED_RESULT;
+/// 获取编码的 bid token，应在 SDK 初始化后调用（Objective-C API）
+/// \param request Bid token 请求对象
+///
+/// \param callback 回调接口
+///
+- (void)getBidTokenWithRequest:(OpAdxBidTokenRequest * _Nonnull)request callback:(id <OpAdxBidTokenCallback> _Nonnull)callback;
 /// 更新 iOS App ID
 /// \param iOSAppId 新的 iOS App Bundle Identifier
 ///
@@ -1850,6 +2005,24 @@ SWIFT_CLASS("_TtC8OpAdxSdk16RewardSsvOptions")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+/// SKOverlay 显示策略
+typedef SWIFT_ENUM(NSInteger, SKOverlayDisplayStrategy, open) {
+/// 广告展示时就显示 SKOverlay（适合全屏广告：Interstitial、Rewarded、App Open）
+  SKOverlayDisplayStrategyOnImpression = 0,
+/// 点击广告时才显示 SKOverlay（适合非侵入式广告：Banner、Native）
+  SKOverlayDisplayStrategyOnClick = 1,
+/// 自动根据广告格式选择策略（推荐）
+/// <ul>
+///   <li>
+///     全屏广告（Interstitial、Rewarded、RewardedInterstitial、App Open）→ onImpression
+///   </li>
+///   <li>
+///     非全屏广告（Banner、Native）→ onClick
+///   </li>
+/// </ul>
+  SKOverlayDisplayStrategyAuto = 2,
+};
 
 
 
