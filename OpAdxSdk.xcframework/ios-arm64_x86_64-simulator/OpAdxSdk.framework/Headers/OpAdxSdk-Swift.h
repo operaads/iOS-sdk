@@ -1533,8 +1533,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk42OpAdxRewardedInterstitialAdLoadListenerImp")
 
 @class OpAdxSdkInitConfig;
 @class OpAdxSKAdNetworkManager;
-@class OpAdxSKAdNetworkConversionMapper;
-enum ConversionEvent : NSInteger;
 
 /// Opera Ads SDK 主入口点
 /// 提供 Objective-C 和 Swift 统一的 API
@@ -1592,9 +1590,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 /// 获取 SKAdNetwork 管理器（用于高级设置）
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkManager * _Nonnull skAdNetworkManager;)
 + (OpAdxSKAdNetworkManager * _Nonnull)skAdNetworkManager SWIFT_WARN_UNUSED_RESULT;
-/// 获取 SKAdNetwork 转化值映射器（用于追踪转化事件）
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkConversionMapper * _Nonnull skAdNetworkConversionMapper;)
-+ (OpAdxSKAdNetworkConversionMapper * _Nonnull)skAdNetworkConversionMapper SWIFT_WARN_UNUSED_RESULT;
 /// 启用/禁用 SKAdNetwork 支持（默认启用）
 + (void)setSKAdNetworkEnabled:(BOOL)enabled;
 /// 启用/禁用 SKAdNetwork 调试日志（默认禁用）
@@ -1603,143 +1598,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 /// 获取当前的 iOS App ID
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nullable currentIOSAppId;)
 + (NSString * _Nullable)currentIOSAppId SWIFT_WARN_UNUSED_RESULT;
-/// 追踪 SKAdNetwork 转化事件
-/// \param event 预定义的转化事件
-///
-/// \param completion 完成回调
-///
-+ (void)trackSKAdNetworkEvent:(enum ConversionEvent)event completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 追踪 SKAdNetwork 购买事件
-/// \param amount 购买金额（美元）
-///
-/// \param completion 完成回调
-///
-+ (void)trackSKAdNetworkPurchaseWithAmount:(double)amount completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 注册自定义 SKAdNetwork 转化事件
-/// \param eventName 事件名称
-///
-/// \param conversionValue 转化值 (0-63)
-///
-+ (void)registerCustomSKAdNetworkEvent:(NSString * _Nonnull)eventName conversionValue:(NSInteger)conversionValue;
-/// 追踪自定义 SKAdNetwork 转化事件
-/// \param eventName 事件名称
-///
-/// \param completion 完成回调
-///
-+ (void)trackCustomSKAdNetworkEvent:(NSString * _Nonnull)eventName completion:(void (^ _Nullable)(NSError * _Nullable))completion;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-
-/// SKAdNetwork 转化值配置
-SWIFT_CLASS("_TtC8OpAdxSdk39OpAdxSKAdNetworkConversionConfiguration")
-@interface OpAdxSKAdNetworkConversionConfiguration : NSObject
-/// 转化值 (0-63)
-@property (nonatomic, readonly) NSInteger conversionValue;
-/// 粗粒度转化值 (可选，SKAdNetwork 4.0+)
-@property (nonatomic, readonly, copy) NSString * _Nullable coarseConversionValue;
-/// 是否锁定转化值 (SKAdNetwork 4.0+)
-@property (nonatomic, readonly) BOOL lockWindow;
-- (nonnull instancetype)initWithConversionValue:(NSInteger)conversionValue coarseConversionValue:(NSString * _Nullable)coarseConversionValue lockWindow:(BOOL)lockWindow OBJC_DESIGNATED_INITIALIZER;
-/// 预定义的粗粒度转化值
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull coarseConversionValueLow;)
-+ (NSString * _Nonnull)coarseConversionValueLow SWIFT_WARN_UNUSED_RESULT;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull coarseConversionValueMedium;)
-+ (NSString * _Nonnull)coarseConversionValueMedium SWIFT_WARN_UNUSED_RESULT;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull coarseConversionValueHigh;)
-+ (NSString * _Nonnull)coarseConversionValueHigh SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
-
-
-/// SKAdNetwork 转化值映射器 - 将用户事件映射到转化值 (0-63)
-SWIFT_CLASS("_TtC8OpAdxSdk32OpAdxSKAdNetworkConversionMapper")
-@interface OpAdxSKAdNetworkConversionMapper : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkConversionMapper * _Nonnull shared;)
-+ (OpAdxSKAdNetworkConversionMapper * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-/// 注册自定义事件映射
-/// \param eventName 事件名称
-///
-/// \param conversionValue 对应的转化值 (0-63)
-///
-- (void)registerCustomEvent:(NSString * _Nonnull)eventName conversionValue:(NSInteger)conversionValue;
-/// 获取自定义事件的转化值
-/// \param eventName 事件名称
-///
-///
-/// returns:
-/// 转化值，如果未注册则返回 nil
-- (NSNumber * _Nullable)getConversionValueForEvent:(NSString * _Nonnull)eventName SWIFT_WARN_UNUSED_RESULT;
-/// 追踪预定义事件并更新转化值
-/// \param event 转化事件
-///
-/// \param completion 完成回调
-///
-- (void)trackEvent:(enum ConversionEvent)event completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 追踪自定义事件
-/// \param eventName 事件名称
-///
-/// \param completion 完成回调
-///
-- (void)trackCustomEvent:(NSString * _Nonnull)eventName completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 基于购买金额追踪购买事件
-/// \param amount 购买金额（美元）
-///
-/// \param completion 完成回调
-///
-- (void)trackPurchaseWithAmount:(double)amount completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-@end
-
-/// 预定义的转化事件
-typedef SWIFT_ENUM(NSInteger, ConversionEvent, open) {
-  ConversionEventAppInstalled = 0,
-  ConversionEventAppOpened = 1,
-  ConversionEventRegistration = 2,
-  ConversionEventTutorialStarted = 3,
-  ConversionEventTutorialCompleted = 5,
-  ConversionEventFirstSession = 10,
-  ConversionEventLevel1Completed = 11,
-  ConversionEventLevel2Completed = 12,
-  ConversionEventLevel5Completed = 15,
-  ConversionEventLevel10Completed = 19,
-  ConversionEventFirstContentView = 20,
-  ConversionEventFirstSearch = 21,
-  ConversionEventAddToWishlist = 22,
-  ConversionEventAddToCart = 25,
-  ConversionEventInitiateCheckout = 27,
-  ConversionEventTrialStarted = 30,
-  ConversionEventSubscriptionStarted = 35,
-  ConversionEventFirstPurchase = 40,
-  ConversionEventSecondPurchase = 42,
-  ConversionEventHighValuePurchase = 45,
-  ConversionEventVipPurchase = 49,
-  ConversionEventDay3Retention = 50,
-  ConversionEventDay7Retention = 52,
-  ConversionEventDay14Retention = 55,
-  ConversionEventDay30Retention = 58,
-  ConversionEventPowerUser = 59,
-  ConversionEventSubscriptionRenewal = 60,
-  ConversionEventReferralCompleted = 61,
-  ConversionEventWhale = 62,
-  ConversionEventMaxValue = 63,
-};
-
-
-@interface OpAdxSKAdNetworkConversionMapper (SWIFT_EXTENSION(OpAdxSdk))
-/// 获取预定义事件的转化值
-/// \param event 转化事件
-///
-///
-/// returns:
-/// 转化值
-+ (NSInteger)conversionValueFor:(enum ConversionEvent)event SWIFT_WARN_UNUSED_RESULT;
-@end
-
 enum SKOverlayDisplayStrategy : NSInteger;
-@class OpAdxSKAdNetworkSignatureData;
 @class UIWindowScene;
 
 /// SKAdNetwork 管理器 - 处理广告归因和转化值更新
@@ -1771,22 +1633,17 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 @property (nonatomic) enum SKOverlayDisplayStrategy overlayDisplayStrategy;
 /// 注册应用到 SKAdNetwork（应在应用启动时调用一次）
 - (void)registerApp;
-/// 启动 SKAdNetwork 归因（当用户点击广告时调用）
-/// \param signatureData 签名参数数据
+/// 开始 SKAN 归因 impression（广告可见时调用）
+/// \param skAdNetworkData SKAdNetwork 数据字典
 ///
-- (void)startAttributionWith:(OpAdxSKAdNetworkSignatureData * _Nonnull)signatureData;
-/// 更新转化值
-/// \param conversionValue 转化值 (0-63)
 ///
-/// \param completion 完成回调
+/// returns:
+/// 不透明的 impression token，需传给 endImpression() 以结束归因窗口
+- (id _Nullable)startImpressionWith:(NSDictionary<NSString *, id> * _Nullable)skAdNetworkData SWIFT_WARN_UNUSED_RESULT;
+/// 结束 SKAN 归因 impression（广告消失时调用）
+/// \param impressionToken startImpression 返回的 token
 ///
-- (void)updateConversionValue:(NSInteger)conversionValue completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 更新转化值（SKAdNetwork 4.0+ 支持粗粒度值和锁定窗口）
-/// \param configuration 转化值配置
-///
-/// \param completion 完成回调
-///
-- (void)updateConversionValueWith:(OpAdxSKAdNetworkConversionConfiguration * _Nonnull)configuration completion:(void (^ _Nullable)(NSError * _Nullable))completion SWIFT_AVAILABILITY(ios,introduced=16.1);
+- (void)endImpression:(id _Nullable)impressionToken;
 /// 显示 SKOverlay（应用内 App Store 覆盖层）
 /// \param skAdNetworkData SKAdNetwork 数据字典
 ///
@@ -1800,6 +1657,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 - (void)dismissOverlay SWIFT_AVAILABILITY(ios,introduced=14.0);
 @end
 
+@class OpAdxSKAdNetworkSignatureData;
 
 @interface OpAdxSKAdNetworkManager (SWIFT_EXTENSION(OpAdxSdk))
 /// 从字典创建签名数据（便于从服务器响应解析）
@@ -1838,61 +1696,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk29OpAdxSKAdNetworkSignatureData")
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
-
-
-/// SKAdNetwork 签名生成器（服务端使用）
-/// 注意：此类主要用于服务端签名生成，客户端通常只需要验证签名
-SWIFT_CLASS("_TtC8OpAdxSdk34OpAdxSKAdNetworkSignatureGenerator")
-@interface OpAdxSKAdNetworkSignatureGenerator : NSObject
-/// 生成 SKAdNetwork 签名（需要私钥）
-/// \param version SKAdNetwork 版本
-///
-/// \param networkIdentifier 广告网络标识符
-///
-/// \param campaignId 广告活动 ID
-///
-/// \param destinationAppStoreId 目标应用 App Store ID
-///
-/// \param nonce 随机 UUID
-///
-/// \param sourceAppStoreId 源应用 App Store ID
-///
-/// \param timestamp 时间戳（毫秒）
-///
-/// \param privateKey ECDSA 私钥（PEM 格式）
-///
-/// \param sourceIdentifier 源标识符（SKAdNetwork 4.0+）
-///
-///
-/// returns:
-/// Base64 编码的签名，如果生成失败则返回 nil
-+ (NSString * _Nullable)generateSignatureWithVersion:(NSString * _Nonnull)version networkIdentifier:(NSString * _Nonnull)networkIdentifier campaignId:(NSInteger)campaignId destinationAppStoreId:(NSInteger)destinationAppStoreId nonce:(NSString * _Nonnull)nonce sourceAppStoreId:(NSInteger)sourceAppStoreId timestamp:(int64_t)timestamp privateKey:(NSString * _Nonnull)privateKey sourceIdentifier:(NSNumber * _Nullable)sourceIdentifier SWIFT_WARN_UNUSED_RESULT;
-/// 验证 SKAdNetwork 签名（客户端使用）
-/// \param signatureData 签名数据
-///
-/// \param publicKey ECDSA 公钥（PEM 格式）
-///
-///
-/// returns:
-/// 签名是否有效
-+ (BOOL)verifySignature:(OpAdxSKAdNetworkSignatureData * _Nonnull)signatureData publicKey:(NSString * _Nonnull)publicKey SWIFT_WARN_UNUSED_RESULT;
-/// 生成随机 nonce (UUID)
-+ (NSString * _Nonnull)generateNonce SWIFT_WARN_UNUSED_RESULT;
-/// 生成当前时间戳（毫秒）
-+ (int64_t)generateTimestamp SWIFT_WARN_UNUSED_RESULT;
-/// 验证 campaignId 范围 (2-100)
-+ (BOOL)isValidCampaignId:(NSInteger)campaignId SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-@end
-
-/// SKAdNetwork 版本枚举
-typedef SWIFT_ENUM(NSInteger, OpAdxSKAdNetworkVersion, open) {
-  OpAdxSKAdNetworkVersionVersion2_0 = 20,
-  OpAdxSKAdNetworkVersionVersion2_1 = 21,
-  OpAdxSKAdNetworkVersionVersion2_2 = 22,
-  OpAdxSKAdNetworkVersionVersion3_0 = 30,
-  OpAdxSKAdNetworkVersionVersion4_0 = 40,
-};
 
 
 SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxSdkConstants")
@@ -3591,8 +3394,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk42OpAdxRewardedInterstitialAdLoadListenerImp")
 
 @class OpAdxSdkInitConfig;
 @class OpAdxSKAdNetworkManager;
-@class OpAdxSKAdNetworkConversionMapper;
-enum ConversionEvent : NSInteger;
 
 /// Opera Ads SDK 主入口点
 /// 提供 Objective-C 和 Swift 统一的 API
@@ -3650,9 +3451,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 /// 获取 SKAdNetwork 管理器（用于高级设置）
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkManager * _Nonnull skAdNetworkManager;)
 + (OpAdxSKAdNetworkManager * _Nonnull)skAdNetworkManager SWIFT_WARN_UNUSED_RESULT;
-/// 获取 SKAdNetwork 转化值映射器（用于追踪转化事件）
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkConversionMapper * _Nonnull skAdNetworkConversionMapper;)
-+ (OpAdxSKAdNetworkConversionMapper * _Nonnull)skAdNetworkConversionMapper SWIFT_WARN_UNUSED_RESULT;
 /// 启用/禁用 SKAdNetwork 支持（默认启用）
 + (void)setSKAdNetworkEnabled:(BOOL)enabled;
 /// 启用/禁用 SKAdNetwork 调试日志（默认禁用）
@@ -3661,143 +3459,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 /// 获取当前的 iOS App ID
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nullable currentIOSAppId;)
 + (NSString * _Nullable)currentIOSAppId SWIFT_WARN_UNUSED_RESULT;
-/// 追踪 SKAdNetwork 转化事件
-/// \param event 预定义的转化事件
-///
-/// \param completion 完成回调
-///
-+ (void)trackSKAdNetworkEvent:(enum ConversionEvent)event completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 追踪 SKAdNetwork 购买事件
-/// \param amount 购买金额（美元）
-///
-/// \param completion 完成回调
-///
-+ (void)trackSKAdNetworkPurchaseWithAmount:(double)amount completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 注册自定义 SKAdNetwork 转化事件
-/// \param eventName 事件名称
-///
-/// \param conversionValue 转化值 (0-63)
-///
-+ (void)registerCustomSKAdNetworkEvent:(NSString * _Nonnull)eventName conversionValue:(NSInteger)conversionValue;
-/// 追踪自定义 SKAdNetwork 转化事件
-/// \param eventName 事件名称
-///
-/// \param completion 完成回调
-///
-+ (void)trackCustomSKAdNetworkEvent:(NSString * _Nonnull)eventName completion:(void (^ _Nullable)(NSError * _Nullable))completion;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-
-/// SKAdNetwork 转化值配置
-SWIFT_CLASS("_TtC8OpAdxSdk39OpAdxSKAdNetworkConversionConfiguration")
-@interface OpAdxSKAdNetworkConversionConfiguration : NSObject
-/// 转化值 (0-63)
-@property (nonatomic, readonly) NSInteger conversionValue;
-/// 粗粒度转化值 (可选，SKAdNetwork 4.0+)
-@property (nonatomic, readonly, copy) NSString * _Nullable coarseConversionValue;
-/// 是否锁定转化值 (SKAdNetwork 4.0+)
-@property (nonatomic, readonly) BOOL lockWindow;
-- (nonnull instancetype)initWithConversionValue:(NSInteger)conversionValue coarseConversionValue:(NSString * _Nullable)coarseConversionValue lockWindow:(BOOL)lockWindow OBJC_DESIGNATED_INITIALIZER;
-/// 预定义的粗粒度转化值
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull coarseConversionValueLow;)
-+ (NSString * _Nonnull)coarseConversionValueLow SWIFT_WARN_UNUSED_RESULT;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull coarseConversionValueMedium;)
-+ (NSString * _Nonnull)coarseConversionValueMedium SWIFT_WARN_UNUSED_RESULT;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull coarseConversionValueHigh;)
-+ (NSString * _Nonnull)coarseConversionValueHigh SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
-
-
-/// SKAdNetwork 转化值映射器 - 将用户事件映射到转化值 (0-63)
-SWIFT_CLASS("_TtC8OpAdxSdk32OpAdxSKAdNetworkConversionMapper")
-@interface OpAdxSKAdNetworkConversionMapper : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkConversionMapper * _Nonnull shared;)
-+ (OpAdxSKAdNetworkConversionMapper * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-/// 注册自定义事件映射
-/// \param eventName 事件名称
-///
-/// \param conversionValue 对应的转化值 (0-63)
-///
-- (void)registerCustomEvent:(NSString * _Nonnull)eventName conversionValue:(NSInteger)conversionValue;
-/// 获取自定义事件的转化值
-/// \param eventName 事件名称
-///
-///
-/// returns:
-/// 转化值，如果未注册则返回 nil
-- (NSNumber * _Nullable)getConversionValueForEvent:(NSString * _Nonnull)eventName SWIFT_WARN_UNUSED_RESULT;
-/// 追踪预定义事件并更新转化值
-/// \param event 转化事件
-///
-/// \param completion 完成回调
-///
-- (void)trackEvent:(enum ConversionEvent)event completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 追踪自定义事件
-/// \param eventName 事件名称
-///
-/// \param completion 完成回调
-///
-- (void)trackCustomEvent:(NSString * _Nonnull)eventName completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 基于购买金额追踪购买事件
-/// \param amount 购买金额（美元）
-///
-/// \param completion 完成回调
-///
-- (void)trackPurchaseWithAmount:(double)amount completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-@end
-
-/// 预定义的转化事件
-typedef SWIFT_ENUM(NSInteger, ConversionEvent, open) {
-  ConversionEventAppInstalled = 0,
-  ConversionEventAppOpened = 1,
-  ConversionEventRegistration = 2,
-  ConversionEventTutorialStarted = 3,
-  ConversionEventTutorialCompleted = 5,
-  ConversionEventFirstSession = 10,
-  ConversionEventLevel1Completed = 11,
-  ConversionEventLevel2Completed = 12,
-  ConversionEventLevel5Completed = 15,
-  ConversionEventLevel10Completed = 19,
-  ConversionEventFirstContentView = 20,
-  ConversionEventFirstSearch = 21,
-  ConversionEventAddToWishlist = 22,
-  ConversionEventAddToCart = 25,
-  ConversionEventInitiateCheckout = 27,
-  ConversionEventTrialStarted = 30,
-  ConversionEventSubscriptionStarted = 35,
-  ConversionEventFirstPurchase = 40,
-  ConversionEventSecondPurchase = 42,
-  ConversionEventHighValuePurchase = 45,
-  ConversionEventVipPurchase = 49,
-  ConversionEventDay3Retention = 50,
-  ConversionEventDay7Retention = 52,
-  ConversionEventDay14Retention = 55,
-  ConversionEventDay30Retention = 58,
-  ConversionEventPowerUser = 59,
-  ConversionEventSubscriptionRenewal = 60,
-  ConversionEventReferralCompleted = 61,
-  ConversionEventWhale = 62,
-  ConversionEventMaxValue = 63,
-};
-
-
-@interface OpAdxSKAdNetworkConversionMapper (SWIFT_EXTENSION(OpAdxSdk))
-/// 获取预定义事件的转化值
-/// \param event 转化事件
-///
-///
-/// returns:
-/// 转化值
-+ (NSInteger)conversionValueFor:(enum ConversionEvent)event SWIFT_WARN_UNUSED_RESULT;
-@end
-
 enum SKOverlayDisplayStrategy : NSInteger;
-@class OpAdxSKAdNetworkSignatureData;
 @class UIWindowScene;
 
 /// SKAdNetwork 管理器 - 处理广告归因和转化值更新
@@ -3829,22 +3494,17 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 @property (nonatomic) enum SKOverlayDisplayStrategy overlayDisplayStrategy;
 /// 注册应用到 SKAdNetwork（应在应用启动时调用一次）
 - (void)registerApp;
-/// 启动 SKAdNetwork 归因（当用户点击广告时调用）
-/// \param signatureData 签名参数数据
+/// 开始 SKAN 归因 impression（广告可见时调用）
+/// \param skAdNetworkData SKAdNetwork 数据字典
 ///
-- (void)startAttributionWith:(OpAdxSKAdNetworkSignatureData * _Nonnull)signatureData;
-/// 更新转化值
-/// \param conversionValue 转化值 (0-63)
 ///
-/// \param completion 完成回调
+/// returns:
+/// 不透明的 impression token，需传给 endImpression() 以结束归因窗口
+- (id _Nullable)startImpressionWith:(NSDictionary<NSString *, id> * _Nullable)skAdNetworkData SWIFT_WARN_UNUSED_RESULT;
+/// 结束 SKAN 归因 impression（广告消失时调用）
+/// \param impressionToken startImpression 返回的 token
 ///
-- (void)updateConversionValue:(NSInteger)conversionValue completion:(void (^ _Nullable)(NSError * _Nullable))completion;
-/// 更新转化值（SKAdNetwork 4.0+ 支持粗粒度值和锁定窗口）
-/// \param configuration 转化值配置
-///
-/// \param completion 完成回调
-///
-- (void)updateConversionValueWith:(OpAdxSKAdNetworkConversionConfiguration * _Nonnull)configuration completion:(void (^ _Nullable)(NSError * _Nullable))completion SWIFT_AVAILABILITY(ios,introduced=16.1);
+- (void)endImpression:(id _Nullable)impressionToken;
 /// 显示 SKOverlay（应用内 App Store 覆盖层）
 /// \param skAdNetworkData SKAdNetwork 数据字典
 ///
@@ -3858,6 +3518,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 - (void)dismissOverlay SWIFT_AVAILABILITY(ios,introduced=14.0);
 @end
 
+@class OpAdxSKAdNetworkSignatureData;
 
 @interface OpAdxSKAdNetworkManager (SWIFT_EXTENSION(OpAdxSdk))
 /// 从字典创建签名数据（便于从服务器响应解析）
@@ -3896,61 +3557,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk29OpAdxSKAdNetworkSignatureData")
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
-
-
-/// SKAdNetwork 签名生成器（服务端使用）
-/// 注意：此类主要用于服务端签名生成，客户端通常只需要验证签名
-SWIFT_CLASS("_TtC8OpAdxSdk34OpAdxSKAdNetworkSignatureGenerator")
-@interface OpAdxSKAdNetworkSignatureGenerator : NSObject
-/// 生成 SKAdNetwork 签名（需要私钥）
-/// \param version SKAdNetwork 版本
-///
-/// \param networkIdentifier 广告网络标识符
-///
-/// \param campaignId 广告活动 ID
-///
-/// \param destinationAppStoreId 目标应用 App Store ID
-///
-/// \param nonce 随机 UUID
-///
-/// \param sourceAppStoreId 源应用 App Store ID
-///
-/// \param timestamp 时间戳（毫秒）
-///
-/// \param privateKey ECDSA 私钥（PEM 格式）
-///
-/// \param sourceIdentifier 源标识符（SKAdNetwork 4.0+）
-///
-///
-/// returns:
-/// Base64 编码的签名，如果生成失败则返回 nil
-+ (NSString * _Nullable)generateSignatureWithVersion:(NSString * _Nonnull)version networkIdentifier:(NSString * _Nonnull)networkIdentifier campaignId:(NSInteger)campaignId destinationAppStoreId:(NSInteger)destinationAppStoreId nonce:(NSString * _Nonnull)nonce sourceAppStoreId:(NSInteger)sourceAppStoreId timestamp:(int64_t)timestamp privateKey:(NSString * _Nonnull)privateKey sourceIdentifier:(NSNumber * _Nullable)sourceIdentifier SWIFT_WARN_UNUSED_RESULT;
-/// 验证 SKAdNetwork 签名（客户端使用）
-/// \param signatureData 签名数据
-///
-/// \param publicKey ECDSA 公钥（PEM 格式）
-///
-///
-/// returns:
-/// 签名是否有效
-+ (BOOL)verifySignature:(OpAdxSKAdNetworkSignatureData * _Nonnull)signatureData publicKey:(NSString * _Nonnull)publicKey SWIFT_WARN_UNUSED_RESULT;
-/// 生成随机 nonce (UUID)
-+ (NSString * _Nonnull)generateNonce SWIFT_WARN_UNUSED_RESULT;
-/// 生成当前时间戳（毫秒）
-+ (int64_t)generateTimestamp SWIFT_WARN_UNUSED_RESULT;
-/// 验证 campaignId 范围 (2-100)
-+ (BOOL)isValidCampaignId:(NSInteger)campaignId SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-@end
-
-/// SKAdNetwork 版本枚举
-typedef SWIFT_ENUM(NSInteger, OpAdxSKAdNetworkVersion, open) {
-  OpAdxSKAdNetworkVersionVersion2_0 = 20,
-  OpAdxSKAdNetworkVersionVersion2_1 = 21,
-  OpAdxSKAdNetworkVersionVersion2_2 = 22,
-  OpAdxSKAdNetworkVersionVersion3_0 = 30,
-  OpAdxSKAdNetworkVersionVersion4_0 = 40,
-};
 
 
 SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxSdkConstants")

@@ -313,19 +313,12 @@ extension OpAdxSdk.OpAdxRewardedInterstitialAdBridge {
   @objc public static var skAdNetworkManager: OpAdxSdk.OpAdxSKAdNetworkManager {
     @objc get
   }
-  @objc public static var skAdNetworkConversionMapper: OpAdxSdk.OpAdxSKAdNetworkConversionMapper {
-    @objc get
-  }
   @objc public static func setSKAdNetworkEnabled(_ enabled: Swift.Bool)
   @objc public static func setSKAdNetworkDebugLogEnabled(_ enabled: Swift.Bool)
   @objc public static func updateIOSAppId(_ iOSAppId: Swift.String)
   @objc public static var currentIOSAppId: Swift.String? {
     @objc get
   }
-  @objc public static func trackSKAdNetworkEvent(_ event: OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
-  @objc public static func trackSKAdNetworkPurchase(amount: Swift.Double, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
-  @objc public static func registerCustomSKAdNetworkEvent(_ eventName: Swift.String, conversionValue: Swift.Int)
-  @objc public static func trackCustomSKAdNetworkEvent(_ eventName: Swift.String, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
   @objc override dynamic public init()
   @objc deinit
 }
@@ -1038,55 +1031,6 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
   @objc override dynamic public init()
   @objc deinit
 }
-@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class OpAdxSKAdNetworkConversionMapper : ObjectiveC.NSObject {
-  @objc public static let shared: OpAdxSdk.OpAdxSKAdNetworkConversionMapper
-  @objc public enum ConversionEvent : Swift.Int {
-    case appInstalled = 0
-    case appOpened = 1
-    case registration = 2
-    case tutorialStarted = 3
-    case tutorialCompleted = 5
-    case firstSession = 10
-    case level1Completed = 11
-    case level2Completed = 12
-    case level5Completed = 15
-    case level10Completed = 19
-    case firstContentView = 20
-    case firstSearch = 21
-    case addToWishlist = 22
-    case addToCart = 25
-    case initiateCheckout = 27
-    case trialStarted = 30
-    case subscriptionStarted = 35
-    case firstPurchase = 40
-    case secondPurchase = 42
-    case highValuePurchase = 45
-    case vipPurchase = 49
-    case day3Retention = 50
-    case day7Retention = 52
-    case day14Retention = 55
-    case day30Retention = 58
-    case powerUser = 59
-    case subscriptionRenewal = 60
-    case referralCompleted = 61
-    case whale = 62
-    case maxValue = 63
-    public init?(rawValue: Swift.Int)
-    public typealias RawValue = Swift.Int
-    public var rawValue: Swift.Int {
-      get
-    }
-  }
-  @objc public func registerCustomEvent(_ eventName: Swift.String, conversionValue: Swift.Int)
-  @objc public func getConversionValue(forEvent eventName: Swift.String) -> Foundation.NSNumber?
-  @objc public func trackEvent(_ event: OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
-  @objc public func trackCustomEvent(_ eventName: Swift.String, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
-  @objc public func trackPurchase(amount: Swift.Double, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
-  @objc deinit
-}
-@objc extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper {
-  @objc public static func conversionValue(for event: OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent) -> Swift.Int
-}
 @objc public class OpAdxSKAdNetworkSignatureData : ObjectiveC.NSObject {
   @objc final public let networkIdentifier: Swift.String
   @objc final public let campaignIdentifier: Foundation.NSNumber
@@ -1099,28 +1043,6 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
   @objc final public let sourceIdentifier: Foundation.NSNumber?
   @objc public init(networkIdentifier: Swift.String, campaignIdentifier: Foundation.NSNumber, destinationAppStoreIdentifier: Foundation.NSNumber, nonce: Swift.String, sourceAppStoreIdentifier: Foundation.NSNumber, timestamp: Foundation.NSNumber, signature: Swift.String, version: Swift.String? = nil, sourceIdentifier: Foundation.NSNumber? = nil)
   @objc deinit
-}
-@objc public class OpAdxSKAdNetworkConversionConfiguration : ObjectiveC.NSObject {
-  @objc final public let conversionValue: Swift.Int
-  @objc final public let coarseConversionValue: Swift.String?
-  @objc final public let lockWindow: Swift.Bool
-  @objc public init(conversionValue: Swift.Int, coarseConversionValue: Swift.String? = nil, lockWindow: Swift.Bool = false)
-  @objc public static let coarseConversionValueLow: Swift.String
-  @objc public static let coarseConversionValueMedium: Swift.String
-  @objc public static let coarseConversionValueHigh: Swift.String
-  @objc deinit
-}
-@objc public enum OpAdxSKAdNetworkVersion : Swift.Int {
-  case version2_0 = 20
-  case version2_1 = 21
-  case version2_2 = 22
-  case version3_0 = 30
-  case version4_0 = 40
-  public init?(rawValue: Swift.Int)
-  public typealias RawValue = Swift.Int
-  public var rawValue: Swift.Int {
-    get
-  }
 }
 @objc public enum SKOverlayDisplayStrategy : Swift.Int {
   case onImpression = 0
@@ -1139,10 +1061,8 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
   @objc public var useSKOverlay: Swift.Bool
   @objc public var overlayDisplayStrategy: OpAdxSdk.SKOverlayDisplayStrategy
   @objc public func registerApp()
-  @objc public func startAttribution(with signatureData: OpAdxSdk.OpAdxSKAdNetworkSignatureData)
-  @objc public func updateConversionValue(_ conversionValue: Swift.Int, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
-  @available(iOS 16.1, *)
-  @objc public func updateConversionValue(with configuration: OpAdxSdk.OpAdxSKAdNetworkConversionConfiguration, completion: (((any Swift.Error)?) -> Swift.Void)? = nil)
+  @objc public func startImpression(with skAdNetworkData: [Swift.String : Any]?) -> Swift.AnyObject?
+  @objc public func endImpression(_ impressionToken: Swift.AnyObject?)
   @available(iOS 14.0, *)
   @objc public func presentOverlay(with skAdNetworkData: [Swift.String : Any], in windowScene: UIKit.UIWindowScene? = nil) -> Swift.Bool
   @available(iOS 14.0, *)
@@ -1152,15 +1072,6 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
 }
 @objc extension OpAdxSdk.OpAdxSKAdNetworkManager {
   @objc public static func createSignatureData(from dictionary: [Swift.String : Any]) -> OpAdxSdk.OpAdxSKAdNetworkSignatureData?
-}
-@_inheritsConvenienceInitializers @objc public class OpAdxSKAdNetworkSignatureGenerator : ObjectiveC.NSObject {
-  @objc public static func generateSignature(version: Swift.String, networkIdentifier: Swift.String, campaignId: Swift.Int, destinationAppStoreId: Swift.Int, nonce: Swift.String, sourceAppStoreId: Swift.Int, timestamp: Swift.Int64, privateKey: Swift.String, sourceIdentifier: Foundation.NSNumber? = nil) -> Swift.String?
-  @objc public static func verifySignature(_ signatureData: OpAdxSdk.OpAdxSKAdNetworkSignatureData, publicKey: Swift.String) -> Swift.Bool
-  @objc public static func generateNonce() -> Swift.String
-  @objc public static func generateTimestamp() -> Swift.Int64
-  @objc public static func isValidCampaignId(_ campaignId: Swift.Int) -> Swift.Bool
-  @objc override dynamic public init()
-  @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc public class OpAdxRewardedAd : OpAdxSdk.IncentivizedFullscreenAd {
   @objc public init(placementId: Swift.String)
@@ -1228,12 +1139,6 @@ extension OpAdxSdk.AdMediation : Swift.RawRepresentable {}
 extension OpAdxSdk.OpAdxLogLevel : Swift.Equatable {}
 extension OpAdxSdk.OpAdxLogLevel : Swift.Hashable {}
 extension OpAdxSdk.OpAdxLogLevel : Swift.RawRepresentable {}
-extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent : Swift.Equatable {}
-extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent : Swift.Hashable {}
-extension OpAdxSdk.OpAdxSKAdNetworkConversionMapper.ConversionEvent : Swift.RawRepresentable {}
-extension OpAdxSdk.OpAdxSKAdNetworkVersion : Swift.Equatable {}
-extension OpAdxSdk.OpAdxSKAdNetworkVersion : Swift.Hashable {}
-extension OpAdxSdk.OpAdxSKAdNetworkVersion : Swift.RawRepresentable {}
 extension OpAdxSdk.SKOverlayDisplayStrategy : Swift.Equatable {}
 extension OpAdxSdk.SKOverlayDisplayStrategy : Swift.Hashable {}
 extension OpAdxSdk.SKOverlayDisplayStrategy : Swift.RawRepresentable {}
