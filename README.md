@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log
 
+(2.11.1) - 支持Swift Package Manager集成，解决潜在的线程安全问题
+
 (2.9.1) - 修复admReady回调未触发问题，修复SSV签名验证错误
 
 (2.9.0) - 支持更多DSP平台,优化曝光上报机制,性能提升
@@ -43,9 +45,9 @@ OpAdxSdk 是一个高性能的 iOS 移动广告 SDK，支持 Banner、插屏、�
 ## Requirements
 
   * **iOS 13+**
-  * **CocoaPods**
   * **Xcode 16.2+**
   * **Swift 5.0+**
+  * **CocoaPods** 或 **Swift Package Manager**
 
 ## 主要特性
 
@@ -65,6 +67,37 @@ OpAdxSdk 根据语言特性提供了两种不同的事件回调方式：
 ---
 ## Installation
 
+### Swift Package Manager (推荐)
+
+在 Xcode 中添加 Swift Package 依赖：
+
+1. 打开 Xcode，选择 **File > Add Package Dependencies...**
+2. 输入仓库地址：
+   ```
+   https://github.com/operaads/iOS-sdk
+   ```
+3. 选择版本规则（建议 **Up to Next Major Version**，当前版本 `2.11.1`）
+4. 点击 **Add Package**，选择 `OpAdxSdk` target 并添加到你的项目
+
+或者在 `Package.swift` 中手动添加依赖：
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/operaads/iOS-sdk", from: "2.11.1")
+]
+```
+
+然后在 target 的 dependencies 中添加：
+
+```swift
+.target(
+    name: "YourApp",
+    dependencies: [
+        .product(name: "OpAdxSdk", package: "iOS-sdk")
+    ]
+)
+```
+
 ### CocoaPods
 
 在你的 `Podfile` 中添加以下依赖：
@@ -72,7 +105,7 @@ OpAdxSdk 根据语言特性提供了两种不同的事件回调方式：
 ```ruby
 target 'YourAppTarget' do
   use_frameworks!
-  pod 'OpAdxSdk', '~> 2.9.0'
+  pod 'OpAdxSdk', '~> 2.11.1'
 end
 ```
 
@@ -84,7 +117,7 @@ pod install
 
 ### 手动集成
 
-下载 `OpAdxSdk.xcframework` 并添加到项目中。
+从 [GitHub Releases](https://github.com/operaads/iOS-sdk/releases) 下载 `OpAdxSdk.xcframework` 并添加到项目中。
 
 > **注意**: OpAdxSdk(2.2.5)版本以后,库由动态库转为静态库，不再需要额外设置 Embed & Sign。
 
