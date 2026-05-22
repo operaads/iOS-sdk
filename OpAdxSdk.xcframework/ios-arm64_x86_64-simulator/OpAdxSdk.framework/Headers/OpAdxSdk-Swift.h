@@ -1594,6 +1594,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 + (void)setSKAdNetworkEnabled:(BOOL)enabled;
 /// 启用/禁用 SKAdNetwork 调试日志（默认禁用）
 + (void)setSKAdNetworkDebugLogEnabled:(BOOL)enabled;
+/// Set COPPA compliance status
+/// \param coppa 1 = COPPA applies, 0 = COPPA does not apply, nil = unspecified
+///
++ (void)setCoppa:(NSNumber * _Nullable)coppa;
+/// Set US Privacy / CCPA string
+/// \param usPrivacy IAB US Privacy string (e.g., “1YNN”), or nil to clear
+///
++ (void)setUSPrivacy:(NSString * _Nullable)usPrivacy;
 + (void)updateIOSAppId:(NSString * _Nonnull)iOSAppId;
 /// 获取当前的 iOS App ID
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nullable currentIOSAppId;)
@@ -1757,7 +1765,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk18OpAdxSdkInitConfig")
 @property (nonatomic, readonly, strong) NSNumber * _Nullable coppa;
 /// Enable debug logging
 @property (nonatomic, readonly) BOOL enableLog;
-@property (nonatomic) BOOL useTestAd;
 /// Convenience method to create a config with minimal required parameters
 + (OpAdxSdkInitConfig * _Nonnull)createWithApplicationId:(NSString * _Nonnull)applicationId iOSAppId:(NSString * _Nonnull)iOSAppId publisherName:(NSString * _Nullable)publisherName SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -3455,6 +3462,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNet
 + (void)setSKAdNetworkEnabled:(BOOL)enabled;
 /// 启用/禁用 SKAdNetwork 调试日志（默认禁用）
 + (void)setSKAdNetworkDebugLogEnabled:(BOOL)enabled;
+/// Set COPPA compliance status
+/// \param coppa 1 = COPPA applies, 0 = COPPA does not apply, nil = unspecified
+///
++ (void)setCoppa:(NSNumber * _Nullable)coppa;
+/// Set US Privacy / CCPA string
+/// \param usPrivacy IAB US Privacy string (e.g., “1YNN”), or nil to clear
+///
++ (void)setUSPrivacy:(NSString * _Nullable)usPrivacy;
 + (void)updateIOSAppId:(NSString * _Nonnull)iOSAppId;
 /// 获取当前的 iOS App ID
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nullable currentIOSAppId;)
@@ -3618,7 +3633,6 @@ SWIFT_CLASS("_TtC8OpAdxSdk18OpAdxSdkInitConfig")
 @property (nonatomic, readonly, strong) NSNumber * _Nullable coppa;
 /// Enable debug logging
 @property (nonatomic, readonly) BOOL enableLog;
-@property (nonatomic) BOOL useTestAd;
 /// Convenience method to create a config with minimal required parameters
 + (OpAdxSdkInitConfig * _Nonnull)createWithApplicationId:(NSString * _Nonnull)applicationId iOSAppId:(NSString * _Nonnull)iOSAppId publisherName:(NSString * _Nullable)publisherName SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;

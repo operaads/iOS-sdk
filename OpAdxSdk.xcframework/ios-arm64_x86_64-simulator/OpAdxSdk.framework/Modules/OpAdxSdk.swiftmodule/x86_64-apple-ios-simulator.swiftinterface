@@ -315,6 +315,8 @@ extension OpAdxSdk.OpAdxRewardedInterstitialAdBridge {
   }
   @objc public static func setSKAdNetworkEnabled(_ enabled: Swift.Bool)
   @objc public static func setSKAdNetworkDebugLogEnabled(_ enabled: Swift.Bool)
+  @objc public static func setCoppa(_ coppa: Foundation.NSNumber?)
+  @objc public static func setUSPrivacy(_ usPrivacy: Swift.String?)
   @objc public static func updateIOSAppId(_ iOSAppId: Swift.String)
   @objc public static var currentIOSAppId: Swift.String? {
     @objc get
@@ -457,7 +459,6 @@ public class OpAdxClosureSdkInitCompleteListener : OpAdxSdk.OpAdxOnSdkInitComple
   @objc final public let coppa: Foundation.NSNumber?
   @objc final public let enableLog: Swift.Bool
   public var useAndroidConfig: Swift.Bool?
-  @objc public var useTestAd: Swift.Bool
   @objc public class Builder : ObjectiveC.NSObject {
     @objc public init(applicationId: Swift.String)
     @discardableResult

@@ -7900,6 +7900,82 @@
           },
           {
             "kind": "Function",
+            "name": "setCoppa",
+            "printedName": "setCoppa(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Foundation.NSNumber?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "NSNumber",
+                    "printedName": "Foundation.NSNumber",
+                    "usr": "c:objc(cs)NSNumber"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@OpAdxSdk@objc(cs)OpAdxSDK(cm)setCoppa:",
+            "mangledName": "$s8OpAdxSdk0aB3SDKC8setCoppayySo8NSNumberCSgFZ",
+            "moduleName": "OpAdxSdk",
+            "static": true,
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "setUSPrivacy",
+            "printedName": "setUSPrivacy(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@OpAdxSdk@objc(cs)OpAdxSDK(cm)setUSPrivacy:",
+            "mangledName": "$s8OpAdxSdk0aB3SDKC12setUSPrivacyyySSSgFZ",
+            "moduleName": "OpAdxSdk",
+            "static": true,
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "updateIOSAppId",
             "printedName": "updateIOSAppId(_:)",
             "children": [
@@ -12582,99 +12658,6 @@
             ]
           },
           {
-            "kind": "Var",
-            "name": "useTestAd",
-            "printedName": "useTestAd",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "c:@M@OpAdxSdk@objc(cs)OpAdxSdkInitConfig(py)useTestAd",
-            "mangledName": "$s8OpAdxSdk0abC10InitConfigC9useTestAdSbvp",
-            "moduleName": "OpAdxSdk",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage",
-              "AccessControl",
-              "ObjC"
-            ],
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "c:@M@OpAdxSdk@objc(cs)OpAdxSdkInitConfig(im)useTestAd",
-                "mangledName": "$s8OpAdxSdk0abC10InitConfigC9useTestAdSbvg",
-                "moduleName": "OpAdxSdk",
-                "implicit": true,
-                "declAttributes": [
-                  "ObjC"
-                ],
-                "accessorKind": "get"
-              },
-              {
-                "kind": "Accessor",
-                "name": "Set",
-                "printedName": "Set()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Void",
-                    "printedName": "()"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "c:@M@OpAdxSdk@objc(cs)OpAdxSdkInitConfig(im)setUseTestAd:",
-                "mangledName": "$s8OpAdxSdk0abC10InitConfigC9useTestAdSbvs",
-                "moduleName": "OpAdxSdk",
-                "implicit": true,
-                "declAttributes": [
-                  "ObjC"
-                ],
-                "accessorKind": "set"
-              },
-              {
-                "kind": "Accessor",
-                "name": "Modify",
-                "printedName": "Modify()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Void",
-                    "printedName": "()"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:8OpAdxSdk0abC10InitConfigC9useTestAdSbvM",
-                "mangledName": "$s8OpAdxSdk0abC10InitConfigC9useTestAdSbvM",
-                "moduleName": "OpAdxSdk",
-                "implicit": true,
-                "accessorKind": "_modify"
-              }
-            ]
-          },
-          {
             "kind": "TypeDecl",
             "name": "Builder",
             "printedName": "Builder",
@@ -14319,6 +14302,13 @@
         "declAttributes": [
           "RawDocComment"
         ]
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "OpAdxSdk"
       },
       {
         "kind": "Import",
@@ -18719,6 +18709,13 @@
         "declAttributes": [
           "RawDocComment"
         ]
+      },
+      {
+        "kind": "Import",
+        "name": "zlib",
+        "printedName": "zlib",
+        "declKind": "Import",
+        "moduleName": "OpAdxSdk"
       },
       {
         "kind": "Import",
@@ -36007,14 +36004,7 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Initialization\/SdkInitConfig.swift",
       "kind": "BooleanLiteral",
-      "offset": 986,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Initialization\/SdkInitConfig.swift",
-      "kind": "BooleanLiteral",
-      "offset": 2066,
+      "offset": 2021,
       "length": 5,
       "value": "false"
     },
@@ -36049,91 +36039,91 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 7806,
+      "offset": 7737,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 7852,
+      "offset": 7783,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 7899,
+      "offset": 7830,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 7933,
+      "offset": 7864,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 7971,
+      "offset": 7902,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 9392,
+      "offset": 9323,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 9414,
+      "offset": 9345,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 9437,
+      "offset": 9368,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 12003,
+      "offset": 11934,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 12025,
+      "offset": 11956,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "BooleanLiteral",
-      "offset": 12048,
+      "offset": 11979,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "IntegerLiteral",
-      "offset": 12376,
+      "offset": 12307,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Ad\/BaseAd.swift",
       "kind": "IntegerLiteral",
-      "offset": 12409,
+      "offset": 12340,
       "length": 1,
       "value": "0"
     },
@@ -36154,28 +36144,28 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/AdEventMonitor.swift",
       "kind": "Array",
-      "offset": 169,
+      "offset": 289,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/AdEventMonitor.swift",
       "kind": "Array",
-      "offset": 232,
+      "offset": 352,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/AdEventMonitor.swift",
       "kind": "Array",
-      "offset": 364,
+      "offset": 484,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/AdEventMonitor.swift",
       "kind": "StringLiteral",
-      "offset": 7996,
+      "offset": 8284,
       "length": 16,
       "value": "\"AdEventMonitor\""
     },
@@ -36245,56 +36235,49 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
       "kind": "StringLiteral",
-      "offset": 1206,
-      "length": 39,
-      "value": "\"https:\/\/t-pre.adx.opera.com\/sdk\/event\""
-    },
-    {
-      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
-      "kind": "StringLiteral",
-      "offset": 1282,
+      "offset": 1151,
       "length": 35,
       "value": "\"https:\/\/t.adx.opera.com\/sdk\/event\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
       "kind": "IntegerLiteral",
-      "offset": 1467,
+      "offset": 1318,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
       "kind": "IntegerLiteral",
-      "offset": 1519,
+      "offset": 1370,
       "length": 1,
       "value": "5"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
       "kind": "FloatLiteral",
-      "offset": 1567,
+      "offset": 1418,
       "length": 3,
       "value": "5.0"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
       "kind": "BooleanLiteral",
-      "offset": 8764,
+      "offset": 8615,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
       "kind": "Array",
-      "offset": 14665,
+      "offset": 14516,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/OperaAnalyticsClient.swift",
       "kind": "IntegerLiteral",
-      "offset": 14734,
+      "offset": 14585,
       "length": 1,
       "value": "0"
     },
@@ -36735,42 +36718,42 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/TrackEvents.swift",
       "kind": "StringLiteral",
-      "offset": 17616,
+      "offset": 18220,
       "length": 3,
       "value": "\"b\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/TrackEvents.swift",
       "kind": "StringLiteral",
-      "offset": 17642,
+      "offset": 18246,
       "length": 3,
       "value": "\"s\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/TrackEvents.swift",
       "kind": "StringLiteral",
-      "offset": 17676,
+      "offset": 18280,
       "length": 4,
       "value": "\"dl\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/TrackEvents.swift",
       "kind": "StringLiteral",
-      "offset": 17707,
+      "offset": 18311,
       "length": 3,
       "value": "\"d\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/TrackEvents.swift",
       "kind": "StringLiteral",
-      "offset": 17735,
+      "offset": 18339,
       "length": 4,
       "value": "\"hl\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Analytics\/TrackEvents.swift",
       "kind": "StringLiteral",
-      "offset": 25946,
+      "offset": 26550,
       "length": 9,
       "value": "\"message\""
     },
@@ -37337,168 +37320,175 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1024,
+      "offset": 539,
+      "length": 11,
+      "value": "\"127.0.0.1\""
+    },
+    {
+      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
+      "kind": "StringLiteral",
+      "offset": 1259,
       "length": 4,
       "value": "\"ua\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1077,
+      "offset": 1312,
       "length": 5,
       "value": "\"lmt\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1145,
+      "offset": 1362,
       "length": 6,
       "value": "\"make\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1212,
+      "offset": 1429,
       "length": 5,
       "value": "\"osv\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1239,
+      "offset": 1456,
       "length": 3,
       "value": "\"w\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1265,
+      "offset": 1482,
       "length": 3,
       "value": "\"h\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1298,
+      "offset": 1515,
       "length": 5,
       "value": "\"ppi\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1331,
+      "offset": 1548,
       "length": 9,
       "value": "\"pxratio\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1450,
+      "offset": 1667,
       "length": 16,
       "value": "\"connectiontype\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1487,
+      "offset": 1704,
       "length": 5,
       "value": "\"ifa\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1817,
+      "offset": 2034,
       "length": 5,
       "value": "\"lat\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1852,
+      "offset": 2069,
       "length": 5,
       "value": "\"lon\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1890,
+      "offset": 2107,
       "length": 6,
       "value": "\"type\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 1951,
+      "offset": 2168,
       "length": 11,
       "value": "\"utcoffset\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3155,
+      "offset": 3372,
       "length": 6,
       "value": "\"osvi\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3204,
+      "offset": 3421,
       "length": 10,
       "value": "\"gmsavail\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3247,
+      "offset": 3464,
       "length": 11,
       "value": "\"battlevel\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3292,
+      "offset": 3509,
       "length": 12,
       "value": "\"battstatus\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3336,
+      "offset": 3553,
       "length": 10,
       "value": "\"vollevel\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3404,
+      "offset": 3621,
       "length": 9,
       "value": "\"sdavail\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3450,
+      "offset": 3667,
       "length": 5,
       "value": "\"sbt\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3493,
+      "offset": 3710,
       "length": 5,
       "value": "\"sut\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3523,
+      "offset": 3740,
       "length": 5,
       "value": "\"ifv\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Data\/DeviceObject.swift",
       "kind": "StringLiteral",
-      "offset": 3556,
+      "offset": 3773,
       "length": 9,
       "value": "\"ifatype\""
     },
@@ -37778,42 +37768,42 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/FullScreenAd\/FullscreenAdImpl.swift",
       "kind": "IntegerLiteral",
-      "offset": 5206,
+      "offset": 5458,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/FullScreenAd\/FullscreenAdImpl.swift",
       "kind": "IntegerLiteral",
-      "offset": 5239,
+      "offset": 5491,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/FullScreenAd\/FullscreenAdImpl.swift",
       "kind": "BooleanLiteral",
-      "offset": 5269,
+      "offset": 5521,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/FullScreenAd\/FullscreenAdImpl.swift",
       "kind": "BooleanLiteral",
-      "offset": 5306,
+      "offset": 5558,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/FullScreenAd\/FullscreenAdImpl.swift",
       "kind": "BooleanLiteral",
-      "offset": 6768,
+      "offset": 7020,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/FullScreenAd\/FullscreenAdManager.swift",
       "kind": "Dictionary",
-      "offset": 1581,
+      "offset": 1322,
       "length": 3,
       "value": "[]"
     },
@@ -38590,63 +38580,63 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "Array",
-      "offset": 13799,
+      "offset": 13712,
       "length": 6,
       "value": "[5, 7]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "Array",
-      "offset": 13869,
+      "offset": 13782,
       "length": 37,
       "value": "[(320, 480), (480, 320), (720, 1080)]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "Array",
-      "offset": 13960,
+      "offset": 13873,
       "length": 66,
       "value": "[\"text\/html\", \"image\/jpeg\", \"image\/jpg\", \"image\/png\", \"image\/gif\"]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "Array",
-      "offset": 14079,
+      "offset": 13992,
       "length": 13,
       "value": "[\"video\/mp4\"]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "Array",
-      "offset": 14151,
+      "offset": 14064,
       "length": 18,
       "value": "[2, 3, 5, 6, 7, 8]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "IntegerLiteral",
-      "offset": 14221,
+      "offset": 14134,
       "length": 1,
       "value": "5"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "IntegerLiteral",
-      "offset": 14275,
+      "offset": 14188,
       "length": 1,
       "value": "7"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "Array",
-      "offset": 14330,
+      "offset": 14243,
       "length": 9,
       "value": "[1, 2, 3]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/ApiDialogHelper.swift",
       "kind": "StringLiteral",
-      "offset": 14394,
+      "offset": 14307,
       "length": 449,
       "value": "\"{\"ver\":\"1.2\",\"plcmtcnt\":1,\"assets\":[{\"id\":1,\"required\":1,\"title\":{\"len\":90}},{\"id\":2,\"required\":1,\"img\":{\"type\":3,\"wmin\":627,\"hmin\":627}},{\"id\":3,\"img\":{\"type\":1,\"wmin\":50,\"hmin\":50}},{\"id\":4,\"data\":{\"type\":2,\"len\":150}},{\"id\":5,\"data\":{\"type\":3}},{\"id\":6,\"required\":1,\"data\":{\"type\":12,\"len\":15}},{\"id\":8,\"data\":{\"type\":1,\"len\":25}}],\"aurlsupport\":0,\"eventtrackers\":[{\"event\":1,\"methods\":[1]},{\"event\":2,\"methods\":[1]}],\"privacy\":1}\""
     },
@@ -38680,85 +38670,78 @@
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
-      "kind": "BooleanLiteral",
-      "offset": 1137,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "IntegerLiteral",
-      "offset": 1252,
+      "offset": 1211,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "IntegerLiteral",
-      "offset": 1283,
+      "offset": 1242,
       "length": 2,
       "value": "-1"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 1397,
+      "offset": 1356,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 1440,
+      "offset": 1399,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 1483,
+      "offset": 1442,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 1523,
+      "offset": 1482,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 1614,
+      "offset": 1573,
       "length": 21,
       "value": "\"s-pre.adx.opera.com\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 1687,
+      "offset": 1646,
       "length": 18,
       "value": "\".s.adx.opera.com\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 1796,
+      "offset": 1802,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 5442,
+      "offset": 5429,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/Constant.swift",
       "kind": "StringLiteral",
-      "offset": 5478,
+      "offset": 5465,
       "length": 2,
       "value": "\"\""
     },
@@ -38842,217 +38825,245 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 1859,
+      "offset": 1964,
       "length": 17,
       "value": "\"update_interval\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 1913,
+      "offset": 2018,
       "length": 17,
       "value": "\"max_blocked_ads\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 1970,
+      "offset": 2075,
       "length": 20,
       "value": "\"blocked_ad_expires\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2023,
+      "offset": 2128,
       "length": 19,
       "value": "\"browser_whitelist\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2075,
+      "offset": 2180,
       "length": 19,
       "value": "\"browser_blacklist\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2143,
+      "offset": 2248,
       "length": 30,
       "value": "\"banner_auto_refresh_interval\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2232,
+      "offset": 2337,
       "length": 41,
       "value": "\"banner_transition_content_ready_timeout\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2312,
+      "offset": 2417,
       "length": 14,
       "value": "\"accepts_coea\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2353,
+      "offset": 2458,
       "length": 13,
       "value": "\"oac_enabled\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2395,
+      "offset": 2500,
       "length": 15,
       "value": "\"oac_whitelist\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2439,
+      "offset": 2544,
       "length": 15,
       "value": "\"oac_blacklist\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2494,
+      "offset": 2591,
+      "length": 19,
+      "value": "\"oac_error_enabled\""
+    },
+    {
+      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
+      "kind": "StringLiteral",
+      "offset": 2644,
+      "length": 21,
+      "value": "\"oac_error_whitelist\""
+    },
+    {
+      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
+      "kind": "StringLiteral",
+      "offset": 2699,
+      "length": 21,
+      "value": "\"oac_error_blacklist\""
+    },
+    {
+      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
+      "kind": "StringLiteral",
+      "offset": 2760,
       "length": 28,
       "value": "\"oac_bpis_throttle_interval\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2575,
+      "offset": 2841,
       "length": 42,
       "value": "\"interstitial_enable_back_button_interval\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2665,
+      "offset": 2931,
       "length": 37,
       "value": "\"appopen_enable_back_button_interval\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2741,
+      "offset": 3007,
       "length": 18,
       "value": "\"indexurl_domains\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2800,
+      "offset": 3066,
       "length": 20,
       "value": "\"authorized_domains\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 2842,
+      "offset": 3108,
       "length": 7,
       "value": "\"aqurl\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "IntegerLiteral",
-      "offset": 2909,
+      "offset": 3175,
       "length": 2,
       "value": "24"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "IntegerLiteral",
-      "offset": 2968,
+      "offset": 3234,
       "length": 2,
       "value": "50"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "IntegerLiteral",
-      "offset": 3015,
+      "offset": 3281,
       "length": 3,
       "value": "360"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "IntegerLiteral",
-      "offset": 3181,
+      "offset": 3447,
       "length": 2,
       "value": "60"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "IntegerLiteral",
-      "offset": 3244,
+      "offset": 3510,
       "length": 4,
       "value": "1000"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "BooleanLiteral",
-      "offset": 3290,
+      "offset": 3556,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "BooleanLiteral",
-      "offset": 3325,
+      "offset": 3591,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
+      "kind": "BooleanLiteral",
+      "offset": 3714,
       "length": 4,
       "value": "true"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "FloatLiteral",
-      "offset": 3457,
+      "offset": 3850,
       "length": 4,
       "value": "12.0"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "IntegerLiteral",
-      "offset": 3515,
+      "offset": 3908,
       "length": 2,
       "value": "30"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "IntegerLiteral",
-      "offset": 3566,
+      "offset": 3959,
       "length": 2,
       "value": "30"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "Array",
-      "offset": 3617,
+      "offset": 4010,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "Array",
-      "offset": 3670,
+      "offset": 4063,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "StringLiteral",
-      "offset": 6799,
+      "offset": 7341,
       "length": 8,
       "value": "\"sdkVer\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkConfig.swift",
       "kind": "BooleanLiteral",
-      "offset": 11316,
+      "offset": 11858,
       "length": 5,
       "value": "false"
     },
@@ -39123,13 +39134,13 @@
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkVersion.swift",
       "kind": "StringLiteral",
       "offset": 165,
-      "length": 7,
-      "value": "\"2.9.1\""
+      "length": 8,
+      "value": "\"2.11.1\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Other\/SdkVersion.swift",
       "kind": "StringLiteral",
-      "offset": 206,
+      "offset": 207,
       "length": 6,
       "value": "\"1002\""
     },
@@ -39241,7 +39252,7 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/AdvertisingId.swift",
       "kind": "BooleanLiteral",
-      "offset": 582,
+      "offset": 475,
       "length": 5,
       "value": "false"
     },
@@ -39363,6 +39374,13 @@
       "offset": 858,
       "length": 5,
       "value": "false"
+    },
+    {
+      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/DeviceUtil.swift",
+      "kind": "StringLiteral",
+      "offset": 3380,
+      "length": 2,
+      "value": "\"\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/Files.swift",
@@ -39626,56 +39644,56 @@
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "StringLiteral",
-      "offset": 778,
+      "offset": 874,
       "length": 223,
       "value": "\"Mozilla\/5.0 (\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "StringLiteral",
-      "offset": 800,
+      "offset": 896,
       "length": 1,
       "value": "\"; CPU \""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "StringLiteral",
-      "offset": 814,
+      "offset": 910,
       "length": 2,
       "value": "\" OS \""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "StringLiteral",
-      "offset": 859,
+      "offset": 955,
       "length": 3,
       "value": "\".\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "StringLiteral",
-      "offset": 870,
+      "offset": 966,
       "length": 3,
       "value": "\"_\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "StringLiteral",
-      "offset": 875,
+      "offset": 971,
       "length": 4,
       "value": "\" like Mac OS X) AppleWebKit\/605.1.15 (KHTML, like Gecko) Version\/\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "StringLiteral",
-      "offset": 973,
+      "offset": 1069,
       "length": 6,
       "value": "\" Mobile\/15E148 Safari\/604.1\""
     },
     {
       "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Internal\/Util\/UserAgent.swift",
       "kind": "BooleanLiteral",
-      "offset": 1547,
+      "offset": 1725,
       "length": 5,
       "value": "false"
     },
@@ -40973,6 +40991,13 @@
       "offset": 541,
       "length": 17,
       "value": "\"IABTCF_TCString\""
+    },
+    {
+      "filePath": "\/Users\/luanchen\/Documents\/gitlab\/OpAdxSdk_osa\/OpAdxSdk\/OpAdxSdk\/Classes\/Privacy\/PrivacyManager.swift",
+      "kind": "StringLiteral",
+      "offset": 597,
+      "length": 21,
+      "value": "\"IABUSPrivacy_String\""
     }
   ]
 }
