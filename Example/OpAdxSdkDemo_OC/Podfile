@@ -5,6 +5,6 @@ target 'OpAdxSdkDemo_OC' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
-  pod 'OpAdxSdk',  '2.8.3'
+  pod 'OpAdxSdk',  '2.11.1'
 
 end

@@ -26,7 +26,6 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let initConfig =  OpAdxSdkInitConfig.create(applicationId: AdConfig.useAndroidConfig ? AdConfig.android_applicationId : AdConfig.applicationId, iOSAppId: AdConfig.iOSAppId)
-        initConfig.useTestAd = AdConfig.useTestAd
         OpAdxSdkCore.shared.initialize(initConfig: initConfig)
         setupUI()
         setupConstraints()

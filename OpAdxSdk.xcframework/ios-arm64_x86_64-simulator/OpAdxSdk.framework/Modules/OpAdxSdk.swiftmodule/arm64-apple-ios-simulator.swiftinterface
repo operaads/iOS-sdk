@@ -1,7 +1,7 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 6.0.3 effective-5.10 (swiftlang-6.0.3.1.10 clang-1600.0.30.1)
-// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name OpAdxSdk
-// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+// swift-compiler-version: Apple Swift version 6.3.2 effective-5.10 (swiftlang-6.3.2.1.108 clang-2100.1.1.101)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name OpAdxSdk
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.3.2
 import AVFoundation
 import AdSupport
 import AppTrackingTransparency
@@ -35,6 +35,7 @@ import zlib
 }
 @objc public class OpAdxAppOpenAdBridge : ObjectiveC.NSObject {
   @objc public func getECPM() -> Swift.Double
+  @objc public func getBid() -> (any OpAdxSdk.AdBid)?
   @objc weak public var delegate: (any OpAdxSdk.OpAdxAppOpenAdDelegate)?
   @objc public var isAdValid: Swift.Bool {
     @objc get
@@ -43,6 +44,7 @@ import zlib
   @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
+  @objc public func loadC2SBid()
   @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
 }
@@ -62,6 +64,7 @@ extension OpAdxSdk.OpAdxAppOpenAdBridge {
 }
 @_inheritsConvenienceInitializers @objc @_Concurrency.MainActor @preconcurrency public class OpAdxBannerAdBridge : UIKit.UIView {
   @objc @_Concurrency.MainActor @preconcurrency public func getECPM() -> Swift.Double
+  @objc @_Concurrency.MainActor @preconcurrency public func getBid() -> (any OpAdxSdk.AdBid)?
   @objc @_Concurrency.MainActor @preconcurrency weak public var delegate: (any OpAdxSdk.OpAdxBannerAdDelegate)?
   @objc @_Concurrency.MainActor @preconcurrency public var placementId: Swift.String? {
     get
@@ -93,6 +96,7 @@ extension OpAdxSdk.OpAdxAppOpenAdBridge {
   @objc @_Concurrency.MainActor @preconcurrency public func configurePlacementId(_ placementId: Swift.String)
   @objc @_Concurrency.MainActor @preconcurrency public func configureAdSize(_ adSize: OpAdxSdk.OpAdxAdSize)
   @objc @_Concurrency.MainActor @preconcurrency public func loadAd()
+  @objc @_Concurrency.MainActor @preconcurrency public func loadC2SBid()
   @objc @_Concurrency.MainActor @preconcurrency public func pause()
   @objc @_Concurrency.MainActor @preconcurrency public func resume()
   @objc @_Concurrency.MainActor @preconcurrency public func destroy()
@@ -153,6 +157,7 @@ extension OpAdxSdk.OpAdxInterstitialAdBridge {
 }
 @objc public class OpAdxNativeAdBridge : ObjectiveC.NSObject {
   @objc public func getECPM() -> Swift.Double
+  @objc public func getBid() -> (any OpAdxSdk.AdBid)?
   @objc weak public var delegate: (any OpAdxSdk.OpAdxNativeAdDelegate)?
   @objc public var placementId: Swift.String {
     @objc get
@@ -230,6 +235,7 @@ extension OpAdxSdk.OpAdxNativeAdBridge {
 }
 @objc public class OpAdxRewardedAdBridge : ObjectiveC.NSObject {
   @objc public func getECPM() -> Swift.Double
+  @objc public func getBid() -> (any OpAdxSdk.AdBid)?
   @objc weak public var delegate: (any OpAdxSdk.OpAdxRewardedAdDelegate)?
   @objc public var isAdValid: Swift.Bool {
     @objc get
@@ -238,6 +244,7 @@ extension OpAdxSdk.OpAdxNativeAdBridge {
   @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
+  @objc public func loadC2SBid()
   @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
 }
@@ -536,11 +543,11 @@ public enum AdUnitEnum : Swift.CaseIterable {
     get
   }
   public static func == (a: OpAdxSdk.AdUnitEnum, b: OpAdxSdk.AdUnitEnum) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
   public typealias AllCases = [OpAdxSdk.AdUnitEnum]
   nonisolated public static var allCases: [OpAdxSdk.AdUnitEnum] {
     get
   }
+  public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
   }
@@ -897,6 +904,8 @@ public enum AdMediation : Swift.String {
   case max
   case pangle
   case topon
+  case tradplus
+  case levelplay
   public init?(rawValue: Swift.String)
   public typealias RawValue = Swift.String
   public var rawValue: Swift.String {
@@ -1061,18 +1070,29 @@ extension OpAdxSdk.BidRespDebugViewController : UIKit.UIDocumentPickerDelegate {
   @objc public var enableDebugLog: Swift.Bool
   @objc public var useSKOverlay: Swift.Bool
   @objc public var overlayDisplayStrategy: OpAdxSdk.SKOverlayDisplayStrategy
-  @objc public func registerApp()
   @objc public func startImpression(with skAdNetworkData: [Swift.String : Any]?) -> Swift.AnyObject?
   @objc public func endImpression(_ impressionToken: Swift.AnyObject?)
   @available(iOS 14.0, *)
-  @objc public func presentOverlay(with skAdNetworkData: [Swift.String : Any], in windowScene: UIKit.UIWindowScene? = nil) -> Swift.Bool
+  @objc public func presentOverlay(with skAdNetworkData: [Swift.String : Any], in windowScene: UIKit.UIWindowScene? = nil, fallback: (() -> Swift.Void)? = nil) -> Swift.Bool
   @available(iOS 14.0, *)
   @objc public func dismissOverlay()
   public func shouldPresentOnImpression(for adFormat: OpAdxSdk.AdFormat) -> Swift.Bool
+  @available(iOS 14.0, *)
+  @objc public func presentStoreProduct(with skAdNetworkData: [Swift.String : Any], from viewController: UIKit.UIViewController, fallback: (() -> Swift.Void)? = nil)
   @objc deinit
+}
+@available(iOS 14.0, *)
+extension OpAdxSdk.OpAdxSKAdNetworkManager : StoreKit.SKOverlayDelegate {
+  public func storeOverlay(_ overlay: StoreKit.SKOverlay, didFailToLoad error: any Swift.Error)
+  @objc dynamic public func storeOverlayDidFinishPresentation(_ overlay: StoreKit.SKOverlay, transitionContext: StoreKit.SKOverlay.TransitionContext)
+  @objc dynamic public func storeOverlayDidFinishDismissal(_ overlay: StoreKit.SKOverlay, transitionContext: StoreKit.SKOverlay.TransitionContext)
+}
+extension OpAdxSdk.OpAdxSKAdNetworkManager : StoreKit.SKStoreProductViewControllerDelegate {
+  @objc dynamic public func productViewControllerDidFinish(_ viewController: StoreKit.SKStoreProductViewController)
 }
 @objc extension OpAdxSdk.OpAdxSKAdNetworkManager {
   @objc public static func createSignatureData(from dictionary: [Swift.String : Any]) -> OpAdxSdk.OpAdxSKAdNetworkSignatureData?
+  @objc public static func createSignatureData(from dictionary: [Swift.String : Any], fidelityType: Swift.Int) -> OpAdxSdk.OpAdxSKAdNetworkSignatureData?
 }
 @_hasMissingDesignatedInitializers @objc public class OpAdxRewardedAd : OpAdxSdk.IncentivizedFullscreenAd {
   @objc public init(placementId: Swift.String)

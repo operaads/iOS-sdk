@@ -58,7 +58,7 @@ class NativeViewController: BaseViewController {
             }
         )
         
-        nativeAd?.loadAd(placementId: placementId, listener: listener)
+        nativeAd?.loadAd(listener: listener)
     }
     
     override func showAd() {
