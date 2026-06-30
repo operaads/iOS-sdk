@@ -14,6 +14,7 @@
 #import "RewardedViewController.h"
 #import "AppOpenViewController.h"
 #import "RewardedInterstitialViewController.h"
+#import "ClientBiddingViewController.h"
 
 #import <OpAdxSdk/OpAdxSdk.h>
 
@@ -30,6 +31,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    // 启用Debug日志（在SDK初始化之前）
+    OpAdxLogger.logLevel = OpAdxLogLevelDebug;
+    [OpAdxLogger info:@"=== Opera Ads SDK Demo (OC) Started ===" tag:@"OpAdxSDK"];
+
+    NSString *sdkVersion = [NSString stringWithFormat:@"SDK Version: %@.%@",
+                            [OpAdxSdkCore getVersion], [OpAdxSdkCore getBuildNum]];
+    [OpAdxLogger info:sdkVersion tag:@"OpAdxSDK"];
+
     [self setupItems];
     [self setupUI];
     [self setupConstraints];
@@ -44,6 +54,7 @@
         [[MainItem alloc] initWithFormat:@"Rewarded" placementId:[AdConfig getPlacementIdWithAdFormat:AdFormatReward forceVideo:NO]],
         [[MainItem alloc] initWithFormat:@"AppOpen" placementId:[AdConfig getPlacementIdWithAdFormat:AdFormatAppOpen forceVideo:NO]],
         [[MainItem alloc] initWithFormat:@"RewardedInterstitial" placementId:[AdConfig getPlacementIdWithAdFormat:AdFormatRewardedInterstitial forceVideo:NO]],
+        [[MainItem alloc] initWithFormat:@"🎯 Client Bidding Test" placementId:@"C2S Bidding - Header Bidding 测试"],
         [[MainItem alloc] initWithFormat:@"Bid Response Debugging" placementId:@"Debug custom bid responses"]
     ];
 }
@@ -123,6 +134,8 @@
         viewController = [[AppOpenViewController alloc] init];
     } else if ([format isEqualToString:@"RewardedInterstitial"]) {
         viewController = [[RewardedInterstitialViewController alloc] init];
+    } else if ([format isEqualToString:@"🎯 Client Bidding Test"]) {
+        viewController = [[ClientBiddingViewController alloc] init];
     } else if ([format isEqualToString:@"Bid Response Debugging"]) {
         viewController = [[BidRespDebugViewController alloc] init];
     }

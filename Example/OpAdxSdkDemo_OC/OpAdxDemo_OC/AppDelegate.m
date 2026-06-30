@@ -17,14 +17,34 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
+
+    // 启用Debug日志（在SDK初始化之前）
+    OpAdxLogger.logLevel = OpAdxLogLevelDebug;
+
     NSString *applicationId = @"pub13423013211200/ep13423013211584/app14170937163904";
     NSString *iOSAppId = @"1444253128";
-    
+
     OpAdxSdkInitConfig *initConfig = [OpAdxSdkInitConfig createWithApplicationId:applicationId iOSAppId:iOSAppId publisherName:nil];
-    initConfig.useTestAd = YES;
-    [OpAdxSdkCore.shared initializeSDKWithConfig:initConfig];
-    
+
+    [OpAdxLogger info:@"===========================================" tag:@"OpAdx-Init"];
+    [OpAdxLogger info:@"📱 Initializing Opera Ads SDK..." tag:@"OpAdx-Init"];
+    [OpAdxLogger info:[NSString stringWithFormat:@"   Application ID: %@", applicationId] tag:@"OpAdx-Init"];
+    [OpAdxLogger info:[NSString stringWithFormat:@"   iOS App ID: %@", iOSAppId] tag:@"OpAdx-Init"];
+    [OpAdxLogger info:@"===========================================" tag:@"OpAdx-Init"];
+
+    [OpAdxSDK initializeWithConfig:initConfig
+                         onSuccess:^{
+        [OpAdxLogger info:@"✅ SDK initialized successfully" tag:@"OpAdx-Init"];
+        NSString *version = [NSString stringWithFormat:@"   SDK Version: %@.%@",
+                             [OpAdxSdkCore getVersion], [OpAdxSdkCore getBuildNum]];
+        [OpAdxLogger info:version tag:@"OpAdx-Init"];
+    }
+                           onError:^(NSError * _Nonnull error) {
+        [OpAdxLogger logError:@"❌ SDK initialization failed" tag:@"OpAdx-Init"];
+        NSString *errorMsg = [NSString stringWithFormat:@"   Error: %@", error.localizedDescription];
+        [OpAdxLogger logError:errorMsg tag:@"OpAdx-Init"];
+    }];
+
     return YES;
 }
 

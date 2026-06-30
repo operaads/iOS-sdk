@@ -21,7 +21,7 @@ class NativeViewController: BaseViewController {
     }
     
     override func loadAd() {
-        
+
         guard let placementId = self.placementId else {
             logView.print("error, placementId is nil!")
             return
@@ -30,8 +30,10 @@ class NativeViewController: BaseViewController {
             self.destroyAd()
         }
         logView.print("Loading...")
+        OpAdxLogger.logAdLoadStart(adFormat: "Native", placementId: placementId)
+
         nativeAd = OpAdxNativeAd(placementId: placementId, auctionType: AdAuctionType.regular)
-        
+
         // 创建监听器实例
         let listener = OpAdxNativeAdListenerImp(
             onAdLoaded: { [weak self] ad in
@@ -41,23 +43,27 @@ class NativeViewController: BaseViewController {
                 } else {
                     self.logView.print("Loaded")
                 }
+                OpAdxLogger.logAdLoadSuccess(adFormat: "Native", placementId: placementId)
                 self.enableShowAd()
                 self.enableDestroyAd()
             },
             onAdFailedToLoad: { [weak self] error in
                 guard let self = self else { return }
                 self.logView.print(error.message)
+                OpAdxLogger.logAdLoadFailed(adFormat: "Native", placementId: placementId, error: error)
             },
             onAdImpression: { [weak self] in
                 guard let self = self else { return }
                 self.logView.print("onAdImpression")
+                OpAdxLogger.logAdImpression(adFormat: "Native", placementId: placementId)
             },
             onAdClicked:{ [weak self] in
                 guard let self = self else { return }
                 self.logView.print("onAdClicked")
+                OpAdxLogger.logAdClick(adFormat: "Native", placementId: placementId)
             }
         )
-        
+
         nativeAd?.loadAd(listener: listener)
     }
     

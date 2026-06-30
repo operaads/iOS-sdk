@@ -31,17 +31,19 @@
 
 - (void)loadAd {
     if (!self.placementId) return;
-    
+
     [self.logView print:@"Loading ..."];
+    [OpAdxLogger logAdLoadStartWithAdFormat:@"Rewarded" placementId:self.placementId];
+
     if (self.rewardedAd != nil) {
         [self destroyAd];
     }
-    
+
     OpAdxRewardedAdBridge *rewardedAd = [[OpAdxRewardedAdBridge alloc] initWithPlacementId:self.placementId auctionType: AdAuctionTypeRegular];
     self.rewardedAd = rewardedAd;
     rewardedAd.delegate = self;
     [rewardedAd loadAd];
-    
+
 }
 
 - (void)showAd {
@@ -74,29 +76,33 @@
 
 - (void)rewardedAdDidLoad:(OpAdxRewardedAdBridge *)rewardedAd {
     NSLog(@"[ADX] Reward广告加载成功: %@", rewardedAd.placementId);
+    [OpAdxLogger logAdLoadSuccessWithAdFormat:@"Rewarded" placementId:rewardedAd.placementId ecpm:0];
     [self.logView print:[NSString stringWithFormat:@"Loaded."]];
-   
+
     [self enableShowAd];
-    [self enableDestroyAd];    
+    [self enableDestroyAd];
 
 }
 
 - (void)rewardedAd:(OpAdxRewardedAdBridge *)rewardedAd didFailWithError:(OpAdxAdError *)error {
     NSLog(@"[ADX] Reward广告加载失败: %@", error);
+    [OpAdxLogger logAdLoadFailedWithAdFormat:@"Rewarded" placementId:rewardedAd.placementId error:error];
     [self.logView print:error.message];
-    
+
 }
 
 - (void)rewardedAdDidClick:(OpAdxRewardedAdBridge *)rewardedAd {
     NSLog(@"[ADX] Reward广告被点击: %@", rewardedAd.placementId);
+    [OpAdxLogger logAdClickWithAdFormat:@"Rewarded" placementId:rewardedAd.placementId];
     [self.logView print:@"onAdDidClick"];
-    
+
 }
 
 - (void)rewardedAdDidClose:(OpAdxRewardedAdBridge *)rewardedAd {
     NSLog(@"[ADX] Reward广告关闭: %@", rewardedAd.placementId);
+    [OpAdxLogger logAdClosedWithAdFormat:@"Rewarded" placementId:rewardedAd.placementId];
     [self.logView print:@"onAdDidClose"];
-    
+
     // 清理
     self.rewardedAd = nil;
 }
@@ -110,9 +116,10 @@
     
 }
 
-- (void)rewardedAdWillLogImpression:(OpAdxRewardedAdBridge *)rewardedAd {
+- (void)rewardedAdDidDisplay:(OpAdxRewardedAdBridge *)rewardedAd {
     NSLog(@"[ADX] Reward广告展示: %@", rewardedAd.placementId);
+    [OpAdxLogger logAdImpressionWithAdFormat:@"Rewarded" placementId:rewardedAd.placementId];
     [self.logView print:@"onAdImpression"];
-    
+
 }
 @end

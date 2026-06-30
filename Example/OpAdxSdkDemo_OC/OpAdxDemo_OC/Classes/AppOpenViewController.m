@@ -98,7 +98,7 @@
 
 }
 
-- (void)appOpenAdWillLogImpression:(OpAdxAppOpenAdBridge *)appOpenAd {
+- (void)appOpenAdDidDisplay:(OpAdxAppOpenAdBridge *)appOpenAd {
     NSLog(@"[ADX] AppOpen广告展示: %@", appOpenAd.placementId);
     [self.logView print:@"onAdImpression"];
     

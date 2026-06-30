@@ -7,14 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3FA9A8B8460AE0C9168D0896 /* Pods_OpAdxSdkDemo_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF71ACA5FE25A4FF1C811000 /* Pods_OpAdxSdkDemo_Swift.framework */; };
+		D97ED0E28C3A8BCC4E35338F /* Pods_OpAdxSdkDemo_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42D4F08C5B58AE36D6307874 /* Pods_OpAdxSdkDemo_Swift.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		48AA0E3C2F19D4E10005AD9A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 48AA0E392F19D4E10005AD9A /* OpAdxSdk.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 4893D3462ED83BEF00860FA1;
+			remoteInfo = OpAdxSdk;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		42D4F08C5B58AE36D6307874 /* Pods_OpAdxSdkDemo_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpAdxSdkDemo_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		48AA0E392F19D4E10005AD9A /* OpAdxSdk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpAdxSdk.xcodeproj; path = /Users/luanchen/Documents/gitlab/OpAdxSdk_osa/OpAdxSdk/OpAdxSdk.xcodeproj; sourceTree = "<absolute>"; };
 		48B1A0F32ED862D80087D7EB /* OpAdxSdkDemo_Swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpAdxSdkDemo_Swift.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		66D994DB930717EFF39994B3 /* Pods-OpAdxSdkDemo_Swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpAdxSdkDemo_Swift.debug.xcconfig"; path = "Target Support Files/Pods-OpAdxSdkDemo_Swift/Pods-OpAdxSdkDemo_Swift.debug.xcconfig"; sourceTree = "<group>"; };
-		802678C429ED025D9D889589 /* Pods-OpAdxSdkDemo_Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpAdxSdkDemo_Swift.release.xcconfig"; path = "Target Support Files/Pods-OpAdxSdkDemo_Swift/Pods-OpAdxSdkDemo_Swift.release.xcconfig"; sourceTree = "<group>"; };
-		FF71ACA5FE25A4FF1C811000 /* Pods_OpAdxSdkDemo_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpAdxSdkDemo_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		555A8B1160AD8C6EC1FFADFF /* Pods-OpAdxSdkDemo_Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpAdxSdkDemo_Swift.release.xcconfig"; path = "Target Support Files/Pods-OpAdxSdkDemo_Swift/Pods-OpAdxSdkDemo_Swift.release.xcconfig"; sourceTree = "<group>"; };
+		6184C86E727204D236CE9361 /* Pods-OpAdxSdkDemo_Swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpAdxSdkDemo_Swift.debug.xcconfig"; path = "Target Support Files/Pods-OpAdxSdkDemo_Swift/Pods-OpAdxSdkDemo_Swift.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -43,20 +54,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FA9A8B8460AE0C9168D0896 /* Pods_OpAdxSdkDemo_Swift.framework in Frameworks */,
+				D97ED0E28C3A8BCC4E35338F /* Pods_OpAdxSdkDemo_Swift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		316E975833E2504624F34A38 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6184C86E727204D236CE9361 /* Pods-OpAdxSdkDemo_Swift.debug.xcconfig */,
+				555A8B1160AD8C6EC1FFADFF /* Pods-OpAdxSdkDemo_Swift.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		48AA0E3A2F19D4E10005AD9A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		48B1A0EA2ED862D80087D7EB = {
 			isa = PBXGroup;
 			children = (
 				48B1A0F52ED862D80087D7EB /* OpAdxSdkDemo */,
 				48B1A0F42ED862D80087D7EB /* Products */,
-				7D7B7E5ED81B0E67AECD0543 /* Pods */,
-				8E47877EA4F24DBDC30018D0 /* Frameworks */,
+				48AA0E392F19D4E10005AD9A /* OpAdxSdk.xcodeproj */,
+				316E975833E2504624F34A38 /* Pods */,
+				4AE79EE1E7C7C818074B5309 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -68,20 +97,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7D7B7E5ED81B0E67AECD0543 /* Pods */ = {
+		4AE79EE1E7C7C818074B5309 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				66D994DB930717EFF39994B3 /* Pods-OpAdxSdkDemo_Swift.debug.xcconfig */,
-				802678C429ED025D9D889589 /* Pods-OpAdxSdkDemo_Swift.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		8E47877EA4F24DBDC30018D0 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				FF71ACA5FE25A4FF1C811000 /* Pods_OpAdxSdkDemo_Swift.framework */,
+				42D4F08C5B58AE36D6307874 /* Pods_OpAdxSdkDemo_Swift.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -93,7 +112,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 48B1A1062ED862D90087D7EB /* Build configuration list for PBXNativeTarget "OpAdxSdkDemo_Swift" */;
 			buildPhases = (
-				965A158A7590CF74DF1E5270 /* [CP] Check Pods Manifest.lock */,
+				D7F535E583A9A4A3B73C0E4E /* [CP] Check Pods Manifest.lock */,
 				48B1A0EF2ED862D80087D7EB /* Sources */,
 				48B1A0F02ED862D80087D7EB /* Frameworks */,
 				48B1A0F12ED862D80087D7EB /* Resources */,
@@ -101,6 +120,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				48AA0E3D2F19D4E10005AD9A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				48B1A0F52ED862D80087D7EB /* OpAdxSdkDemo */,
@@ -137,6 +157,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 48B1A0F42ED862D80087D7EB /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 48AA0E3A2F19D4E10005AD9A /* Products */;
+					ProjectRef = 48AA0E392F19D4E10005AD9A /* OpAdxSdk.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				48B1A0F22ED862D80087D7EB /* OpAdxSdkDemo_Swift */,
@@ -155,7 +181,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		965A158A7590CF74DF1E5270 /* [CP] Check Pods Manifest.lock */ = {
+		D7F535E583A9A4A3B73C0E4E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -189,15 +215,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		48AA0E3D2F19D4E10005AD9A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OpAdxSdk;
+			targetProxy = 48AA0E3C2F19D4E10005AD9A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		48B1A1072ED862D90087D7EB /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 66D994DB930717EFF39994B3 /* Pods-OpAdxSdkDemo_Swift.debug.xcconfig */;
+			baseConfigurationReference = 6184C86E727204D236CE9361 /* Pods-OpAdxSdkDemo_Swift.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1011;
+				CURRENT_PROJECT_VERSION = 1002;
 				DEVELOPMENT_TEAM = A2P9LX4JPN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -216,7 +250,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 2.11.2;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.opera.OpAdxSdkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -228,12 +262,12 @@
 		};
 		48B1A1082ED862D90087D7EB /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 802678C429ED025D9D889589 /* Pods-OpAdxSdkDemo_Swift.release.xcconfig */;
+			baseConfigurationReference = 555A8B1160AD8C6EC1FFADFF /* Pods-OpAdxSdkDemo_Swift.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1011;
+				CURRENT_PROJECT_VERSION = 1002;
 				DEVELOPMENT_TEAM = A2P9LX4JPN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -252,7 +286,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 2.11.2;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.opera.OpAdxSdkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";

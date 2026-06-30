@@ -22,35 +22,40 @@ class BannerViewController: BaseViewController {
     
     override func loadAd() {
         destroyAd()
-        
+
         if bannerAdView == nil {
             bannerAdView = OpAdxBannerAdView()
         }
-        
+
         logView.print("Loading ...")
-        
+        OpAdxLogger.logAdLoadStart(adFormat: "Banner", placementId: placementId ?? "unknown")
+
         bannerAdView?.setPlacementId(placementId!)
         bannerAdView?.setAdSize(.BANNER_MREC)
-        
+
         // 创建遵循 BannerAdListener 协议的实例
         let listener = OpAdxBannerAdListenerImp(
            onAdLoaded: { [weak self] bannerAdInfo in
                guard let self = self, let bannerAdInfo = bannerAdInfo as? OpAdxBannerAdInfo else { return }
                self.logView.print("Loaded \(bannerAdInfo.adSize), refreshCount: \(bannerAdInfo.refreshCount)")
+               OpAdxLogger.logAdLoadSuccess(adFormat: "Banner", placementId: self.placementId ?? "unknown")
                self.enableShowAd()
                self.enableDestroyAd()
            },
            onAdFailedToLoad: { [weak self] error in
                guard let self = self else { return }
                self.logView.print(error.message)
+               OpAdxLogger.logAdLoadFailed(adFormat: "Banner", placementId: self.placementId ?? "unknown", error: error)
            },
            onAdImpression: { [weak self] in
                guard let self = self else { return }
                self.logView.print("Impression!")
+               OpAdxLogger.logAdImpression(adFormat: "Banner", placementId: self.placementId ?? "unknown")
            },
            onAdClicked: { [weak self] in
                guard let self = self else { return }
                self.logView.print("Clicked!")
+               OpAdxLogger.logAdClick(adFormat: "Banner", placementId: self.placementId ?? "unknown")
            }
         )
         bannerAdView?.loadAd(listener: listener)

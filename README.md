@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log
 
+(2.11.2) - 新增TradPlus和LevelPlay聚合适配器，优化广告渲染延迟
+
 (2.11.1) - 支持Swift Package Manager集成，解决潜在的线程安全问题
 
 (2.9.1) - 修复admReady回调未触发问题，修复SSV签名验证错误
@@ -54,7 +56,7 @@ OpAdxSdk 是一个高性能的 iOS 移动广告 SDK，支持 Banner、插屏、�
 - **多种广告格式**：Banner、Interstitial、Rewarded、Rewarded Interstitial、Native、App Open
 - **三种竞价模式**：Waterfall、C2S Bidding、S2S Bidding
 - **双语言支持**：完整的 Swift 和 Objective-C API
-- **聚合平台支持**：AdMob、AppLovin MAX、TopOn
+- **聚合平台支持**：AdMob、AppLovin MAX、TopOn、TradPlus、LevelPlay
 
 ---
 ## 回调处理模式 (Event Handling)
@@ -76,14 +78,14 @@ OpAdxSdk 根据语言特性提供了两种不同的事件回调方式：
    ```
    https://github.com/operaads/iOS-sdk
    ```
-3. 选择版本规则（建议 **Up to Next Major Version**，当前版本 `2.11.1`）
+3. 选择版本规则（建议 **Up to Next Major Version**，当前版本 `2.11.2`）
 4. 点击 **Add Package**，选择 `OpAdxSdk` target 并添加到你的项目
 
 或者在 `Package.swift` 中手动添加依赖：
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/operaads/iOS-sdk", from: "2.11.1")
+    .package(url: "https://github.com/operaads/iOS-sdk", from: "2.11.2")
 ]
 ```
 
@@ -105,7 +107,7 @@ dependencies: [
 ```ruby
 target 'YourAppTarget' do
   use_frameworks!
-  pod 'OpAdxSdk', '~> 2.11.1'
+  pod 'OpAdxSdk', '~> 2.11.2'
 end
 ```
 
@@ -120,6 +122,24 @@ pod install
 从 [GitHub Releases](https://github.com/operaads/iOS-sdk/releases) 下载 `OpAdxSdk.xcframework` 并添加到项目中。
 
 > **注意**: OpAdxSdk(2.2.5)版本以后,库由动态库转为静态库，不再需要额外设置 Embed & Sign。
+
+---
+
+## SKAdNetwork 配置
+
+在 `Info.plist` 中添加 Opera 的 `SKAdNetworkIdentifier`，以支持广告归因：
+
+```xml
+<key>SKAdNetworkItems</key>
+<array>
+    <dict>
+        <key>SKAdNetworkIdentifier</key>
+        <string>a2p9lx4jpn.skadnetwork</string>
+    </dict>
+</array>
+```
+
+> **注意**: 如果已集成其他广告网络，将 Opera 的标识符添加到现有的 `SKAdNetworkItems` 数组中即可。未配置此项将导致 SKAdNetwork 归因无法生效。
 
 ---
 
@@ -158,11 +178,11 @@ pub13423013211200/ep13423013211584/app14170937163904
 
 在 `AppDelegate.m` 中初始化 SDK。你需要提供 `Application ID` 和 `iOS App ID`。
 
-> **注意**: 如果你的项目是 Objective-C 工程，需要引入 Swift 桥接头文件 `<OpAdxSdk/OpAdxSdk-Swift.h>`。
+> **注意**: 在 Objective-C 工程中使用 `#import <OpAdxSdk/OpAdxSdk.h>` 引入 SDK。
 
 ```objective-c
 #import "AppDelegate.h"
-#import <OpAdxSdk/OpAdxSdk-Swift.h>
+#import <OpAdxSdk/OpAdxSdk.h>
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
@@ -170,15 +190,21 @@ pub13423013211200/ep13423013211584/app14170937163904
     NSString *applicationId = @"YOUR_APPLICATION_ID";
     NSString *iOSAppId = @"YOUR_IOS_APP_ID";
 
-    OpAdxSdkInitConfig *initConfig = [OpAdxSdkInitConfig createWithApplicationId:applicationId
-                                                                        iOSAppId:iOSAppId
-                                                                   publisherName:nil];
+    OpAdxSdkInitConfig *config = [OpAdxSdkInitConfig createWithApplicationId:applicationId
+                                                                     iOSAppId:iOSAppId
+                                                                publisherName:nil];
 
     // (可选) 设置测试模式
-    //initConfig.useTestAd = YES;
+    //config.useTestAd = YES;
 
     // 初始化 SDK
-    [OpAdxSdkCore.shared initializeSDKWithConfig:initConfig];
+    [OpAdxSDK initializeWithConfig:config
+                         onSuccess:^{
+        NSLog(@"Opera Ads SDK initialized successfully");
+    }
+                           onError:^(NSError *error) {
+        NSLog(@"SDK initialization failed: %@", error.localizedDescription);
+    }];
 
     return YES;
 }
@@ -204,7 +230,7 @@ Banner 广告通常显示在应用界面的顶部或底部。
 **加载与展示:**
 
 ```objective-c
-#import <OpAdxSdk/OpAdxSdk-Swift.h>
+#import <OpAdxSdk/OpAdxSdk.h>
 
 @interface ViewController () <OpAdxBannerAdDelegate>
 @property (nonatomic, strong) OpAdxBannerAdBridge *bannerAdView;
@@ -250,7 +276,7 @@ Banner 广告通常显示在应用界面的顶部或底部。
 插屏广告是覆盖全屏的广告形式，通常在应用流程的自然停顿点展示。
 
 ```objective-c
-#import <OpAdxSdk/OpAdxSdk-Swift.h>
+#import <OpAdxSdk/OpAdxSdk.h>
 
 @interface ViewController () <OpAdxInterstitialAdDelegate>
 @property (nonatomic, strong) OpAdxInterstitialAdBridge *interstitialAd;
@@ -290,7 +316,7 @@ Banner 广告通常显示在应用界面的顶部或底部。
 激励视频广告允许用户通过观看视频换取应用内奖励。
 
 ```objective-c
-#import <OpAdxSdk/OpAdxSdk-Swift.h>
+#import <OpAdxSdk/OpAdxSdk.h>
 
 @interface ViewController () <OpAdxRewardedAdDelegate>
 @property (nonatomic, strong) OpAdxRewardedAdBridge *rewardedAd;
@@ -337,7 +363,7 @@ Banner 广告通常显示在应用界面的顶部或底部。
 <!-- end list -->
 
 ```objective-c
-#import <OpAdxSdk/OpAdxSdk-Swift.h>
+#import <OpAdxSdk/OpAdxSdk.h>
 #import "OpAdxNativeAdView.h" // 你的自定义广告视图类
 
 @interface ViewController () <OpAdxNativeAdDelegate>
@@ -347,7 +373,8 @@ Banner 广告通常显示在应用界面的顶部或底部。
 @implementation ViewController
 
 - (void)loadNativeAd {
-    self.nativeAd = [[OpAdxNativeAdBridge alloc] initWithPlacementID:@"YOUR_PLACEMENT_ID"];
+    self.nativeAd = [[OpAdxNativeAdBridge alloc] initWithPlacementId:@"YOUR_PLACEMENT_ID"
+                                                         auctionType:AdAuctionTypeRegular];
     self.nativeAd.delegate = self;
     [self.nativeAd loadAd];
 }
@@ -357,19 +384,19 @@ Banner 广告通常显示在应用界面的顶部或底部。
     OpAdxNativeAdView *adView = [[OpAdxNativeAdView alloc] initWithFrame:CGRectMake(0, 0, 300, 250)];
     [adView configureWithNativeAd:nativeAd]; // 设置 Title, Body, Icon 等
 
-    // 2. 设置广告选择图标位置 (AdChoices)
-    [self.nativeAd setAdChoicePosition:AdChoicePositionTopRight];
-
-    // 3. 添加到父视图
+    // 2. 添加到父视图
     [self.view addSubview:adView];
 
-    // 4. 注册视图以处理交互 (点击、展示统计)
+    // 3. 注册视图以处理交互 (点击、展示统计) 并设置广告选择图标位置
     // 必须使用 OpAdxNativeAdRootView 包裹你的自定义 View
     OpAdxNativeAdRootView *rootView = [[OpAdxNativeAdRootView alloc] initWithRoot:adView];
 
     // 获取交互组件 (Title, Icon, CTA Button, MediaView 等)
     [self.nativeAd registerViewForInteractionWithRootView:rootView
-                                         interactionViews:adView.interactionViews];
+                                        interactionViews:adView.interactionViews
+                                          viewController:self
+                                          clickableViews:nil
+                                        adChoicePosition:AdChoicePositionTopRight];
 }
 @end
 ```
@@ -399,19 +426,24 @@ import OpAdxSdk
 
 func initializeSDK() {
     // 1. 创建配置对象
-    let config = OpAdxSdkInitConfig.Builder(
-        applicationId: "YOUR_APPLICATION_ID"
+    let config = OpAdxSdkInitConfig.create(
+        applicationId: "YOUR_APPLICATION_ID",
+        iOSAppId: "YOUR_IOS_APP_ID"
     )
-    .iOSAppId("YOUR_IOS_APP_ID")
-    .useTestAd(true)   // (可选) 测试模式
-    .build()
+
+    // (可选) 设置测试模式
+    // config.useTestAd = true
 
     // 2. 初始化 SDK
-    OpAdxSDK.initialize(withConfig: config, onSuccess: {
-        print("SDK initialized")
-    }, onError: { error in
-        print("Init failed: \(error)")
-    })
+    OpAdxSDK.initialize(
+        withConfig: config,
+        onSuccess: {
+            print("Opera Ads SDK initialized successfully")
+        },
+        onError: { error in
+            print("SDK initialization failed: \(error.localizedDescription)")
+        }
+    )
 }
 ```
 
@@ -613,8 +645,10 @@ class NativeViewController: UIViewController {
     var nativeAd: OpAdxNativeAd?
 
     func loadNativeAd() {
-        let placementId = "YOUR_PLACEMENT_ID"
-        nativeAd = OpAdxNativeAd(placementId: placementId)
+        nativeAd = OpAdxNativeAd(
+            placementId: "YOUR_PLACEMENT_ID",
+            auctionType: .regular
+        )
 
         let listener = OpAdxNativeAdListenerImp(
             onAdLoaded: { [weak self] ad in
@@ -629,7 +663,7 @@ class NativeViewController: UIViewController {
             onAdClicked: { print("Clicked") }
         )
 
-        nativeAd?.loadAd(placementId: placementId, listener: listener)
+        nativeAd?.loadAd(listener: listener)
     }
 
     func showNativeAd(_ ad: OpAdxNativeAd) {
@@ -637,16 +671,17 @@ class NativeViewController: UIViewController {
         let nativeAdView = OpAdxNativeAdView(frame: CGRect(x: 0, y: 0, width: 300, height: 400))
         nativeAdView.configure(with: ad) // 填充 Title, Body 等数据
 
-        // 2. 设置广告隐私图标位置
-        ad.setAdChoicePosition(.topRight)
-
         view.addSubview(nativeAdView)
         // ... 设置 nativeAdView 的布局约束 ...
 
-        // 3. 注册交互
+        // 2. 注册交互并设置广告隐私图标位置
         // OpAdxNativeAdRootView 是 SDK 提供的容器，interactionViews 包含了可点击的视图集合
         let rootView = OpAdxNativeAdRootView(root: nativeAdView)
-        ad.registerInteractionViews(container: rootView, interactionViews: nativeAdView.interactionViews)
+        ad.registerInteractionViews(
+            container: rootView,
+            interactionViews: nativeAdView.interactionViews,
+            adChoicePosition: .topRight
+        )
     }
 
     deinit {
@@ -682,17 +717,18 @@ func destroyAd() {
 ## Waterfall (瀑布流)
 
 ```swift
-let ad = OpAdxSDK.createInterstitialAd(
+let ad = OpAdxInterstitialAd(
     placementId: "YOUR_PLACEMENT_ID",
     auctionType: .regular
 )
+ad.load(placementId: "YOUR_PLACEMENT_ID", listener: loadListener)
 ```
 
 ## C2S Bidding (客户端竞价)
 
 ```swift
 // 1. 加载 C2S 广告
-let ad = OpAdxSDK.createInterstitialAd(
+let ad = OpAdxInterstitialAd(
     placementId: "YOUR_PLACEMENT_ID",
     auctionType: .clientBidding
 )
@@ -728,7 +764,7 @@ let request = BidTokenRequest.Builder(adMediation: .admob)
 OpAdxSDK.getBidToken(request, callback: callback)
 
 // 2. 使用 bidResponse 加载
-let ad = OpAdxSDK.createInterstitialAd(
+let ad = OpAdxInterstitialAd(
     placementId: "YOUR_PLACEMENT_ID",
     auctionType: .serverBidding
 )
@@ -781,8 +817,9 @@ OpAdxLogger.logLevel = OpAdxLogLevelDebug;
 
 ```swift
 // 根据 Placement 配置选择正确尺寸
-let banner = OpAdxSDK.createMediumRectangle(with: "YOUR_PLACEMENT_ID")
-let standardBanner = OpAdxSDK.createStandardBanner(with: "YOUR_PLACEMENT_ID")
+let banner = OpAdxBannerAdView()
+banner.setPlacementId("YOUR_PLACEMENT_ID")
+banner.setAdSize(.MEDIUM_RECTANGLE)  // 或 .BANNER, .LEADERBOARD 等
 ```
 
 ### SHOW_AD_INVALIDATED (错误码 103)

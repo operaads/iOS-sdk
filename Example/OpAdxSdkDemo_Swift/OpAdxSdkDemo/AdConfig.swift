@@ -9,8 +9,6 @@ import Foundation
 import OpAdxSdk
 
 final class AdConfig {
-    static let useTestAd = true //test
-    
     static let useAndroidConfig = false //test
     private static let useTestServer = true && useAndroidConfig //test
 

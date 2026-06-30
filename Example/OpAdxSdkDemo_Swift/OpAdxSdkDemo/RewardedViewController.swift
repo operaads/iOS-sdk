@@ -26,28 +26,32 @@ class RewardedViewController: BaseViewController {
     
     override func loadAd() {
         guard let placementId = placementId else { return }
-        
+
         logView.print("Loading ...")
+        OpAdxLogger.logAdLoadStart(adFormat: "Rewarded", placementId: placementId)
+
         if rewardedAd != nil {
             self.destroyAd()
         }
         rewardedAd = OpAdxRewardedAd(placementId: placementId, auctionType: AdAuctionType.regular
         )
-        
+
         // 创建监听器实例
         let listener = OpAdxRewardedAdLoadListenerImp(
             onAdLoaded: { [weak self] ad in
                 guard let self = self else { return }
                 self.logView.print("Loaded")
+                OpAdxLogger.logAdLoadSuccess(adFormat: "Rewarded", placementId: placementId)
                 self.enableShowAd()
                 self.enableDestroyAd()
             },
             onAdFailedToLoad: { [weak self] error in
                 guard let self = self else { return }
                 self.logView.print(error.message)
+                OpAdxLogger.logAdLoadFailed(adFormat: "Rewarded", placementId: placementId, error: error)
             }
         )
-        
+
         rewardedAd?.load(placementId: placementId, listener: listener)
     }
     

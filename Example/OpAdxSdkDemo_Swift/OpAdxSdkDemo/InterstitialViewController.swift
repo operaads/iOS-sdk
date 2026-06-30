@@ -26,8 +26,10 @@ class InterstitialViewController: BaseViewController {
     
     override func loadAd() {
         guard let placementId = placementId else { return }
-        
+
         logView.print("Loading ...")
+        OpAdxLogger.logAdLoadStart(adFormat: "Interstitial", placementId: placementId)
+
         if interstitialAd != nil {
             self.destroyAd()
         }
@@ -37,17 +39,19 @@ class InterstitialViewController: BaseViewController {
         let listener = OpAdxInterstitialAdLoadListenerImp(
             onAdLoaded: { [weak self] ad in
                 guard let self = self else { return }
-                
+
                 self.logView.print("Loaded")
+                OpAdxLogger.logAdLoadSuccess(adFormat: "Interstitial", placementId: placementId)
                 self.enableShowAd()
                 self.enableDestroyAd()
             },
             onAdFailedToLoad: { [weak self] error in
                 guard let self = self else { return }
                 self.logView.print(error.message)
+                OpAdxLogger.logAdLoadFailed(adFormat: "Interstitial", placementId: placementId, error: error)
             }
         )
-        
+
         interstitialAd?.load(placementId: placementId, listener: listener)
     }
     
@@ -65,18 +69,22 @@ class InterstitialViewController: BaseViewController {
             onAdClicked: { [weak self] in
                 guard let self = self else { return }
                 self.logView.print("Clicked!")
+                OpAdxLogger.logAdClick(adFormat: "Interstitial", placementId: self.placementId ?? "unknown")
             },
             onAdDisplayed: { [weak self] in
                 guard let self = self else { return }
                 self.logView.print("Displayed!")
+                OpAdxLogger.logAdImpression(adFormat: "Interstitial", placementId: self.placementId ?? "unknown")
             },
             onAdDismissed: { [weak self] in
                 guard let self = self else { return }
                 self.logView.print("Dismissed")
+                OpAdxLogger.logAdClosed(adFormat: "Interstitial", placementId: self.placementId ?? "unknown")
             },
             onAdFailedToShow: { [weak self] error in
                 guard let self = self else { return }
                 self.logView.print(error.message)
+                OpAdxLogger.logError("Interstitial ad failed to show: \(error.message)")
             }
         )
         

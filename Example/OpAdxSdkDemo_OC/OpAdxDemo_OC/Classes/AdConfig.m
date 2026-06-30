@@ -10,10 +10,6 @@
 
 @implementation AdConfig
 
-+ (BOOL)useTestAd {
-    return YES; //test // only use for test demo, it will false when app is realsed.
-}
-
 + (NSString *)applicationId {
     return @"pub13423013211200/ep13423013211584/app14170937163904";
 }

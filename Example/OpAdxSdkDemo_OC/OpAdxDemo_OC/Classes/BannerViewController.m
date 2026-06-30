@@ -27,10 +27,12 @@
 
 - (void)loadAd {
     [self destroyAd];
-    
+
     __weak typeof(self) weakSelf = self;
     NSString *placementId = self.placementId;
-    
+
+    [OpAdxLogger logAdLoadStartWithAdFormat:@"Banner" placementId:placementId];
+
     OpAdxBannerAdBridge *bannerAd = [[OpAdxBannerAdBridge alloc] initWithPlacementId:placementId adSize:OpAdxAdSize.BANNER_MREC];
     self.bannerAdView = bannerAd;
     bannerAd.delegate = self;
@@ -93,29 +95,33 @@
 
 - (void)bannerAdDidLoad:(OpAdxBannerAdBridge *)bannerAd {
     NSLog(@"[ADX] Banner广告加载成功: %@", bannerAd.placementId);
-    
+    [OpAdxLogger logAdLoadSuccessWithAdFormat:@"Banner" placementId:bannerAd.placementId ecpm:0];
+
     [self.logView print:[NSString stringWithFormat:@"Loaded, adSize: %@ ", bannerAd.adSize]];
-   
+
     [self enableShowAd];
     [self enableDestroyAd];
-    
+
 }
 
 - (void)bannerAd:(OpAdxBannerAdBridge *)bannerAd didFailWithError:(OpAdxAdError *)error {
     NSLog(@"[ADX] Banner广告加载失败: %@", error);
+    [OpAdxLogger logAdLoadFailedWithAdFormat:@"Banner" placementId:bannerAd.placementId error:error];
     [self.logView print:error.message];
-    
+
 }
 
 - (void)bannerAdDidClick:(OpAdxBannerAdBridge *)bannerAd {
     NSLog(@"[ADX] Banner广告被点击: %@", bannerAd.placementId);
+    [OpAdxLogger logAdClickWithAdFormat:@"Banner" placementId:bannerAd.placementId];
     [self.logView print:@"onAdClicked"];
 }
 
-- (void)bannerAdWillLogImpression:(OpAdxBannerAdBridge *)bannerAd {
+- (void)bannerAdDidDisplay:(OpAdxBannerAdBridge *)bannerAd {
     NSLog(@"[ADX] Banner广告展示: %@", bannerAd.placementId);
+    [OpAdxLogger logAdImpressionWithAdFormat:@"Banner" placementId:bannerAd.placementId];
     [self.logView print:@"onAdImpression"];
-    
+
 }
 
 - (void)dealloc {

@@ -20,13 +20,45 @@ class MainViewController: UIViewController {
         MainItem(format: "Interstitial", placementId: AdConfig.getPlacementId(adFormat: .interstitial, forceVideo: false)),
         MainItem(format: "Rewarded", placementId: AdConfig.getPlacementId(adFormat: .rewarded, forceVideo: false)),
         MainItem(format: "RewardedInterstitial", placementId: AdConfig.getPlacementId(adFormat: .rewarded, forceVideo: false)),
-        MainItem(format: "Bid Response Debugging", placementId: "Debug custom bid responses")
+        MainItem(format: "🎯 Client Bidding Test", placementId: "C2S Bidding - Header Bidding 测试"),
+        MainItem(format: "Bid Response Debugging", placementId: "Debug custom bid responses"),
     ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let initConfig =  OpAdxSdkInitConfig.create(applicationId: AdConfig.useAndroidConfig ? AdConfig.android_applicationId : AdConfig.applicationId, iOSAppId: AdConfig.iOSAppId)
-        OpAdxSdkCore.shared.initialize(initConfig: initConfig)
+
+        // 启用Debug日志（在SDK初始化之前）
+        OpAdxLogger.logLevel = .debug
+        OpAdxLogger.info("=== Opera Ads SDK Demo Started ===")
+
+        let applicationId = AdConfig.useAndroidConfig ? AdConfig.android_applicationId : AdConfig.applicationId
+        let iOSAppId = AdConfig.iOSAppId
+
+        let initConfig = OpAdxSdkInitConfig.create(applicationId: applicationId, iOSAppId: iOSAppId)
+
+        OpAdxLogger.info("===========================================", tag: "OpAdx-Init")
+        OpAdxLogger.info("📱 Initializing Opera Ads SDK...", tag: "OpAdx-Init")
+        OpAdxLogger.info("   Application ID: \(applicationId)", tag: "OpAdx-Init")
+        OpAdxLogger.info("   iOS App ID: \(iOSAppId)", tag: "OpAdx-Init")
+        OpAdxLogger.info("===========================================", tag: "OpAdx-Init")
+
+        OpAdxSDK.initialize(
+            withConfig: initConfig,
+            onSuccess: {
+                OpAdxLogger.info("✅ SDK initialized successfully", tag: "OpAdx-Init")
+                OpAdxLogger.info("   SDK Version: \(OpAdxSdkCore.getVersion()).\(OpAdxSdkCore.getBuildNum())", tag: "OpAdx-Init")
+                OpAdxLogger.info("   SKAdNetwork: Enabled", tag: "OpAdx-Init")
+
+                // 启用SKAdNetwork功能
+                OpAdxSDK.setSKAdNetworkEnabled(true)
+                OpAdxSDK.setSKAdNetworkDebugLogEnabled(true)
+            },
+            onError: { error in
+                OpAdxLogger.logError("❌ SDK initialization failed", tag: "OpAdx-Init")
+                OpAdxLogger.logError("   Error: \(error.localizedDescription)", tag: "OpAdx-Init")
+            }
+        )
+
         setupUI()
         setupConstraints()
     }
@@ -95,6 +127,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             viewController = AppOpenViewController()
         case "RewardedInterstitial":
             viewController = RewardedInterstitialViewController()
+        case "🎯 Client Bidding Test":
+            viewController = ClientBiddingViewController()
         case "Bid Response Debugging":
             viewController = BidRespDebugViewController()
         default:
