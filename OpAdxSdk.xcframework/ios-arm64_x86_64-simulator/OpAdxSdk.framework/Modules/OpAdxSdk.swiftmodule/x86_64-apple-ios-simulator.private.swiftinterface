@@ -1,6 +1,6 @@
 // swift-interface-format-version: 1.0
 // swift-compiler-version: Apple Swift version 6.3.2 effective-5.10 (swiftlang-6.3.2.1.108 clang-2100.1.1.101)
-// swift-module-flags: -target x86_64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name OpAdxSdk
+// swift-module-flags: -target x86_64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -Osize -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name OpAdxSdk
 // swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.3.2
 import AVFoundation
 import AdSupport
@@ -24,6 +24,7 @@ import WebKit
 import _Concurrency
 import _StringProcessing
 import _SwiftConcurrencyShims
+import os
 import zlib
 @objc public protocol OpAdxAppOpenAdDelegate {
   @objc optional func appOpenAdDidLoad(_ appOpenAd: OpAdxSdk.OpAdxAppOpenAdBridge)
@@ -192,13 +193,19 @@ extension OpAdxSdk.OpAdxInterstitialAdBridge {
   @objc public var imageUrl: Foundation.URL? {
     @objc get
   }
+  @objc public var hasVideoContent: Swift.Bool {
+    @objc get
+  }
   @objc public var boundMediaView: OpAdxSdk.OpAdxMediaView? {
     @objc get
   }
   @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func createMediaView() -> OpAdxSdk.OpAdxMediaView
+  @objc public func setAdChoicesViewOrigin(_ origin: CoreFoundation.CGPoint)
+  @objc public func setVideoPlaybackEventListener(_ listener: (any OpAdxSdk.OpAdxVideoPlaybackEventListener)?)
   @objc public func loadAd()
+  @objc public func loadC2SBid()
   @objc public func registerViewForInteraction(rootView: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, adChoicePosition: OpAdxSdk.AdChoicePosition)
   @objc public func registerViewForInteraction(rootView: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, viewController: UIKit.UIViewController?, adChoicePosition: OpAdxSdk.AdChoicePosition)
   @objc public func registerViewForInteraction(rootView: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, viewController: UIKit.UIViewController?, clickableViews: [UIKit.UIView]?, adChoicePosition: OpAdxSdk.AdChoicePosition)
@@ -264,6 +271,7 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
 }
 @objc public class OpAdxRewardedInterstitialAdBridge : ObjectiveC.NSObject {
   @objc public func getECPM() -> Swift.Double
+  @objc public func getBid() -> (any OpAdxSdk.AdBid)?
   @objc weak public var delegate: (any OpAdxSdk.OpAdxRewardedInterstitialAdDelegate)?
   @objc public var isAdValid: Swift.Bool {
     @objc get
@@ -272,6 +280,7 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
   @objc public init(placementId: Swift.String)
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
+  @objc public func loadC2SBid()
   @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
 }
@@ -739,10 +748,13 @@ public class OpAdxImpressionTracker {
   @objc public func privacy() -> Foundation.URL?
   @objc public func iconUrl() -> Foundation.URL?
   @objc public func imageUrl() -> Foundation.URL?
+  @objc public func hasVideoContent() -> Swift.Bool
+  @objc public func setVideoPlaybackEventListener(_ listener: (any OpAdxSdk.OpAdxVideoPlaybackEventListener)?)
   @objc public func getBoundMediaView() -> OpAdxSdk.OpAdxMediaView?
   @objc public func createMediaView() -> OpAdxSdk.OpAdxMediaView
   @objc public func registerInteractionViews(container: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, adChoicePosition: OpAdxSdk.AdChoicePosition)
   @objc public func setAdChoicePosition(_ position: OpAdxSdk.AdChoicePosition)
+  @objc public func setAdChoicesViewOrigin(_ origin: CoreFoundation.CGPoint)
   @objc public func unregister()
   @objc public func isAdInvalidated() -> Swift.Bool
   @objc public func getBid() -> (any OpAdxSdk.AdBid)?
@@ -847,6 +859,13 @@ extension UIKit.UIView {
     @objc deinit
   }
   @objc deinit
+}
+@objc public protocol OpAdxVideoPlaybackEventListener {
+  @objc func onVideoStart()
+  @objc func onVideoResume()
+  @objc func onVideoPause()
+  @objc func onVideoEnd()
+  @objc func onVideoMute(_ isMuted: Swift.Bool)
 }
 @objc public protocol AdBid {
   @objc func getEcpm() -> Swift.Double

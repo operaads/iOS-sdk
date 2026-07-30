@@ -895,6 +895,21 @@ SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxBannerAdView")
 - (void)setPlacementId:(NSString * _Nonnull)placementId;
 - (void)resume;
 - (void)pause;
+/// Returns true if this banner view has never loaded successfully or will not display any (more) ads.
+/// Note: This is specific to banner — other ad formats delegate to the inner ad’s isAdInvalidated state.
+/// Banners may auto-refresh on a timer, so the inner BannerAdImpl’s expiration is not what matters here;
+/// what matters is whether the view itself is still in service:
+/// <ul>
+///   <li>
+///     it never loaded an ad (everLoadedSuccessfully is false), or
+///   </li>
+///   <li>
+///     the C2S bid was lost (c2sBidLost is true: publisher signaled another network won), or
+///   </li>
+///   <li>
+///     destroy() has been called (destroyed is true).
+///   </li>
+/// </ul>
 @property (nonatomic, readonly) BOOL isAdInvalidated;
 - (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (void)destroy;
@@ -1139,6 +1154,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 @end
 
 @class NSNumber;
+@protocol OpAdxVideoPlaybackEventListener;
 @class OpAdxNativeAdRootView;
 SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 @interface OpAdxNativeAd : NSObject
@@ -1155,10 +1171,28 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (NSURL * _Nullable)privacy SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)iconUrl SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)imageUrl SWIFT_WARN_UNUSED_RESULT;
+/// Whether the native ad contains video content (ADRD-425)
+- (BOOL)hasVideoContent SWIFT_WARN_UNUSED_RESULT;
+/// Sets the listener invoked during native video playback (ADRD-425).
+/// Pass <code>nil</code> to remove a previously set listener.
+- (void)setVideoPlaybackEventListener:(id <OpAdxVideoPlaybackEventListener> _Nullable)listener;
 - (OpAdxMediaView * _Nullable)getBoundMediaView SWIFT_WARN_UNUSED_RESULT;
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 - (void)registerInteractionViewsWithContainer:(OpAdxNativeAdRootView * _Nonnull)container interactionViews:(OpAdxInteractionViews * _Nonnull)interactionViews adChoicePosition:(enum AdChoicePosition)adChoicePosition;
 - (void)setAdChoicePosition:(enum AdChoicePosition)position;
+/// 设置 adChoices 图标的绝对坐标（以广告容器左上角为原点，单位 pt）。
+/// <ul>
+///   <li>
+///     (0,0)（默认）：视为“未设置”，回落默认右上预设位置（.topRight）。
+///   </li>
+///   <li>
+///     非 (0,0)：以容器左上角为原点的偏移（左上偏移），不做边界钳制，
+///     坐标超出容器可视范围时可能被裁剪，由接入方保证合法（与 InMobi 直接设置 adChoice.frame 一致）。
+///     注意：服务端下发的象限位置优先级更高，会覆盖此处设置（合规兜底）。
+///     必须在 registerInteractionViews 之前调用。
+///   </li>
+/// </ul>
+- (void)setAdChoicesViewOrigin:(CGPoint)origin;
 - (void)unregister;
 - (BOOL)isAdInvalidated SWIFT_WARN_UNUSED_RESULT;
 - (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
@@ -1206,6 +1240,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly) BOOL isAdInvalidated;
 @property (nonatomic, readonly, copy) NSURL * _Nullable iconUrl;
 @property (nonatomic, readonly, copy) NSURL * _Nullable imageUrl;
+/// Whether the native ad contains video content (ADRD-425)
+@property (nonatomic, readonly) BOOL hasVideoContent;
 @property (nonatomic, readonly, strong) OpAdxMediaView * _Nullable boundMediaView;
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化原生广告
@@ -1213,8 +1249,38 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 ///
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
+/// 设置 adChoices 图标的绝对坐标（以广告容器左上角为原点，单位 pt）。
+/// <ul>
+///   <li>
+///     (0,0)（默认）：视为“未设置”，回落默认右上预设位置（.topRight）。
+///   </li>
+///   <li>
+///     非 (0,0)：以容器左上角为原点的偏移（左上偏移），不做边界钳制，
+///     坐标超出容器可视范围时可能被裁剪，由接入方保证合法（与 InMobi 直接设置 adChoice.frame 一致）。
+///     注意：服务端下发的象限位置优先级更高，会覆盖此处设置（合规兜底）。
+///     必须在 registerViewForInteraction 之前调用。
+///   </li>
+/// </ul>
+/// 使用范例（Objective-C）：
+/// \code
+/// // 把 adChoices 图标放到容器内左上角原点偏移 (12, 12) 处
+/// [nativeAd setAdChoicesViewOrigin:CGPointMake(12, 12)];
+/// [nativeAd registerViewForInteractionWithRootView:rootView
+///                                 interactionViews:interactionViews
+///                                   viewController:rootVC
+///                                  clickableViews:clickableViews
+///                                adChoicePosition:AdChoicePositionTopRight];
+///
+/// \endcode
+- (void)setAdChoicesViewOrigin:(CGPoint)origin;
+/// 设置原生视频播放事件监听器 (ADRD-425)
+/// \param listener 播放事件监听器，传 <code>nil</code> 可移除已设置的监听器
+///
+- (void)setVideoPlaybackEventListener:(id <OpAdxVideoPlaybackEventListener> _Nullable)listener;
 /// 加载广告
 - (void)loadAd;
+/// 加载 C2S 竞价广告
+- (void)loadC2SBid;
 /// 注册视图进行交互
 /// \param rootView 原生广告根视图
 ///
@@ -1466,6 +1532,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk27OpAdxRewardedInterstitialAd")
 SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 @interface OpAdxRewardedInterstitialAdBridge : NSObject
 - (double)getECPM SWIFT_WARN_UNUSED_RESULT;
+- (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxRewardedInterstitialAdDelegate> _Nullable delegate;
 /// Whether the ad is ready to be shown
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -1479,6 +1546,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Load ad
 - (void)loadAd;
+/// Load ad for client-side bidding (C2S)
+- (void)loadC2SBid;
 /// Show ad
 /// \param viewController The view controller to present the ad
 ///
@@ -1589,7 +1658,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 /// 获取 SKAdNetwork 管理器（用于高级设置）
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkManager * _Nonnull skAdNetworkManager;)
 + (OpAdxSKAdNetworkManager * _Nonnull)skAdNetworkManager SWIFT_WARN_UNUSED_RESULT;
-/// 启用/禁用 SKAdNetwork 支持（默认禁用，避免与 AppsFlyer 等 MMP 冲突）
+/// 启用/禁用 SKAdNetwork 支持（默认启用）
 + (void)setSKAdNetworkEnabled:(BOOL)enabled;
 /// 启用/禁用 SKAdNetwork 调试日志（默认禁用）
 + (void)setSKAdNetworkDebugLogEnabled:(BOOL)enabled;
@@ -1830,6 +1899,23 @@ SWIFT_CLASS("_TtCC8OpAdxSdk18OpAdxSdkInitConfig7Builder")
 
 @interface OpAdxSdkInitConfig (SWIFT_EXTENSION(OpAdxSdk))
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@end
+
+/// The listener to be invoked during video playback of a native video ad.
+SWIFT_PROTOCOL("_TtP8OpAdxSdk31OpAdxVideoPlaybackEventListener_")
+@protocol OpAdxVideoPlaybackEventListener
+/// Called when video playback starts.
+- (void)onVideoStart;
+/// Called when video playback resumes after being paused.
+- (void)onVideoResume;
+/// Called when video playback is paused.
+- (void)onVideoPause;
+/// Called when video playback reaches the end.
+- (void)onVideoEnd;
+/// Called when the video mute state changes.
+/// \param isMuted <code>true</code> if the video is muted, <code>false</code> otherwise.
+///
+- (void)onVideoMute:(BOOL)isMuted;
 @end
 
 /// The options for <code>server-side verification</code> callback, will be used when notifying track url on user rewarded.
@@ -2779,6 +2865,21 @@ SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxBannerAdView")
 - (void)setPlacementId:(NSString * _Nonnull)placementId;
 - (void)resume;
 - (void)pause;
+/// Returns true if this banner view has never loaded successfully or will not display any (more) ads.
+/// Note: This is specific to banner — other ad formats delegate to the inner ad’s isAdInvalidated state.
+/// Banners may auto-refresh on a timer, so the inner BannerAdImpl’s expiration is not what matters here;
+/// what matters is whether the view itself is still in service:
+/// <ul>
+///   <li>
+///     it never loaded an ad (everLoadedSuccessfully is false), or
+///   </li>
+///   <li>
+///     the C2S bid was lost (c2sBidLost is true: publisher signaled another network won), or
+///   </li>
+///   <li>
+///     destroy() has been called (destroyed is true).
+///   </li>
+/// </ul>
 @property (nonatomic, readonly) BOOL isAdInvalidated;
 - (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (void)destroy;
@@ -3023,6 +3124,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 @end
 
 @class NSNumber;
+@protocol OpAdxVideoPlaybackEventListener;
 @class OpAdxNativeAdRootView;
 SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 @interface OpAdxNativeAd : NSObject
@@ -3039,10 +3141,28 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (NSURL * _Nullable)privacy SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)iconUrl SWIFT_WARN_UNUSED_RESULT;
 - (NSURL * _Nullable)imageUrl SWIFT_WARN_UNUSED_RESULT;
+/// Whether the native ad contains video content (ADRD-425)
+- (BOOL)hasVideoContent SWIFT_WARN_UNUSED_RESULT;
+/// Sets the listener invoked during native video playback (ADRD-425).
+/// Pass <code>nil</code> to remove a previously set listener.
+- (void)setVideoPlaybackEventListener:(id <OpAdxVideoPlaybackEventListener> _Nullable)listener;
 - (OpAdxMediaView * _Nullable)getBoundMediaView SWIFT_WARN_UNUSED_RESULT;
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 - (void)registerInteractionViewsWithContainer:(OpAdxNativeAdRootView * _Nonnull)container interactionViews:(OpAdxInteractionViews * _Nonnull)interactionViews adChoicePosition:(enum AdChoicePosition)adChoicePosition;
 - (void)setAdChoicePosition:(enum AdChoicePosition)position;
+/// 设置 adChoices 图标的绝对坐标（以广告容器左上角为原点，单位 pt）。
+/// <ul>
+///   <li>
+///     (0,0)（默认）：视为“未设置”，回落默认右上预设位置（.topRight）。
+///   </li>
+///   <li>
+///     非 (0,0)：以容器左上角为原点的偏移（左上偏移），不做边界钳制，
+///     坐标超出容器可视范围时可能被裁剪，由接入方保证合法（与 InMobi 直接设置 adChoice.frame 一致）。
+///     注意：服务端下发的象限位置优先级更高，会覆盖此处设置（合规兜底）。
+///     必须在 registerInteractionViews 之前调用。
+///   </li>
+/// </ul>
+- (void)setAdChoicesViewOrigin:(CGPoint)origin;
 - (void)unregister;
 - (BOOL)isAdInvalidated SWIFT_WARN_UNUSED_RESULT;
 - (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
@@ -3090,6 +3210,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 @property (nonatomic, readonly) BOOL isAdInvalidated;
 @property (nonatomic, readonly, copy) NSURL * _Nullable iconUrl;
 @property (nonatomic, readonly, copy) NSURL * _Nullable imageUrl;
+/// Whether the native ad contains video content (ADRD-425)
+@property (nonatomic, readonly) BOOL hasVideoContent;
 @property (nonatomic, readonly, strong) OpAdxMediaView * _Nullable boundMediaView;
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
 /// 初始化原生广告
@@ -3097,8 +3219,38 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 ///
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
+/// 设置 adChoices 图标的绝对坐标（以广告容器左上角为原点，单位 pt）。
+/// <ul>
+///   <li>
+///     (0,0)（默认）：视为“未设置”，回落默认右上预设位置（.topRight）。
+///   </li>
+///   <li>
+///     非 (0,0)：以容器左上角为原点的偏移（左上偏移），不做边界钳制，
+///     坐标超出容器可视范围时可能被裁剪，由接入方保证合法（与 InMobi 直接设置 adChoice.frame 一致）。
+///     注意：服务端下发的象限位置优先级更高，会覆盖此处设置（合规兜底）。
+///     必须在 registerViewForInteraction 之前调用。
+///   </li>
+/// </ul>
+/// 使用范例（Objective-C）：
+/// \code
+/// // 把 adChoices 图标放到容器内左上角原点偏移 (12, 12) 处
+/// [nativeAd setAdChoicesViewOrigin:CGPointMake(12, 12)];
+/// [nativeAd registerViewForInteractionWithRootView:rootView
+///                                 interactionViews:interactionViews
+///                                   viewController:rootVC
+///                                  clickableViews:clickableViews
+///                                adChoicePosition:AdChoicePositionTopRight];
+///
+/// \endcode
+- (void)setAdChoicesViewOrigin:(CGPoint)origin;
+/// 设置原生视频播放事件监听器 (ADRD-425)
+/// \param listener 播放事件监听器，传 <code>nil</code> 可移除已设置的监听器
+///
+- (void)setVideoPlaybackEventListener:(id <OpAdxVideoPlaybackEventListener> _Nullable)listener;
 /// 加载广告
 - (void)loadAd;
+/// 加载 C2S 竞价广告
+- (void)loadC2SBid;
 /// 注册视图进行交互
 /// \param rootView 原生广告根视图
 ///
@@ -3350,6 +3502,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk27OpAdxRewardedInterstitialAd")
 SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 @interface OpAdxRewardedInterstitialAdBridge : NSObject
 - (double)getECPM SWIFT_WARN_UNUSED_RESULT;
+- (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, weak) id <OpAdxRewardedInterstitialAdDelegate> _Nullable delegate;
 /// Whether the ad is ready to be shown
 @property (nonatomic, readonly) BOOL isAdValid;
@@ -3363,6 +3516,8 @@ SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Load ad
 - (void)loadAd;
+/// Load ad for client-side bidding (C2S)
+- (void)loadC2SBid;
 /// Show ad
 /// \param viewController The view controller to present the ad
 ///
@@ -3473,7 +3628,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 /// 获取 SKAdNetwork 管理器（用于高级设置）
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) OpAdxSKAdNetworkManager * _Nonnull skAdNetworkManager;)
 + (OpAdxSKAdNetworkManager * _Nonnull)skAdNetworkManager SWIFT_WARN_UNUSED_RESULT;
-/// 启用/禁用 SKAdNetwork 支持（默认禁用，避免与 AppsFlyer 等 MMP 冲突）
+/// 启用/禁用 SKAdNetwork 支持（默认启用）
 + (void)setSKAdNetworkEnabled:(BOOL)enabled;
 /// 启用/禁用 SKAdNetwork 调试日志（默认禁用）
 + (void)setSKAdNetworkDebugLogEnabled:(BOOL)enabled;
@@ -3714,6 +3869,23 @@ SWIFT_CLASS("_TtCC8OpAdxSdk18OpAdxSdkInitConfig7Builder")
 
 @interface OpAdxSdkInitConfig (SWIFT_EXTENSION(OpAdxSdk))
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
+@end
+
+/// The listener to be invoked during video playback of a native video ad.
+SWIFT_PROTOCOL("_TtP8OpAdxSdk31OpAdxVideoPlaybackEventListener_")
+@protocol OpAdxVideoPlaybackEventListener
+/// Called when video playback starts.
+- (void)onVideoStart;
+/// Called when video playback resumes after being paused.
+- (void)onVideoResume;
+/// Called when video playback is paused.
+- (void)onVideoPause;
+/// Called when video playback reaches the end.
+- (void)onVideoEnd;
+/// Called when the video mute state changes.
+/// \param isMuted <code>true</code> if the video is muted, <code>false</code> otherwise.
+///
+- (void)onVideoMute:(BOOL)isMuted;
 @end
 
 /// The options for <code>server-side verification</code> callback, will be used when notifying track url on user rewarded.
