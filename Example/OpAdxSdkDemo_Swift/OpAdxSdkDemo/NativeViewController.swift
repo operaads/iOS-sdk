@@ -12,10 +12,14 @@ class NativeViewController: BaseViewController {
     
     private var nativeAd: OpAdxNativeAd?
     
+    override var hasVideo: Bool {
+        return true
+    }
+
     override var adFormat: AdFormat {
         return .native
     }
-    
+
     override var adFormatString: String {
         return "Native Ad"
     }

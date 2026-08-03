@@ -18,6 +18,10 @@
 
 @implementation NativeViewController
 
+- (BOOL)hasVideo {
+    return YES;
+}
+
 - (AdFormat)adFormat {
     return AdFormatNative;
 }

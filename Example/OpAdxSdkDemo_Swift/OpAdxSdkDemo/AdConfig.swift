@@ -16,6 +16,7 @@ final class AdConfig {
     public static let iOSAppId = "1444253128"
     
     private static let nativePlacementId = "s14198263063424"
+    private static let nativeVideoPlacementId = "s15559042872128"
     private static let bannerPlacementId = "s14170965187264"
     private static let bannerVideoPlacementId = "s14198605602880"
     private static let interstitialPlacementId = "s14198264979520"
@@ -45,7 +46,7 @@ final class AdConfig {
             if useAndroidConfig {
                 return android_nativePlacementId
             }
-            return nativePlacementId
+            return forceVideo ? nativeVideoPlacementId : nativePlacementId
         case .banner:
             if useAndroidConfig {
                 return forceVideo ? android_bannerVideoPlacementId : android_bannerPlacementId

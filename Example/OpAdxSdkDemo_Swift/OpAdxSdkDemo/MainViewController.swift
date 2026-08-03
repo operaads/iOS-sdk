@@ -52,9 +52,6 @@ class MainViewController: UIViewController {
                 // 启用SKAdNetwork功能
                 OpAdxSDK.setSKAdNetworkEnabled(true)
                 OpAdxSDK.setSKAdNetworkDebugLogEnabled(true)
-
-                // 注册SKAdNetwork
-                OpAdxSKAdNetworkManager.shared.registerApp()
             },
             onError: { error in
                 OpAdxLogger.logError("❌ SDK initialization failed", tag: "OpAdx-Init")

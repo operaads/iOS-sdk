@@ -10,20 +10,9 @@
 		E1CD1EB26C063711C6BBE817 /* Pods_OpAdxSdkDemo_OC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66CEF019D9F6D4AEA83AAA02 /* Pods_OpAdxSdkDemo_OC.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		48CE6F882FF26C5E00B8E868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 482250712F275D5A0033E0BB /* OpAdxSdk.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4893D3462ED83BEF00860FA1;
-			remoteInfo = OpAdxSdk;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		1E4D8B897EE6848C1DCE8F81 /* Pods-OpAdxSdkDemo_OC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpAdxSdkDemo_OC.release.xcconfig"; path = "Target Support Files/Pods-OpAdxSdkDemo_OC/Pods-OpAdxSdkDemo_OC.release.xcconfig"; sourceTree = "<group>"; };
 		22F8A823383F7FC1F92183A9 /* Pods-OpAdxSdkDemo_OC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpAdxSdkDemo_OC.debug.xcconfig"; path = "Target Support Files/Pods-OpAdxSdkDemo_OC/Pods-OpAdxSdkDemo_OC.debug.xcconfig"; sourceTree = "<group>"; };
-		482250712F275D5A0033E0BB /* OpAdxSdk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpAdxSdk.xcodeproj; path = /Users/luanchen/Documents/gitlab/OpAdxSdk_osa/OpAdxSdk/OpAdxSdk.xcodeproj; sourceTree = "<absolute>"; };
 		48DEA88A2EE9BD3F009F9F56 /* OpAdxSdkDemo_OC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpAdxSdkDemo_OC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66CEF019D9F6D4AEA83AAA02 /* Pods_OpAdxSdkDemo_OC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpAdxSdkDemo_OC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -61,13 +50,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		482250722F275D5A0033E0BB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		48C3B8402F276267000AEE47 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -81,7 +63,6 @@
 			children = (
 				48DEA88C2EE9BD3F009F9F56 /* OpAdxDemo_OC */,
 				48DEA88B2EE9BD3F009F9F56 /* Products */,
-				482250712F275D5A0033E0BB /* OpAdxSdk.xcodeproj */,
 				48C3B8402F276267000AEE47 /* Frameworks */,
 				F72F4EC2FE0B4F15B3F788E6 /* Pods */,
 			);
@@ -120,7 +101,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				48CE6F892FF26C5E00B8E868 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				48DEA88C2EE9BD3F009F9F56 /* OpAdxDemo_OC */,
@@ -157,12 +137,6 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 48DEA88B2EE9BD3F009F9F56 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 482250722F275D5A0033E0BB /* Products */;
-					ProjectRef = 482250712F275D5A0033E0BB /* OpAdxSdk.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				48DEA8892EE9BD3F009F9F56 /* OpAdxSdkDemo_OC */,
@@ -214,14 +188,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		48CE6F892FF26C5E00B8E868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = OpAdxSdk;
-			targetProxy = 48CE6F882FF26C5E00B8E868 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		48DEA8A32EE9BD42009F9F56 /* Debug */ = {

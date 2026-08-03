@@ -20,6 +20,7 @@
 
 // iOS Placement IDs
 static NSString *const nativePlacementId = @"s14198263063424";
+static NSString *const nativeVideoPlacementId = @"s15559042872128";
 static NSString *const bannerPlacementId = @"s14170965187264";
 static NSString *const bannerVideoPlacementId = @"s14198605602880";
 static NSString *const interstitialPlacementId = @"s14198264979520";
@@ -32,7 +33,7 @@ static NSString *const appOpenPlacementId = @"s14496438551808";
     
     switch (adFormat) {
         case AdFormatNative:
-            return nativePlacementId;
+            return forceVideo ? nativeVideoPlacementId : nativePlacementId;
         case AdFormatBanner:
             return forceVideo ? bannerVideoPlacementId : bannerPlacementId;
         case AdFormatInterstitial:
