@@ -252,6 +252,8 @@ extension OpAdxSdk.OpAdxNativeAdBridge {
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func loadC2SBid()
+  @objc public func setSceneId(_ sceneId: Swift.String)
+  @objc public func setRewardSsvOptions(_ rewardSsvOptions: OpAdxSdk.RewardSsvOptions)
   @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
 }
@@ -281,6 +283,8 @@ extension OpAdxSdk.OpAdxRewardedAdBridge {
   @objc public init(placementId: Swift.String, auctionType: OpAdxSdk.AdAuctionType)
   @objc public func loadAd()
   @objc public func loadC2SBid()
+  @objc public func setSceneId(_ sceneId: Swift.String)
+  @objc public func setRewardSsvOptions(_ rewardSsvOptions: OpAdxSdk.RewardSsvOptions)
   @objc public func showAd(from viewController: UIKit.UIViewController)
   @objc deinit
 }
@@ -596,9 +600,10 @@ public struct AdConstants {
 @objc public protocol OnUserRewardedListener {
   @objc func onUserRewarded(reward: OpAdxSdk.OpAdxRewardItem)
 }
-@_hasMissingDesignatedInitializers @objc public class RewardSsvOptions : ObjectiveC.NSObject {
-  final public let userId: Swift.String?
-  final public let customData: Swift.String?
+@objc public class RewardSsvOptions : ObjectiveC.NSObject {
+  @objc final public let userId: Swift.String?
+  @objc final public let customData: Swift.String?
+  @objc public init(userId: Swift.String?, customData: Swift.String?)
   @objc deinit
 }
 extension OpAdxSdk.RewardSsvOptions {
@@ -1003,6 +1008,7 @@ public enum AdMediation : Swift.String {
 @objc extension OpAdxSdk.OpAdxAdSize {
   @objc dynamic public func toString() -> Swift.String
   @objc public static func fromString(_ string: Swift.String) -> OpAdxSdk.OpAdxAdSize?
+  @objc public static func findExactSize(width: Swift.Int, height: Swift.Int) -> OpAdxSdk.OpAdxAdSize?
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor @preconcurrency public class BidRespDebugViewController : UIKit.UIViewController {
   @_Concurrency.MainActor @preconcurrency @objc override dynamic public func viewDidLoad()

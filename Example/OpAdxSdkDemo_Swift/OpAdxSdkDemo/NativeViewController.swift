@@ -13,7 +13,7 @@ class NativeViewController: BaseViewController {
     private var nativeAd: OpAdxNativeAd?
     
     override var hasVideo: Bool {
-        return true
+        return false
     }
 
     override var adFormat: AdFormat {

@@ -687,6 +687,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 - (NSString * _Nonnull)toString SWIFT_WARN_UNUSED_RESULT;
 /// Creates an ad size from a string representation.
 + (OpAdxAdSize * _Nullable)fromString:(NSString * _Nonnull)string SWIFT_WARN_UNUSED_RESULT;
+/// Finds the supported ad size exactly matching the given dimensions, or nil if there is none.
+/// Mediation adapters receive the banner size from the mediation SDK and must validate it before
+/// handing it to the SDK: a size outside this list never qualifies for video demand
+/// (see <code>supportsVideo</code>) and is passed to the bidder as-is. Mirrors Android’s
+/// <code>AdSize.findExactSize(width, height)</code>.
++ (OpAdxAdSize * _Nullable)findExactSizeWithWidth:(NSInteger)width height:(NSInteger)height SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @protocol OpAdxAppOpenAdInteractionListener;
@@ -1451,6 +1457,14 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 - (void)loadAd;
 /// Load ad for client-side bidding (C2S)
 - (void)loadC2SBid;
+/// 设置场景 ID，用于服务端奖励回调（SSV）
+/// \param sceneId 场景 ID，url 编码后需 <= 100 字节，否则丢弃
+///
+- (void)setSceneId:(NSString * _Nonnull)sceneId;
+/// 设置服务端奖励回调（SSV）参数
+/// \param rewardSsvOptions SSV 参数
+///
+- (void)setRewardSsvOptions:(RewardSsvOptions * _Nonnull)rewardSsvOptions;
 /// 展示广告
 /// \param viewController 展示广告的视图控制器
 ///
@@ -1548,6 +1562,14 @@ SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 - (void)loadAd;
 /// Load ad for client-side bidding (C2S)
 - (void)loadC2SBid;
+/// Set the scene id used by the server-side verification (SSV) callback
+/// \param sceneId Scene id, should be <= 100 bytes after url encoded, otherwise discarded
+///
+- (void)setSceneId:(NSString * _Nonnull)sceneId;
+/// Set the options for the server-side verification (SSV) callback
+/// \param rewardSsvOptions SSV options
+///
+- (void)setRewardSsvOptions:(RewardSsvOptions * _Nonnull)rewardSsvOptions;
 /// Show ad
 /// \param viewController The view controller to present the ad
 ///
@@ -1921,6 +1943,11 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk31OpAdxVideoPlaybackEventListener_")
 /// The options for <code>server-side verification</code> callback, will be used when notifying track url on user rewarded.
 SWIFT_CLASS("_TtC8OpAdxSdk16RewardSsvOptions")
 @interface RewardSsvOptions : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nullable userId;
+@property (nonatomic, readonly, copy) NSString * _Nullable customData;
+/// There’s max length of the <code>user id</code> and the <code>custom data</code>: the <code>user id</code> should be <= 100 bytes
+/// and the <code>custom data</code> should be <= 1KB after they are <em>url encoded</em>, otherwise discarded.
+- (nonnull instancetype)initWithUserId:(NSString * _Nullable)userId customData:(NSString * _Nullable)customData OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2657,6 +2684,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 - (NSString * _Nonnull)toString SWIFT_WARN_UNUSED_RESULT;
 /// Creates an ad size from a string representation.
 + (OpAdxAdSize * _Nullable)fromString:(NSString * _Nonnull)string SWIFT_WARN_UNUSED_RESULT;
+/// Finds the supported ad size exactly matching the given dimensions, or nil if there is none.
+/// Mediation adapters receive the banner size from the mediation SDK and must validate it before
+/// handing it to the SDK: a size outside this list never qualifies for video demand
+/// (see <code>supportsVideo</code>) and is passed to the bidder as-is. Mirrors Android’s
+/// <code>AdSize.findExactSize(width, height)</code>.
++ (OpAdxAdSize * _Nullable)findExactSizeWithWidth:(NSInteger)width height:(NSInteger)height SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @protocol OpAdxAppOpenAdInteractionListener;
@@ -3421,6 +3454,14 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 - (void)loadAd;
 /// Load ad for client-side bidding (C2S)
 - (void)loadC2SBid;
+/// 设置场景 ID，用于服务端奖励回调（SSV）
+/// \param sceneId 场景 ID，url 编码后需 <= 100 字节，否则丢弃
+///
+- (void)setSceneId:(NSString * _Nonnull)sceneId;
+/// 设置服务端奖励回调（SSV）参数
+/// \param rewardSsvOptions SSV 参数
+///
+- (void)setRewardSsvOptions:(RewardSsvOptions * _Nonnull)rewardSsvOptions;
 /// 展示广告
 /// \param viewController 展示广告的视图控制器
 ///
@@ -3518,6 +3559,14 @@ SWIFT_CLASS("_TtC8OpAdxSdk33OpAdxRewardedInterstitialAdBridge")
 - (void)loadAd;
 /// Load ad for client-side bidding (C2S)
 - (void)loadC2SBid;
+/// Set the scene id used by the server-side verification (SSV) callback
+/// \param sceneId Scene id, should be <= 100 bytes after url encoded, otherwise discarded
+///
+- (void)setSceneId:(NSString * _Nonnull)sceneId;
+/// Set the options for the server-side verification (SSV) callback
+/// \param rewardSsvOptions SSV options
+///
+- (void)setRewardSsvOptions:(RewardSsvOptions * _Nonnull)rewardSsvOptions;
 /// Show ad
 /// \param viewController The view controller to present the ad
 ///
@@ -3891,6 +3940,11 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk31OpAdxVideoPlaybackEventListener_")
 /// The options for <code>server-side verification</code> callback, will be used when notifying track url on user rewarded.
 SWIFT_CLASS("_TtC8OpAdxSdk16RewardSsvOptions")
 @interface RewardSsvOptions : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nullable userId;
+@property (nonatomic, readonly, copy) NSString * _Nullable customData;
+/// There’s max length of the <code>user id</code> and the <code>custom data</code>: the <code>user id</code> should be <= 100 bytes
+/// and the <code>custom data</code> should be <= 1KB after they are <em>url encoded</em>, otherwise discarded.
+- (nonnull instancetype)initWithUserId:(NSString * _Nullable)userId customData:(NSString * _Nullable)customData OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
