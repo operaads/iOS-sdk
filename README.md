@@ -1,5 +1,7 @@
 # OpAdxSdk iOS Change Log
 
+(2.14.0) - 本次更新完成 OMID 合规认证续期、补全 OpenRTB 竞价字段并上报 ATT 授权状态，同时修复全屏广告时序、音量事件与原生广告素材校验等问题。
+
 (2.12.1) - 修复数据上报的线程安全崩溃；优化主线程阻塞，降低ANR风险
 
 (2.12.0) - 原生广告支持视频素材和客户端竞价（C2S）；优化渲染性能，修复初始化崩溃与展示事件上报问题
@@ -82,14 +84,14 @@ OpAdxSdk 根据语言特性提供了两种不同的事件回调方式：
    ```
    https://github.com/operaads/iOS-sdk
    ```
-3. 选择版本规则（建议 **Up to Next Major Version**，当前版本 `2.12.1`）
+3. 选择版本规则（建议 **Up to Next Major Version**，当前版本 `2.14.0`）
 4. 点击 **Add Package**，选择 `OpAdxSdk` target 并添加到你的项目
 
 或者在 `Package.swift` 中手动添加依赖：
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/operaads/iOS-sdk", from: "2.12.1")
+    .package(url: "https://github.com/operaads/iOS-sdk", from: "2.14.0")
 ]
 ```
 
@@ -111,7 +113,7 @@ dependencies: [
 ```ruby
 target 'YourAppTarget' do
   use_frameworks!
-  pod 'OpAdxSdk', '~> 2.12.1'
+  pod 'OpAdxSdk', '~> 2.14.0'
 end
 ```
 

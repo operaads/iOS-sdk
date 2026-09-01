@@ -389,17 +389,30 @@ typedef SWIFT_ENUM(NSInteger, AdAuctionType, open) {
 
 @class NSString;
 SWIFT_ENUM_FWD_DECL(NSInteger, LossReason)
-/// Represents a bid for client bidding support.
+/// Represents a bid for a loaded ad.
 SWIFT_PROTOCOL("_TtP8OpAdxSdk5AdBid_")
 @protocol AdBid
 /// Gets the eCPM of the ad.
 /// @return The eCPM price in USD
 - (double)getEcpm SWIFT_WARN_UNUSED_RESULT;
-/// Notifies that this ad won the auction.
+/// Gets the unique id of this bid.
+/// Publishers who want to reconcile their own impression/revenue records against <code>Opera Ads</code>
+/// backend reporting for the same ad <em>MUST</em> log this id, no matter how the ad was loaded,
+/// since there is no other id shared between the two sides. However, for <em>Server Bidding</em>, the
+/// mediation backend’s own data is usually good enough for reconciliation on its own, though
+/// some discrepancy against <code>Opera Ads</code> backend reporting should still be expected.
+/// One special case: banner ads. When <code>OpAdxBannerAdListener.onAdLoaded</code> fires, use
+/// <code>OpAdxBannerAdInfo.bidId</code> instead of this method (reached via <code>OpAdxBannerAdView.getBid()</code>) –
+/// during auto refresh, <code>getBid()</code> can still point at the previous ad at that point, so this id
+/// may not match the ad that was just loaded.
+- (NSString * _Nonnull)getBidId SWIFT_WARN_UNUSED_RESULT;
+/// Notifies that this ad won the <em>Client Bidding</em> auction.
 /// @param secondPrice The second highest price in the auction (for second-price auction)
 /// @param bidderName The name of the winning bidder
 - (void)notifyWinWithSecondPrice:(double)secondPrice bidderName:(NSString * _Nullable)bidderName;
-/// Notifies that this ad lost the auction.
+/// Notifies that this ad lost the <em>Client Bidding</em> auction.
+/// When an ad is notified that it lost the auction, the ad is marked as invalidated and should
+/// <em>NOT</em> be shown later.
 /// @param lossReason The reason for losing (see LossReason)
 /// @param winnerPrice The price of the winning bid
 /// @param winnerBidder The name of the winning bidder
@@ -468,7 +481,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk24IncentivizedFullscreenAd")
 - (void)setRewardSsvOptions:(RewardSsvOptions * _Nonnull)rewardSsvOptions;
 @end
 
-/// Loss reasons for client bidding auctions.
+/// Loss reasons for <em>Client Bidding</em> auctions.
 typedef SWIFT_ENUM(NSInteger, LossReason, open) {
 /// Internal error occurred
   LossReasonInternalError = 1,
@@ -539,21 +552,32 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSInteger BID_RESP_D
 /// The listener to be invoked when a fullscreen ad shows and dismisses its fullscreen content.
 SWIFT_PROTOCOL("_TtP8OpAdxSdk26OpAdxAdInteractionListener_")
 @protocol OpAdxAdInteractionListener
-/// Called when the ad displayed its fullscreen content.
+@optional
+/// Called when the ad’s fullscreen container was opened, before its content is confirmed
+/// displayed (see <code>onAdDisplayed()</code>). <code>onAdDisplayed()</code>, <code>onAdClicked()</code> and <code>onAdDismissed()</code>
+/// may subsequently be called.
+- (void)onAdOpened;
+@required
+/// Called when the ad’s fullscreen content becomes visible to the user, i.e. an impression.
 - (void)onAdDisplayed;
-/// Called when user clicked the ad.
+/// Called when the ad is clicked.
 - (void)onAdClicked;
-/// Called when the ad dismissed.
+/// Called when the ad dismissed. Always follows a call to <code>onAdOpened()</code>.
 - (void)onAdDismissed;
-/// Called when the ad failed to show its fullscreen content.
+/// Called when the ad failed to show its fullscreen content. When this is called, no other
+/// method on this listener will be called.
 - (void)onAdFailedToShow:(OpAdxAdError * _Nonnull)error;
 @end
 
 /// 通用的广告交互监听器实现
 SWIFT_CLASS("_TtC8OpAdxSdk29OpAdxAdInteractionListenerImp")
 @interface OpAdxAdInteractionListenerImp : NSObject <OpAdxAdInteractionListener>
+/// Callback for <code>onAdOpened()</code>. Exposed as a property rather than an initializer parameter,
+/// to keep the existing initializers source-compatible.
+@property (nonatomic, copy) void (^ _Nullable onAdOpenedCallback)(void);
 - (nonnull instancetype)initOnAdClicked:(void (^ _Nonnull)(void))onAdClicked onAdDisplayed:(void (^ _Nonnull)(void))onAdDisplayed onAdDismissed:(void (^ _Nonnull)(void))onAdDismissed onAdFailedToShow:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToShow;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (void)onAdOpened;
 - (void)onAdClicked;
 - (void)onAdDisplayed;
 - (void)onAdDismissed;
@@ -917,6 +941,22 @@ SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxBannerAdView")
 ///   </li>
 /// </ul>
 @property (nonatomic, readonly) BOOL isAdInvalidated;
+/// Returns the bid for the currently displayed ad.
+/// During auto refresh, the pending refresh ad is promoted to become the “currently displayed” ad
+/// as soon as either it reports its own impression or the transition-in animation finishes –
+/// whichever comes first. So the bid id from this call can only be trusted to identify the ad
+/// that fired:
+/// <ul>
+///   <li>
+///     <code>onAdLoaded</code>: NOT trusted, promotion hasn’t happened yet – use <code>OpAdxBannerAdInfo.bidId</code> instead.
+///   </li>
+///   <li>
+///     <code>onAdImpression</code>: trusted, promotion already happened via the impression report.
+///   </li>
+///   <li>
+///     <code>onAdClicked</code>: trusted, a click can only happen after impression is reported.
+///   </li>
+/// </ul>
 - (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (void)destroy;
 /// \param seconds custom auto refresh interval in seconds, will be limited to acceptable range.
@@ -1186,6 +1226,15 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 - (void)registerInteractionViewsWithContainer:(OpAdxNativeAdRootView * _Nonnull)container interactionViews:(OpAdxInteractionViews * _Nonnull)interactionViews adChoicePosition:(enum AdChoicePosition)adChoicePosition;
 - (void)setAdChoicePosition:(enum AdChoicePosition)position;
+/// The AdChoice (privacy) icon view, for integrations that need to place it themselves —
+/// mediation adapters typically hand it to the mediation SDK as the ad’s privacy/logo view.
+/// The name is intentionally obscure so that it does not read as an ad-related API to app code
+/// scanning the SDK surface; do not rename it. Returns the same instance on every call, and nil
+/// before an ad has been loaded.
+/// While the returned view is attached to a window the SDK does not render its own AdChoice icon
+/// inside the ad container, so exactly one icon is shown. It must be visible when the impression
+/// fires, otherwise the SDK reports a render error.
+- (UIView * _Nullable)ac SWIFT_WARN_UNUSED_RESULT;
 /// 设置 adChoices 图标的绝对坐标（以广告容器左上角为原点，单位 pt）。
 /// <ul>
 ///   <li>
@@ -2386,17 +2435,30 @@ typedef SWIFT_ENUM(NSInteger, AdAuctionType, open) {
 
 @class NSString;
 SWIFT_ENUM_FWD_DECL(NSInteger, LossReason)
-/// Represents a bid for client bidding support.
+/// Represents a bid for a loaded ad.
 SWIFT_PROTOCOL("_TtP8OpAdxSdk5AdBid_")
 @protocol AdBid
 /// Gets the eCPM of the ad.
 /// @return The eCPM price in USD
 - (double)getEcpm SWIFT_WARN_UNUSED_RESULT;
-/// Notifies that this ad won the auction.
+/// Gets the unique id of this bid.
+/// Publishers who want to reconcile their own impression/revenue records against <code>Opera Ads</code>
+/// backend reporting for the same ad <em>MUST</em> log this id, no matter how the ad was loaded,
+/// since there is no other id shared between the two sides. However, for <em>Server Bidding</em>, the
+/// mediation backend’s own data is usually good enough for reconciliation on its own, though
+/// some discrepancy against <code>Opera Ads</code> backend reporting should still be expected.
+/// One special case: banner ads. When <code>OpAdxBannerAdListener.onAdLoaded</code> fires, use
+/// <code>OpAdxBannerAdInfo.bidId</code> instead of this method (reached via <code>OpAdxBannerAdView.getBid()</code>) –
+/// during auto refresh, <code>getBid()</code> can still point at the previous ad at that point, so this id
+/// may not match the ad that was just loaded.
+- (NSString * _Nonnull)getBidId SWIFT_WARN_UNUSED_RESULT;
+/// Notifies that this ad won the <em>Client Bidding</em> auction.
 /// @param secondPrice The second highest price in the auction (for second-price auction)
 /// @param bidderName The name of the winning bidder
 - (void)notifyWinWithSecondPrice:(double)secondPrice bidderName:(NSString * _Nullable)bidderName;
-/// Notifies that this ad lost the auction.
+/// Notifies that this ad lost the <em>Client Bidding</em> auction.
+/// When an ad is notified that it lost the auction, the ad is marked as invalidated and should
+/// <em>NOT</em> be shown later.
 /// @param lossReason The reason for losing (see LossReason)
 /// @param winnerPrice The price of the winning bid
 /// @param winnerBidder The name of the winning bidder
@@ -2465,7 +2527,7 @@ SWIFT_CLASS("_TtC8OpAdxSdk24IncentivizedFullscreenAd")
 - (void)setRewardSsvOptions:(RewardSsvOptions * _Nonnull)rewardSsvOptions;
 @end
 
-/// Loss reasons for client bidding auctions.
+/// Loss reasons for <em>Client Bidding</em> auctions.
 typedef SWIFT_ENUM(NSInteger, LossReason, open) {
 /// Internal error occurred
   LossReasonInternalError = 1,
@@ -2536,21 +2598,32 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSInteger BID_RESP_D
 /// The listener to be invoked when a fullscreen ad shows and dismisses its fullscreen content.
 SWIFT_PROTOCOL("_TtP8OpAdxSdk26OpAdxAdInteractionListener_")
 @protocol OpAdxAdInteractionListener
-/// Called when the ad displayed its fullscreen content.
+@optional
+/// Called when the ad’s fullscreen container was opened, before its content is confirmed
+/// displayed (see <code>onAdDisplayed()</code>). <code>onAdDisplayed()</code>, <code>onAdClicked()</code> and <code>onAdDismissed()</code>
+/// may subsequently be called.
+- (void)onAdOpened;
+@required
+/// Called when the ad’s fullscreen content becomes visible to the user, i.e. an impression.
 - (void)onAdDisplayed;
-/// Called when user clicked the ad.
+/// Called when the ad is clicked.
 - (void)onAdClicked;
-/// Called when the ad dismissed.
+/// Called when the ad dismissed. Always follows a call to <code>onAdOpened()</code>.
 - (void)onAdDismissed;
-/// Called when the ad failed to show its fullscreen content.
+/// Called when the ad failed to show its fullscreen content. When this is called, no other
+/// method on this listener will be called.
 - (void)onAdFailedToShow:(OpAdxAdError * _Nonnull)error;
 @end
 
 /// 通用的广告交互监听器实现
 SWIFT_CLASS("_TtC8OpAdxSdk29OpAdxAdInteractionListenerImp")
 @interface OpAdxAdInteractionListenerImp : NSObject <OpAdxAdInteractionListener>
+/// Callback for <code>onAdOpened()</code>. Exposed as a property rather than an initializer parameter,
+/// to keep the existing initializers source-compatible.
+@property (nonatomic, copy) void (^ _Nullable onAdOpenedCallback)(void);
 - (nonnull instancetype)initOnAdClicked:(void (^ _Nonnull)(void))onAdClicked onAdDisplayed:(void (^ _Nonnull)(void))onAdDisplayed onAdDismissed:(void (^ _Nonnull)(void))onAdDismissed onAdFailedToShow:(void (^ _Nonnull)(OpAdxAdError * _Nonnull))onAdFailedToShow;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (void)onAdOpened;
 - (void)onAdClicked;
 - (void)onAdDisplayed;
 - (void)onAdDismissed;
@@ -2914,6 +2987,22 @@ SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxBannerAdView")
 ///   </li>
 /// </ul>
 @property (nonatomic, readonly) BOOL isAdInvalidated;
+/// Returns the bid for the currently displayed ad.
+/// During auto refresh, the pending refresh ad is promoted to become the “currently displayed” ad
+/// as soon as either it reports its own impression or the transition-in animation finishes –
+/// whichever comes first. So the bid id from this call can only be trusted to identify the ad
+/// that fired:
+/// <ul>
+///   <li>
+///     <code>onAdLoaded</code>: NOT trusted, promotion hasn’t happened yet – use <code>OpAdxBannerAdInfo.bidId</code> instead.
+///   </li>
+///   <li>
+///     <code>onAdImpression</code>: trusted, promotion already happened via the impression report.
+///   </li>
+///   <li>
+///     <code>onAdClicked</code>: trusted, a click can only happen after impression is reported.
+///   </li>
+/// </ul>
 - (id <AdBid> _Nullable)getBid SWIFT_WARN_UNUSED_RESULT;
 - (void)destroy;
 /// \param seconds custom auto refresh interval in seconds, will be limited to acceptable range.
@@ -3183,6 +3272,15 @@ SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 - (void)registerInteractionViewsWithContainer:(OpAdxNativeAdRootView * _Nonnull)container interactionViews:(OpAdxInteractionViews * _Nonnull)interactionViews adChoicePosition:(enum AdChoicePosition)adChoicePosition;
 - (void)setAdChoicePosition:(enum AdChoicePosition)position;
+/// The AdChoice (privacy) icon view, for integrations that need to place it themselves —
+/// mediation adapters typically hand it to the mediation SDK as the ad’s privacy/logo view.
+/// The name is intentionally obscure so that it does not read as an ad-related API to app code
+/// scanning the SDK surface; do not rename it. Returns the same instance on every call, and nil
+/// before an ad has been loaded.
+/// While the returned view is attached to a window the SDK does not render its own AdChoice icon
+/// inside the ad container, so exactly one icon is shown. It must be visible when the impression
+/// fires, otherwise the SDK reports a render error.
+- (UIView * _Nullable)ac SWIFT_WARN_UNUSED_RESULT;
 /// 设置 adChoices 图标的绝对坐标（以广告容器左上角为原点，单位 pt）。
 /// <ul>
 ///   <li>

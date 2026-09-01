@@ -370,6 +370,7 @@ extension OpAdxSdk.OpAdxRewardedInterstitialAdBridge {
   final public let placementId: Swift.String
   final public let adSize: OpAdxSdk.OpAdxAdSize
   final public let refreshCount: Swift.Int
+  final public let bidId: Swift.String
   final public let timestamp: Foundation.TimeInterval
   @objc deinit
 }
@@ -522,6 +523,7 @@ public struct AdData : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
 }
 @objc public protocol OpAdxAdInteractionListener {
+  @objc optional func onAdOpened()
   @objc func onAdDisplayed()
   @objc func onAdClicked()
   @objc func onAdDismissed()
@@ -724,8 +726,10 @@ public class OpAdxImpressionTracker {
   @objc deinit
 }
 @_inheritsConvenienceInitializers @objc public class OpAdxAdInteractionListenerImp : ObjectiveC.NSObject, OpAdxSdk.OpAdxAdInteractionListener {
+  @objc public var onAdOpenedCallback: (() -> Swift.Void)?
   @objc convenience public init(onAdClicked: @escaping () -> Swift.Void, onAdDisplayed: @escaping () -> Swift.Void, onAdDismissed: @escaping () -> Swift.Void, onAdFailedToShow: @escaping (OpAdxSdk.OpAdxAdError) -> Swift.Void)
   @objc override dynamic public init()
+  @objc public func onAdOpened()
   @objc public func onAdClicked()
   @objc public func onAdDisplayed()
   @objc public func onAdDismissed()
@@ -759,6 +763,7 @@ public class OpAdxImpressionTracker {
   @objc public func createMediaView() -> OpAdxSdk.OpAdxMediaView
   @objc public func registerInteractionViews(container: OpAdxSdk.OpAdxNativeAdRootView, interactionViews: OpAdxSdk.OpAdxInteractionViews, adChoicePosition: OpAdxSdk.AdChoicePosition)
   @objc public func setAdChoicePosition(_ position: OpAdxSdk.AdChoicePosition)
+  @objc public func ac() -> UIKit.UIView?
   @objc public func setAdChoicesViewOrigin(_ origin: CoreFoundation.CGPoint)
   @objc public func unregister()
   @objc public func isAdInvalidated() -> Swift.Bool
@@ -874,6 +879,7 @@ extension UIKit.UIView {
 }
 @objc public protocol AdBid {
   @objc func getEcpm() -> Swift.Double
+  @objc func getBidId() -> Swift.String
   @objc func notifyWin(secondPrice: Swift.Double, bidderName: Swift.String?)
   @objc func notifyLose(lossReason: OpAdxSdk.LossReason, winnerPrice: Swift.Double, winnerBidder: Swift.String?)
 }
