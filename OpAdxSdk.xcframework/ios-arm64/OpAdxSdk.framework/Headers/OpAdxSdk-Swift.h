@@ -392,8 +392,8 @@ SWIFT_ENUM_FWD_DECL(NSInteger, LossReason)
 /// Represents a bid for a loaded ad.
 SWIFT_PROTOCOL("_TtP8OpAdxSdk5AdBid_")
 @protocol AdBid
-/// Gets the eCPM of the ad.
-/// @return The eCPM price in USD
+/// Gets the bid price.
+/// @return The bid price in USD, expressed as <em>CPM</em>
 - (double)getEcpm SWIFT_WARN_UNUSED_RESULT;
 /// Gets the unique id of this bid.
 /// Publishers who want to reconcile their own impression/revenue records against <code>Opera Ads</code>
@@ -407,15 +407,14 @@ SWIFT_PROTOCOL("_TtP8OpAdxSdk5AdBid_")
 /// may not match the ad that was just loaded.
 - (NSString * _Nonnull)getBidId SWIFT_WARN_UNUSED_RESULT;
 /// Notifies that this ad won the <em>Client Bidding</em> auction.
-/// @param secondPrice The second highest price in the auction (for second-price auction)
-/// @param bidderName The name of the winning bidder
+/// @param secondPrice The second-highest bid price in the auction, in USD, expressed as <em>CPM</em>.
+/// @param bidderName The second-highest bidder
 - (void)notifyWinWithSecondPrice:(double)secondPrice bidderName:(NSString * _Nullable)bidderName;
 /// Notifies that this ad lost the <em>Client Bidding</em> auction.
-/// When an ad is notified that it lost the auction, the ad is marked as invalidated and should
-/// <em>NOT</em> be shown later.
+/// When a loss is notified the ad is marked as invalidated and should <em>NOT</em> be shown later.
 /// @param lossReason The reason for losing (see LossReason)
-/// @param winnerPrice The price of the winning bid
-/// @param winnerBidder The name of the winning bidder
+/// @param winnerPrice The highest (winning) bid price in the auction, in USD, expressed as <em>CPM</em>.
+/// @param winnerBidder The highest bidder
 - (void)notifyLoseWithLossReason:(enum LossReason)lossReason winnerPrice:(double)winnerPrice winnerBidder:(NSString * _Nullable)winnerBidder;
 @end
 
@@ -603,6 +602,28 @@ SWIFT_CLASS("_TtC8OpAdxSdk22OpAdxAdLoadListenerImp")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+/// Describes a single ad load.
+/// It currently carries the placement id and an optional content URL, and can grow further without
+/// changing the ad APIs that take it again.
+SWIFT_CLASS_NAMED("OpAdxAdLoadRequest")
+@interface OpAdxAdLoadRequest : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
+@property (nonatomic, readonly, copy) NSString * _Nullable contentUrl;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+SWIFT_CLASS_NAMED("Builder")
+@interface OpAdxAdLoadRequestBuilder : NSObject
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+/// The URL of the content within which the ad will be shown, only used for <em>Regular</em> and
+/// <em>Client Bidding</em> loads.
+- (nonnull instancetype)contentUrl:(NSString * _Nullable)contentUrl;
+- (OpAdxAdLoadRequest * _Nonnull)build SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 /// Represents the size of an advertisement.
 SWIFT_CLASS("_TtC8OpAdxSdk11OpAdxAdSize")
 @interface OpAdxAdSize : NSObject
@@ -723,8 +744,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSArray<OpAdxA
 @protocol OpAdxAppOpenAdLoadListener;
 SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxAppOpenAd")
 @interface OpAdxAppOpenAd : FullscreenAd
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (void)showOn:(UIViewController * _Nonnull)viewController listener:(id <OpAdxAppOpenAdInteractionListener> _Nonnull)listener;
 - (void)loadWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxAppOpenAdLoadListener> _Nonnull)listener;
 - (void)loadC2SBidWithPlacementId:(NSString * _Nonnull)placementId listener:(id <OpAdxAppOpenAdLoadListener> _Nonnull)listener;
@@ -742,13 +765,23 @@ SWIFT_CLASS("_TtC8OpAdxSdk20OpAdxAppOpenAdBridge")
 /// Whether the ad is ready to be shown
 @property (nonatomic, readonly) BOOL isAdValid;
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
 /// Initialize App Open Ad
 /// \param placementId Ad placement ID
 ///
 /// \param auctionType Ad auction type
 ///
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+/// Initialize App Open Ad
+/// \param loadRequest The request describing this load, which may carry a content url
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+/// Initialize App Open Ad
+/// \param loadRequest The request describing this load, which may carry a content url
+///
+/// \param auctionType Ad auction type
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Load ad
 - (void)loadAd;
 /// Load ad for client-side bidding (C2S).
@@ -831,6 +864,12 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxBannerAdBridge")
 /// \param adSize 广告尺寸
 ///
 - (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId adSize:(OpAdxAdSize * _Nonnull)adSize;
+/// 使用加载请求和尺寸初始化
+/// \param loadRequest 本次加载的请求描述，可携带 contentUrl
+///
+/// \param adSize 广告尺寸
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest adSize:(OpAdxAdSize * _Nonnull)adSize;
 /// 设置广告位ID
 - (void)configurePlacementId:(NSString * _Nonnull)placementId;
 /// 设置广告尺寸
@@ -963,7 +1002,9 @@ SWIFT_CLASS("_TtC8OpAdxSdk17OpAdxBannerAdView")
 ///
 - (void)setAutoRefreshInterval:(NSInteger)seconds;
 - (void)loadAdWithListener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
+- (void)loadAdWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest listener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
 - (void)loadC2SBidAdWithListener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
+- (void)loadC2SBidAdWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest listener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
 - (void)loadRtbAdWithBidResponse:(NSString * _Nonnull)bidResponse listener:(OpAdxBannerAdListenerImp * _Nonnull)listener;
 /// 设置是否启用自动刷新
 - (void)setAutoRefreshEnabled:(BOOL)enabled;
@@ -990,6 +1031,10 @@ SWIFT_CLASS_NAMED("OpAdxBidTokenRequestBuilder")
 - (nonnull instancetype)placementId:(NSString * _Nullable)config;
 - (nonnull instancetype)adFormat:(NSString * _Nullable)config;
 - (nonnull instancetype)adSize:(OpAdxAdSize * _Nullable)config;
+/// If set, the returned bid token is only valid for this exact <code>contentUrl</code>. Once
+/// <code>contentUrl</code> changes between calls, any previously returned bid token must not be
+/// cached/reused, a fresh one has to be requested for the new value.
+- (nonnull instancetype)contentUrl:(NSString * _Nullable)config;
 - (OpAdxBidTokenRequest * _Nonnull)build SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -1036,8 +1081,10 @@ SWIFT_CLASS("_TtC8OpAdxSdk28OpAdxInteractionViewsBuilder")
 /// Represents an interstitial ad that can be displayed between content transitions
 SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxInterstitialAd")
 @interface OpAdxInterstitialAd : FullscreenAd
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Shows the interstitial ad on the specified view controller
 /// \param viewController The view controller to present the ad on
 ///
@@ -1064,11 +1111,21 @@ SWIFT_CLASS("_TtC8OpAdxSdk25OpAdxInterstitialAdBridge")
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
 /// 初始化插屏广告
 /// \param placementId 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+/// 初始化插屏广告
+/// \param loadRequest 本次加载的请求描述，可携带 contentUrl
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+/// 初始化插屏广告
+/// \param loadRequest 本次加载的请求描述，可携带 contentUrl
+///
+/// \param auctionType 竞价类型
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// 加载广告
 - (void)loadAd;
 /// 加载 Client Bidding 广告
@@ -1205,8 +1262,10 @@ SWIFT_CLASS("_TtC8OpAdxSdk14OpAdxMediaView")
 SWIFT_CLASS("_TtC8OpAdxSdk13OpAdxNativeAd")
 @interface OpAdxNativeAd : NSObject
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (CGSize)adSize SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nullable)title SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nullable)descriptionStr SWIFT_WARN_UNUSED_RESULT;
@@ -1298,11 +1357,21 @@ SWIFT_CLASS("_TtC8OpAdxSdk19OpAdxNativeAdBridge")
 /// Whether the native ad contains video content (ADRD-425)
 @property (nonatomic, readonly) BOOL hasVideoContent;
 @property (nonatomic, readonly, strong) OpAdxMediaView * _Nullable boundMediaView;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
 /// 初始化原生广告
 /// \param placementId 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+/// 初始化原生广告
+/// \param loadRequest 本次加载的请求描述，可携带 contentUrl
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+/// 初始化原生广告
+/// \param loadRequest 本次加载的请求描述，可携带 contentUrl
+///
+/// \param auctionType 竞价类型
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 - (OpAdxMediaView * _Nonnull)createMediaView SWIFT_WARN_UNUSED_RESULT;
 /// 设置 adChoices 图标的绝对坐标（以广告容器左上角为原点，单位 pt）。
 /// <ul>
@@ -1468,8 +1537,10 @@ SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardItem")
 /// Represents a rewarded ad that users can interact with to earn rewards
 SWIFT_CLASS("_TtC8OpAdxSdk15OpAdxRewardedAd")
 @interface OpAdxRewardedAd : IncentivizedFullscreenAd
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Shows the rewarded ad on the specified view controller
 /// \param viewController The view controller to present the ad on
 ///
@@ -1497,11 +1568,21 @@ SWIFT_CLASS("_TtC8OpAdxSdk21OpAdxRewardedAdBridge")
 /// 广告是否准备好展示
 @property (nonatomic, readonly) BOOL isAdValid;
 @property (nonatomic, readonly, copy) NSString * _Nonnull placementId;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
 /// 初始化激励广告
 /// \param placementId 广告位ID
 ///
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+/// 初始化激励广告
+/// \param loadRequest 本次加载的请求描述，可携带 contentUrl
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+/// 初始化激励广告
+/// \param loadRequest 本次加载的请求描述，可携带 contentUrl
+///
+/// \param auctionType 竞价类型
+///
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// 加载广告
 - (void)loadAd;
 /// Load ad for client-side bidding (C2S)
@@ -1571,8 +1652,10 @@ SWIFT_CLASS("_TtC8OpAdxSdk30OpAdxRewardedAdLoadListenerImp")
 /// Represents a rewardedInterstitial ad that users can interact with to earn rewards
 SWIFT_CLASS("_TtC8OpAdxSdk27OpAdxRewardedInterstitialAd")
 @interface OpAdxRewardedInterstitialAd : IncentivizedFullscreenAd
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId;
+- (nonnull instancetype)initWithPlacementId:(NSString * _Nonnull)placementId auctionType:(enum AdAuctionType)auctionType;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest;
+- (nonnull instancetype)initWithLoadRequest:(OpAdxAdLoadRequest * _Nonnull)loadRequest auctionType:(enum AdAuctionType)auctionType OBJC_DESIGNATED_INITIALIZER;
 /// Shows the rewardedInterstitial ad on the specified view controller
 /// \param viewController The view controller to present the ad on
 ///
